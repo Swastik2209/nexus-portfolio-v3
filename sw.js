@@ -1,5 +1,5 @@
 // Service Worker for PROJECT OMEGA Portfolio
-const CACHE_NAME = 'omega-portfolio-v5';
+const CACHE_NAME = 'omega-portfolio-v6';
 const ASSETS = [
 '/',
 '/index.html',
