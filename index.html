@@ -3,126 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swastik Mishra</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Swastik Mishra — Systems Architect</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-body{background:#f5f2ed;color:#1a1a1a;font-family:'DM Sans',sans-serif;overflow-x:hidden}
-::selection{background:#1a1a1a;color:#f5f2ed}
+body{background:#09090b;color:#fafafa;font-family:'Inter',sans-serif;overflow-x:hidden}
+::selection{background:#3b82f6;color:#fff}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#09090b}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
 
-/* Custom cursor */
-.c{position:fixed;width:16px;height:16px;border:1px solid #1a1a1a;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .4s cubic-bezier(.4,0,.2,1),height .4s,border-color .3s}
-.c.big{width:48px;height:48px;border-color:#2563eb}
+/* Cursor */
+.c{position:fixed;width:20px;height:20px;border:1.5px solid #3b82f6;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .4s cubic-bezier(.4,0,.2,1),height .4s,border-color .3s}
+.c.big{width:48px;height:48px;border-color:#818cf8}
 
-/* Grain */
-.g{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E")}
+/* Layout */
+.page{max-width:1200px;margin:0 auto;padding:0 48px}
+.sec{padding:100px 0}
 
 /* Header */
-.h{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(245,242,237,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.06)}
-.h-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:500}
-.h nav{display:flex;gap:28px}
-.h nav a{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#999;text-decoration:none;transition:color .2s;font-weight:500}
-.h nav a:hover{color:#1a1a1a}
+.h{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:56px;display:flex;justify-content:space-between;align-items:center;background:rgba(9,9,11,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.h-name{font-weight:700;font-size:0.95rem;letter-spacing:-0.02em}
+.h nav{display:flex;gap:24px}
+.h nav a{font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#71717a;text-decoration:none;transition:color .2s;font-weight:500}
+.h nav a:hover{color:#fafafa}
 
-/* Sections - Full page editorial */
-.sec{min-height:100vh;display:flex;align-items:center;position:relative;padding:0 60px}
-.sec-dark{background:#1a1a1a;color:#f5f2ed}
+/* Hero - Full screen with gradient */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 50%,rgba(59,130,246,0.08) 0%,transparent 60%);pointer-events:none}
+.hero-inner{position:relative;z-index:1}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:24px}
+.hero h1{font-size:clamp(3.5rem,8vw,7rem);font-weight:800;line-height:0.9;letter-spacing:-0.04em;margin-bottom:24px}
+.hero h1 .grad{background:linear-gradient(135deg,#3b82f6,#8b5cf6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.1rem;color:#71717a;max-width:500px;line-height:1.8;margin-bottom:36px}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:#3b82f6;color:#fff;text-decoration:none;font-size:0.85rem;font-weight:500;transition:all .3s;border-radius:8px}
+.hero-btn:hover{background:#2563eb;transform:translateY(-2px);box-shadow:0 8px 30px rgba(59,130,246,0.3)}
+.hero-stats{display:flex;gap:40px;margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06)}
+.hero-stats .n{font-size:2rem;font-weight:800}
+.hero-stats .l{font-size:0.7rem;color:#52525b;margin-top:2px;font-family:'JetBrains Mono',monospace}
 
-/* Hero - Full bleed with photo */
-.hero{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;position:relative;overflow:hidden}
-.hero-left{padding:120px 60px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
-.hero-right{position:relative;overflow:hidden}
-.hero-right img{width:100%;height:100%;object-fit:cover}
-.hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.4))}
-.hero-tag{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#999;margin-bottom:20px}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3.5rem,7vw,6rem);font-weight:400;line-height:1;letter-spacing:-.03em;margin-bottom:20px}
-.hero h1 em{font-style:italic;color:#2563eb}
-.hero-sub{font-size:1.05rem;color:#666;line-height:1.8;max-width:480px;margin-bottom:32px}
-.hero-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:#1a1a1a;color:#f5f2ed;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .3s;letter-spacing:.02em}
-.hero-btn:hover{background:#2563eb;transform:translateY(-2px)}
-.hero-stats{display:flex;gap:40px;margin-top:40px;padding-top:24px;border-top:1px solid rgba(0,0,0,0.08)}
-.hero-stats .n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400}
-.hero-stats .l{font-size:.7rem;color:#999;margin-top:2px;letter-spacing:.05em}
-
-/* About - Dark editorial */
-.about{padding:120px 0;position:relative}
-.about .inner{max-width:1200px;margin:0 auto;padding:0 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px}
-.about-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:#b45309;margin-bottom:16px;font-weight:500}
-.about h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;line-height:1.1;margin-bottom:24px}
-.about p{color:#666;line-height:1.8;margin-bottom:16px;font-size:1rem}
-.about strong{color:#1a1a1a;font-weight:600}
-.ach{background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.06);padding:20px;margin-bottom:12px}
-.ach h4{font-size:.9rem;font-weight:600;margin-bottom:4px}
-.ach p{font-size:.85rem;color:#666;line-height:1.6}
+/* About - Split with photo */
+.about{padding:120px 0}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.about-photo{width:100%;aspect-ratio:3/4;border-radius:16px;overflow:hidden;position:relative}
+.about-photo img{width:100%;height:100%;object-fit:cover}
+.about-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,0.4));pointer-events:none}
+.about-content h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:24px}
+.about-content p{color:#a1a1aa;line-height:1.8;margin-bottom:16px;font-size:1rem}
+.about-content strong{color:#fafafa;font-weight:600}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.tag{padding:5px 12px;border:1px solid rgba(0,0,0,0.1);font-size:.7rem;color:#666;letter-spacing:.05em;font-weight:500}
+.tag{padding:5px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:0.7rem;color:#71717a;font-weight:500;transition:border-color .2s}
+.tag:hover{border-color:#3b82f6}
+.ach{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:20px;margin-bottom:12px;border-radius:8px;transition:all .3s}
+.ach:hover{border-color:rgba(59,130,246,0.3);transform:translateX(4px)}
+.ach h4{font-size:0.9rem;font-weight:600;margin-bottom:4px}
+.ach p{font-size:0.85rem;color:#71717a;line-height:1.6}
 
-/* Work - Full width editorial */
+/* Work - Full width */
 .work{padding:120px 0}
-.work .inner{max-width:1200px;margin:0 auto;padding:0 60px}
-.work h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
-.wcard{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;padding:48px 0;border-bottom:1px solid rgba(0,0,0,0.06);align-items:center}
+.work-inner{max-width:1200px;margin:0 auto;padding:0 48px}
+.work h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
+.wcard{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;padding:48px 0;border-bottom:1px solid rgba(255,255,255,0.06);align-items:center}
 .wcard:nth-child(even){direction:rtl}.wcard:nth-child(even)>*{direction:ltr}
-.wvis{height:320px;border-radius:8px;overflow:hidden;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-.wvis:hover{transform:scale(1.01)}
-.winfo .yr{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#999;margin-bottom:8px}
-.winfo h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:8px}
-.winfo p{color:#666;font-size:.9rem;line-height:1.7;max-width:400px;margin-bottom:16px}
-.winfo a{font-size:.85rem;color:#1a1a1a;text-decoration:none;font-weight:500;transition:color .2s}
-.winfo a:hover{color:#2563eb}
+.wvis{height:320px;border-radius:12px;overflow:hidden;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.wvis:hover{transform:scale(1.02)}
+.winfo .yr{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#52525b;margin-bottom:8px}
+.winfo h3{font-size:1.6rem;font-weight:600;margin-bottom:8px}
+.winfo p{color:#a1a1aa;font-size:0.9rem;line-height:1.7;max-width:400px;margin-bottom:16px}
+.winfo a{font-size:0.85rem;color:#fafafa;text-decoration:none;font-weight:500;transition:color .2s}
+.winfo a:hover{color:#3b82f6}
 
-/* Skills - Dark */
-.skills{padding:120px 0;background:#1a1a1a;color:#f5f2ed}
-.skills .inner{max-width:1200px;margin:0 auto;padding:0 60px}
-.skills h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
+/* Skills */
+.skills{padding:120px 0;background:#111113}
+.skills-inner{max-width:1200px;margin:0 auto;padding:0 48px}
+.skills h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
 .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06)}
-.sitem{padding:28px;background:#1a1a1a;transition:background .3s}
+.sitem{padding:28px;background:#111113;transition:background .3s}
 .sitem:hover{background:rgba(255,255,255,0.03)}
-.sitem h4{font-size:.9rem;font-weight:600;color:#fff;margin-bottom:4px}
-.sitem .lv{font-size:.65rem;color:rgba(255,255,255,0.4);letter-spacing:.05em}
+.sitem h4{font-size:0.9rem;font-weight:600;color:#fafafa;margin-bottom:4px}
+.sitem .lv{font-size:0.65rem;color:#52525b;letter-spacing:0.05em}
 
 /* Experience */
 .exp{padding:120px 0}
-.exp .inner{max-width:1200px;margin:0 auto;padding:0 60px}
-.exp h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
-.eitem{display:grid;grid-template-columns:120px 1fr;gap:32px;padding:24px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+.exp-inner{max-width:1200px;margin:0 auto;padding:0 48px}
+.exp h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
+.eitem{display:grid;grid-template-columns:120px 1fr;gap:32px;padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
 .eitem:last-child{border-bottom:none}
-.edate{font-family:'DM Mono',monospace;font-size:.7rem;color:#999;padding-top:2px;letter-spacing:.05em}
+.edate{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#52525b;padding-top:2px}
 .eitem h4{font-size:1rem;font-weight:600;margin-bottom:4px}
-.eitem p{color:#666;font-size:.9rem;line-height:1.7}
+.eitem p{color:#a1a1aa;font-size:0.9rem;line-height:1.7}
 
-/* Contact - Dark */
-.contact{padding:120px 0;background:#1a1a1a;color:#f5f2ed}
-.contact .inner{max-width:1200px;margin:0 auto;padding:0 60px}
-.contact h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
+/* Contact */
+.contact{padding:120px 0;background:#111113}
+.contact-inner{max-width:1200px;margin:0 auto;padding:0 48px}
+.contact h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
 .clinks{display:flex;flex-direction:column;max-width:500px}
-.clink{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#f5f2ed;transition:all .3s;font-size:.9rem;font-weight:500}
-.clink:hover{padding-left:12px;color:#2563eb}
-.clink .arr{color:rgba(255,255,255,0.3);transition:transform .3s}
+.clink{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fafafa;transition:all .3s;font-size:0.9rem;font-weight:500}
+.clink:hover{padding-left:12px;color:#3b82f6}
+.clink .arr{color:#52525b;transition:transform .3s}
 .clink:hover .arr{transform:translateX(6px)}
 
 /* Footer */
-.f{padding:32px 60px;border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-between;font-size:.72rem;color:#999}
+.f{padding:32px 48px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:0.72rem;color:#52525b}
 
 /* Reveal */
 .rv{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.4,0,.2,1)}.rv.on{opacity:1;transform:none}
 
-@media(max-width:768px){.sec{padding:0 20px}.hero{grid-template-columns:1fr}.hero-left{padding:80px 20px 40px}.hero-right{height:50vh}.about .inner,.work .inner,.skills .inner,.exp .inner,.contact .inner{padding:0 20px}.wcard{grid-template-columns:1fr;gap:24px}.wcard:nth-child(even){direction:ltr}.sgrid{grid-template-columns:1fr 1fr}.eitem{grid-template-columns:1fr;gap:8px}.h{padding:16px 20px}.h nav{gap:16px}.sec{padding:80px 0}.f{padding:24px 20px}.c{display:none}body{cursor:auto}}
+@media(max-width:768px){.page{padding:0 20px}.hero{padding:0 20px}.about-inner,.wcard{grid-template-columns:1fr;gap:24px}.wcard:nth-child(even){direction:ltr}.sgrid{grid-template-columns:1fr 1fr}.eitem{grid-template-columns:1fr;gap:8px}.h{padding:0 20px}.sec{padding:60px 0}.f{padding:24px 20px}.c{display:none}body{cursor:auto}}
 </style>
 </head>
 <body>
 <div class="c" id="cur"></div>
-<div class="g"></div>
 
 <header class="h">
 <div class="h-name">Swastik Mishra</div>
 <nav><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#exp">Experience</a><a href="#contact">Contact</a></nav>
 </header>
 
-<section class="sec hero">
-<div class="hero-left">
+<section class="hero">
+<div class="page" style="display:flex;align-items:center;min-height:100vh">
+<div class="hero-inner">
 <div class="hero-tag">Systems Architect · AI · Quantitative Finance</div>
-<h1>Building<br>systems that<br><em>think.</em></h1>
+<h1>Building<br>systems that<br><span class="grad">think.</span></h1>
 <p class="hero-sub">Physics honours student at Azim Premji University (9.0 CGPA). Building AI automation pipelines, FastAPI backends, and quantitative finance systems. Running NEXUS AI — autonomous business targeting $1M ARR.</p>
 <a href="#work" class="hero-btn">View Selected Work →</a>
 <div class="hero-stats">
@@ -131,13 +131,14 @@ body{background:#f5f2ed;color:#1a1a1a;font-family:'DM Sans',sans-serif;overflow-
 <div><div class="n">$1M</div><div class="l">Revenue Target</div></div>
 </div>
 </div>
-<div class="hero-right"><img src="photo.jpg" alt="Swastik Mishra"></div>
+</div>
 </section>
 
-<section class="sec about" id="about">
-<div class="inner">
-<div>
-<div class="about-tag">About</div>
+<section class="about" id="about">
+<div class="about-inner page">
+<div class="about-photo"><img src="photo.jpg" alt="Swastik Mishra"></div>
+<div class="about-content">
+<div class="about-tag" style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">About</div>
 <h2>Physics meets AI meets business</h2>
 <p>Physics honours student maintaining a <strong>9.0 CGPA</strong> at Azim Premji University, combining rigorous quantitative training with hands-on software engineering.</p>
 <p>I build AI automation pipelines, FastAPI backends, and payment-integrated web platforms for international clients. My work spans from <strong>Black-Scholes derivatives pricing</strong> to building self-running AI business empires.</p>
@@ -149,57 +150,46 @@ body{background:#f5f2ed;color:#1a1a1a;font-family:'DM Sans',sans-serif;overflow-
 <span class="tag">Quantitative Finance</span>
 <span class="tag">Climate Economics</span>
 </div>
+<div style="margin-top:24px">
+<div class="ach"><h4>NEXUS AI — $1M ARR Target</h4><p>12+ SaaS products, autonomous revenue generation.</p></div>
+<div class="ach"><h4>Research with Prof. KC Adaina</h4><p>Environmental economics collaboration.</p></div>
+<div class="ach"><h4>Climate Economics Paper</h4><p>Himalayan glacial retreat study.</p></div>
+<div class="ach"><h4>Quantitative Finance</h4><p>Black-Scholes, GARCH, portfolio optimization.</p></div>
 </div>
-<div>
-<div class="ach"><h4>NEXUS AI — $1M ARR Target</h4><p>12+ SaaS products, autonomous revenue generation, enterprise solutions.</p></div>
-<div class="ach"><h4>Research with Prof. KC Adaina</h4><p>Environmental economics collaboration at Azim Premji University.</p></div>
-<div class="ach"><h4>Climate Economics Paper</h4><p>Himalayan glacial retreat study — combining physics with economics.</p></div>
-<div class="ach"><h4>LaTeX/TikZ Documentation</h4><p>PHY-203 wave optics, Fourier optics, polarization documentation.</p></div>
-<div class="ach"><h4>Quantitative Finance</h4><p>Black-Scholes pricing, GARCH volatility modelling, portfolio optimization.</p></div>
 </div>
 </div>
 </section>
 
-<section class="sec work" id="work">
-<div class="inner">
-<div class="about-tag">Selected Work</div>
+<section class="work" id="work">
+<div class="work-inner">
+<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Selected Work</div>
 <h2>Things I've built</h2>
 
-<div class="wcard rv">
-<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">$499/mo</div><div style="font-size:.65rem;color:#888">Revenue</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">12</div><div style="font-size:.65rem;color:#888">Clients</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">1,247</div><div style="font-size:.65rem;color:#888">Leads</div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>NEXUS AI</h3><p>Autonomous AI business with 12+ SaaS products. Automated lead generation, AI content creation.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">$499/mo</div><div style="font-size:0.65rem;color:#888">Revenue</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">12</div><div style="font-size:0.65rem;color:#888">Clients</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">1,247</div><div style="font-size:0.65rem;color:#888">Leads</div></div></div></div></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>NEXUS AI</h3><p>Autonomous AI business with 12+ SaaS products. Automated lead generation.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="wcard rv">
-<div class="wvis" style="background:linear-gradient(135deg,#064e3b,#065f46);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">SOURCES</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>CoinGecko ✓</div><div>FDA Data ✓</div><div>FRED API ✓</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">STATUS</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>Uptime 99.9%</div><div>Requests 12.4K</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">STACK</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>Ollama</div><div>FastAPI</div><div>Python</div></div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>MiMo / Hermes</h3><p>Ollama-based system with scrapers for CoinGecko, FDA, and FRED data. FastAPI endpoints.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#064e3b,#065f46);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:0.6rem;color:#888">SOURCES</div><div style="font-size:0.8rem;line-height:1.8;color:#ccc"><div>CoinGecko ✓</div><div>FDA Data ✓</div><div>FRED API ✓</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:0.6rem;color:#888">STATUS</div><div style="font-size:0.8rem;line-height:1.8;color:#ccc"><div>Uptime 99.9%</div><div>Requests 12.4K</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:0.6rem;color:#888">STACK</div><div style="font-size:0.8rem;line-height:1.8;color:#ccc"><div>Ollama</div><div>FastAPI</div><div>Python</div></div></div></div></div></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>MiMo / Hermes</h3><p>Ollama-based system with scrapers for CoinGecko, FDA, and FRED data.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="wcard rv">
-<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#581c87);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%"><div style="background:rgba(0,0,0,0.4);border-radius:8px;padding:16px;font-family:'DM Mono',monospace;font-size:.68rem;color:#22c55e;line-height:1.8"><div style="color:#888">def black_scholes(S, K, T, r, sigma):</div><div>&nbsp;&nbsp;d1 = (log(S/K) + (r + σ²/2)*T) / (σ * sqrt(T))</div><div>&nbsp;&nbsp;d2 = d1 - σ * sqrt(T)</div><div style="margin-top:6px">&nbsp;&nbsp;return S*N(d1) - K*e^(-rT)*N(d2)</div><div style="margin-top:10px;color:#888"># Portfolio optimization</div><div>&nbsp;&nbsp;sharpe = returns / volatility</div><div style="color:#22c55e">Sharpe: 1.42 | CAGR: 18.7%</div></div></div></div></div>
+<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#581c87);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%"><div style="background:rgba(0,0,0,0.4);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#22c55e;line-height:1.8"><div style="color:#888">def black_scholes(S, K, T, r, sigma):</div><div>&nbsp;&nbsp;d1 = (log(S/K) + (r + σ²/2)*T) / (σ * sqrt(T))</div><div>&nbsp;&nbsp;d2 = d1 - σ * sqrt(T)</div><div style="margin-top:6px">&nbsp;&nbsp;return S*N(d1) - K*e^(-rT)*N(d2)</div><div style="margin-top:10px;color:#888"># Portfolio optimization</div><div>&nbsp;&nbsp;sharpe = returns / volatility</div><div style="color:#22c55e">Sharpe: 1.42 | CAGR: 18.7%</div></div></div></div></div>
 <div class="winfo"><div class="yr">2025 — Present</div><h3>Quantitative Finance Toolkit</h3><p>Brownian motion simulator, NIFTY drawdown analysis, portfolio-optimization models.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="wcard rv">
-<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%;display:flex;flex-direction:column"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><span style="font-size:.8rem;font-weight:600;color:#fff">India GDP vs Inflation</span><span style="font-size:.65rem;color:#888">INTERACTIVE</span></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:.65rem;color:#888;width:36px">2024</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:72%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:.7rem;font-weight:600;width:36px;text-align:right">7.2%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:.65rem;color:#888;width:36px">2023</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:78%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:.7rem;font-weight:600;width:36px;text-align:right">7.8%</span></div><div style="display:flex;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)"><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">$3.7T</div><div style="font-size:.55rem;color:#888">GDP</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">5th</div><div style="font-size:.55rem;color:#888">Rank</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">1.4B</div><div style="font-size:.55rem;color:#888">People</div></div></div></div></div></div>
+<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%;display:flex;flex-direction:column"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><span style="font-size:0.8rem;font-weight:600;color:#fff">India GDP vs Inflation</span><span style="font-size:0.65rem;color:#888">INTERACTIVE</span></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:0.65rem;color:#888;width:36px">2024</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:72%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:0.7rem;font-weight:600;width:36px;text-align:right">7.2%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:0.65rem;color:#888;width:36px">2023</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:78%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:0.7rem;font-weight:600;width:36px;text-align:right">7.8%</span></div><div style="display:flex;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)"><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">$3.7T</div><div style="font-size:0.55rem;color:#888">GDP</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">5th</div><div style="font-size:0.55rem;color:#888">Rank</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">1.4B</div><div style="font-size:0.55rem;color:#888">People</div></div></div></div></div></div>
 <div class="winfo"><div class="yr">2025 — Present</div><h3>IndiaEcon Intelligence</h3><p>Interactive economics platform translating macroeconomic data into visual exploration.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="wcard rv" style="border-bottom:none">
-<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%;display:flex;flex-direction:column;justify-content:space-between;height:100%"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:.8rem;font-weight:600;color:#fff">Palo Alto Central Dental</span><span style="font-size:.65rem;color:#22c55e">PRODUCTION</span></div><div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:20px;color:#fff"><div style="font-size:.6rem;color:#888">NEXT APPOINTMENT</div><div style="font-size:1rem;font-weight:600;margin:8px 0">Dr. Smith — Cleaning</div><div style="display:flex;gap:12px;font-size:.7rem;color:#888;margin-bottom:16px"><span>Jul 15</span><span>10:30 AM</span><span>Room 4</span></div><div style="display:flex;gap:8px"><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">$12.4K</div><div style="font-size:.55rem;color:#888">Revenue</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">342</div><div style="font-size:.55rem;color:#888">Patients</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">98%</div><div style="font-size:.55rem;color:#888">Satisfaction</div></div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>Client Demo — Palo Alto Central Dental</h3><p>Live production demo site for booking flows and payment integration.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<div class="wcard rv" style="border-bottom:none"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%;display:flex;flex-direction:column;justify-content:space-between;height:100%"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:0.8rem;font-weight:600;color:#fff">Palo Alto Central Dental</span><span style="font-size:0.65rem;color:#22c55e">PRODUCTION</span></div><div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:20px;color:#fff"><div style="font-size:0.6rem;color:#888">NEXT APPOINTMENT</div><div style="font-size:1rem;font-weight:600;margin:8px 0">Dr. Smith — Cleaning</div><div style="display:flex;gap:12px;font-size:0.7rem;color:#888;margin-bottom:16px"><span>Jul 15</span><span>10:30 AM</span><span>Room 4</span></div><div style="display:flex;gap:8px"><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">$12.4K</div><div style="font-size:0.55rem;color:#888">Revenue</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">342</div><div style="font-size:0.55rem;color:#888">Patients</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">98%</div><div style="font-size:0.55rem;color:#888">Satisfaction</div></div></div></div></div></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>Client Demo — Palo Alto Central Dental</h3><p>Live production demo for booking flows and payment integration.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 </div>
 </section>
 
-<section class="sec skills" id="skills">
-<div class="inner">
-<div class="about-tag" style="color:#2563eb">Technical Arsenal</div>
+<section class="skills" id="skills">
+<div class="skills-inner">
+<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Technical Arsenal</div>
 <h2>Tools & technologies</h2>
 <div class="sgrid">
 <div class="sitem"><h4>Python</h4><div class="lv">Expert</div></div>
@@ -214,20 +204,20 @@ body{background:#f5f2ed;color:#1a1a1a;font-family:'DM Sans',sans-serif;overflow-
 </div>
 </section>
 
-<section class="sec exp" id="exp">
-<div class="inner">
-<div class="about-tag">Experience</div>
+<section class="exp" id="exp">
+<div class="exp-inner">
+<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Experience</div>
 <h2>Where I've been</h2>
-<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Founder, NEXUS AI</h4><p>Autonomous AI business with 12+ SaaS products. Full-stack development, AI pipelines.</p></div></div>
-<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>AI Systems Builder</h4><p>AI automation pipelines, FastAPI backends, payment-integrated platforms.</p></div></div>
-<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Quantitative Finance Researcher</h4><p>Derivatives pricing, volatility modelling, portfolio optimization.</p></div></div>
-<div class="eitem rv"><div class="edate">2024 — Present</div><div><h4>B.Sc. Physics, Azim Premji University</h4><p>9.0 CGPA. Research with Prof. KC Adaina. Climate economics paper.</p></div></div>
+<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Founder, NEXUS AI</h4><p>Autonomous AI business with 12+ SaaS products.</p></div></div>
+<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>AI Systems Builder</h4><p>AI automation pipelines, FastAPI backends.</p></div></div>
+<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Quantitative Finance Researcher</h4><p>Derivatives pricing, volatility modelling.</p></div></div>
+<div class="eitem rv"><div class="edate">2024 — Present</div><div><h4>B.Sc. Physics, Azim Premji University</h4><p>9.0 CGPA. Research with Prof. KC Adaina.</p></div></div>
 </div>
 </section>
 
-<section class="sec contact" id="contact">
-<div class="inner">
-<div class="about-tag" style="color:#2563eb">Contact</div>
+<section class="contact" id="contact">
+<div class="contact-inner">
+<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Contact</div>
 <h2>Let's work together</h2>
 <div class="clinks">
 <a href="mailto:swastikmishra3558@gmail.com" class="clink"><span>Email</span><span class="arr">→</span></a>
