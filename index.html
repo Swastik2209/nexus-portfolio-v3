@@ -715,8 +715,8 @@ let pendMode=0;
 function pendReset(){
 const presets=[
 {a1:Math.PI*0.3,a2:Math.PI*0.25,v1:0,v2:0,label:'Oscillation',desc:'Periodic motion'},
-{a1:Math.PI*0.75,a2:Math.PI*0.4,v1:0.5,v2:0.3,label:'Chaos',desc:'Sensitive dependence'},
-{a1:Math.PI,a2:Math.PI,v1:6.0,v2:4.0,label:'Full Rotation',desc:'Both arms rotating'},
+{a1:Math.PI*0.8,a2:Math.PI*0.2,v1:0.8,v2:0.5,label:'Chaos',desc:'Sensitive dependence'},
+{a1:Math.PI,a2:Math.PI,v1:9.0,v2:7.0,label:'Full Rotation',desc:'Both arms rotating'},
 ];
 const p=presets[pendMode];
 if(window._pend){
@@ -1196,7 +1196,7 @@ requestAnimationFrame(draw);
 draw();
 })();
 
-// ===================== ORBITAL MECHANICS — N-BODY GRAVITY =====================
+// ===================== ORBITAL MECHANICS — KEPLERIAN ELLIPSES =====================
 (function(){
 const canvas=document.getElementById('orbital-canvas');
 if(!canvas)return;
@@ -1204,69 +1204,93 @@ const ctx=canvas.getContext('2d');
 let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
 resize();window.addEventListener('resize',resize);
 
-const G=2000;
-const bodies=[
-{x:0,y:0,vx:0,vy:0,mass:500,r:5,color:'#fff',trail:[],fixed:true},
-{x:120,y:0,vx:0,vy:3.2,mass:1,r:3,color:'rgba(99,102,241,0.9)',trail:[]},
-{x:-80,y:60,vx:-1.5,vy:-2.8,mass:0.5,r:2.5,color:'rgba(244,114,182,0.9)',trail:[]},
-{x:0,y:-160,vx:2.0,vy:0,mass:2,r:3.5,color:'rgba(52,211,153,0.85)',trail:[]},
+const GM=1e4;
+const star={x:0,y:0,mass:1};
+
+function makePlanet(a,e,color,radius){
+const periR=a*(1-e),apoR=a*(1+e);
+const periV=Math.sqrt(GM*(1+e)/(a*(1-e)));
+return{x:periR,y:0,vx:0,vy:periV,radius,color,trail:[],maxTrail:250};
+}
+
+const planets=[
+makePlanet(90,0.3,'rgba(99,102,241,0.9)',3),
+makePlanet(60,0.55,'rgba(244,114,182,0.9)',2.5),
+makePlanet(140,0.15,'rgba(52,211,153,0.85)',3.5),
 ];
 
 function draw(){
 const cx=W/2,cy=H/2;
 ctx.fillStyle='rgba(10,10,14,0.3)';ctx.fillRect(0,0,W,H);
 
-// Gravity + Verlet integration
-for(let i=1;i<bodies.length;i++){
-const b=bodies[i];
-let ax=0,ay=0;
-for(let j=0;j<bodies.length;j++){
-if(i===j)continue;
-const dx=bodies[j].x-b.x,dy=bodies[j].y-b.y;
-const dist=Math.sqrt(dx*dx+dy*dy)+5;
-const force=G*bodies[j].mass/(dist*dist);
-ax+=force*dx/dist;
-ay+=force*dy/dist;
+// Draw orbit prediction (ellipse) for each planet
+planets.forEach(p=>{
+const a=(p.maxTrail+Math.sqrt(p.x*p.x+p.y*p.y))/2;
+const energy=0.5*(p.vx*p.vx+p.vy*p.vy)-GM/Math.sqrt(p.x*p.x+p.y*p.y);
+const sma=-GM/(2*energy);
+if(sma>0){
+const r=Math.sqrt(p.x*p.x+p.y*p.y);
+const vx2=p.vx*p.vx+p.vy*p.vy;
+const ex=(vx2/GM-1/r)*p.x-(p.x*p.vx+p.y*p.vy)/GM*p.vx;
+const ey=(vx2/GM-1/r)*p.y-(p.x*p.vx+p.y*p.vy)/GM*p.vy;
+const ecc=Math.sqrt(ex*ex+ey*ey);
+if(ecc<1){
+const b=sma*Math.sqrt(1-ecc*ecc);
+const ang=Math.atan2(ey,ex);
+ctx.save();ctx.translate(cx,cy);ctx.rotate(ang);
+ctx.beginPath();ctx.ellipse(ex*cx/ecc||0,0,sma,b,0,0,Math.PI*2);
+ctx.restore();
+ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.8;ctx.stroke();
 }
-b.vx+=ax*0.016;b.vy+=ay*0.016;
-b.x+=b.vx*0.016;b.y+=b.vy*0.016;
 }
+});
 
-// Draw orbits (trace paths)
-bodies.forEach((b,i)=>{
-if(i===0)return;
-b.trail.push({x:b.x,y:b.y});
-if(b.trail.length>200)b.trail.shift();
+// Gravitational integration (leapfrog)
+planets.forEach(p=>{
+const dx=p.x,dy=p.y;
+const r2=dx*dx+dy*dy;
+const r=Math.sqrt(r2)+3;
+const ax=-GM*dx/(r2*r);
+const ay=-GM*dy/(r2*r);
+p.vx+=ax*0.016;p.vy+=ay*0.016;
+p.x+=p.vx*0.016;p.y+=p.vy*0.016;
+});
 
+// Central star glow
+const sg=ctx.createRadialGradient(cx,cy,0,cx,cy,28);
+sg.addColorStop(0,'rgba(255,255,255,0.85)');
+sg.addColorStop(0.3,'rgba(99,102,241,0.25)');
+sg.addColorStop(1,'rgba(99,102,241,0)');
+ctx.fillStyle=sg;ctx.fillRect(cx-28,cy-28,56,56);
+ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+
+// Planets + trails
+planets.forEach(p=>{
+p.trail.push({x:p.x,y:p.y});
+if(p.trail.length>p.maxTrail)p.trail.shift();
+
+// Trail
+for(let i=1;i<p.trail.length;i++){
+const t=i/p.trail.length;
 ctx.beginPath();
-b.trail.forEach((p,j)=>{
-const a=j/b.trail.length;
-ctx.strokeStyle=b.color.replace(/[\d.]+\)$/,a*0.5+')');
-ctx.lineWidth=1;
-if(j===0)ctx.moveTo(cx+p.x,cy+p.y);else ctx.lineTo(cx+p.x,cy+p.y);
-});
-ctx.stroke();
-});
+ctx.moveTo(cx+p.trail[i-1].x,cy+p.trail[i-1].y);
+ctx.lineTo(cx+p.trail[i].x,cy+p.trail[i].y);
+ctx.strokeStyle=p.color.replace(/[\d.]+\)$/,t*0.6+')');
+ctx.lineWidth=1.2;ctx.stroke();
+}
 
-// Central star
-const star=bodies[0];
-const sg=ctx.createRadialGradient(cx+star.x,cy+star.y,0,cx+star.x,cy+star.y,22);
-sg.addColorStop(0,'rgba(250,250,250,0.9)');sg.addColorStop(0.4,'rgba(99,102,241,0.3)');sg.addColorStop(1,'rgba(99,102,241,0)');
-ctx.fillStyle=sg;ctx.fillRect(cx+star.x-22,cy+star.y-22,44,44);
-ctx.beginPath();ctx.arc(cx+star.x,cy+star.y,5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+// Planet body
+const px=cx+p.x,py=cy+p.y;
+ctx.beginPath();ctx.arc(px,py,p.radius,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();
 
-// Planets
-bodies.forEach((b,i)=>{
-if(i===0)return;
-const px=cx+b.x,py=cy+b.y;
-ctx.beginPath();ctx.arc(px,py,b.r,0,Math.PI*2);ctx.fillStyle=b.color;ctx.fill();
-const pg=ctx.createRadialGradient(px,py,0,px,py,b.r*4);
-pg.addColorStop(0,b.color.replace(/[\d.]+\)$/,'0.25)'));pg.addColorStop(1,'rgba(0,0,0,0)');
-ctx.fillStyle=pg;ctx.fillRect(px-b.r*4,py-b.r*4,b.r*8,b.r*8);
+// Planet glow
+const pg=ctx.createRadialGradient(px,py,0,px,py,p.radius*4);
+pg.addColorStop(0,p.color.replace(/[\d.]+\)$/,'0.3)'));pg.addColorStop(1,'rgba(0,0,0,0)');
+ctx.fillStyle=pg;ctx.beginPath();ctx.arc(px,py,p.radius*4,0,Math.PI*2);ctx.fill();
 });
 
 ctx.font='10px JetBrains Mono, monospace';ctx.fillStyle='rgba(148,163,184,0.6)';
-ctx.fillText('N-body gravitational dynamics',8,16);
+ctx.fillText('Keplerian orbital dynamics  e\u2081=0.3  e\u2082=0.55  e\u2083=0.15',8,16);
 
 requestAnimationFrame(draw);
 }
