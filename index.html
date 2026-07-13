@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Swastik Mishra — Systems Architect</title>
+<meta name="description" content="Physics student building AI systems. Quantitative finance, autonomous agents, computational physics. Open to research collaborations and engineering roles.">
+<meta name="theme-color" content="#050508">
+<meta property="og:title" content="Swastik Mishra — Systems Architect">
+<meta property="og:description" content="Physics student. AI engineer. Quantitative researcher. Building autonomous systems that bridge mathematics, computation, and intelligence.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://swastik2209.github.io/nexus-portfolio-v3/photo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -29,6 +37,9 @@ body{background:#050508;color:#e4e4e7;font-family:'Space Grotesk',sans-serif;ove
 .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:#818cf8;transition:width .3s}
 .nav-links a:hover::after{width:100%}
 
+/* Progress bar */
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#6366f1,#8b5cf6);z-index:99;transform-origin:left;transform:scaleX(0);will-change:transform}
+
 /* Section label */
 .label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#6366f1;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .label::before{content:'';width:24px;height:1px;background:#6366f1}
@@ -51,6 +62,12 @@ body{background:#050508;color:#e4e4e7;font-family:'Space Grotesk',sans-serif;ove
 .hero-metrics{display:flex;gap:48px;margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06)}
 .metric .val{font-size:1.8rem;font-weight:700;color:#fafafa;letter-spacing:-0.02em}
 .metric .desc{font-size:0.6rem;color:#52525b;margin-top:2px;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;text-transform:uppercase}
+
+/* Text reveal animation */
+.text-reveal{overflow:hidden}
+.text-reveal span{display:inline-block;transform:translateY(100%);opacity:0}
+.text-reveal.active span{animation:textReveal 0.8s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes textReveal{to{transform:translateY(0);opacity:1}}
 
 /* Section wrapper */
 section{position:relative;z-index:1;padding:140px 48px}
@@ -91,6 +108,28 @@ section .sub{font-size:1rem;color:#71717a;max-width:500px;line-height:1.7;margin
 .work-text .link{font-size:0.75rem;color:#818cf8;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .3s}
 .work-text .link:hover{gap:10px}
 
+/* Case Study Detail */
+.cs-meta{display:flex;gap:24px;margin:16px 0;padding:16px 0;border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04)}
+.cs-meta-item{font-size:0.7rem;color:#71717a}
+.cs-meta-item strong{color:#e4e4e7;display:block;margin-bottom:2px}
+.cs-challenge{margin-top:20px;padding:16px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.1);border-radius:8px}
+.cs-challenge h5{font-size:0.7rem;color:#818cf8;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em}
+.cs-challenge p{font-size:0.8rem;color:#a1a1aa;line-height:1.6}
+
+/* Products Section */
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.product-card{background:#0a0a0d;border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:28px;transition:all .3s;position:relative;overflow:hidden}
+.product-card:hover{background:rgba(99,102,241,0.04);border-color:rgba(99,102,241,0.2);transform:translateY(-4px)}
+.product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
+.product-card:hover::before{opacity:1}
+.product-icon{font-size:1.5rem;margin-bottom:12px;opacity:0.8}
+.product-card h4{font-size:0.95rem;font-weight:600;color:#fafafa;margin-bottom:6px}
+.product-card p{font-size:0.75rem;color:#71717a;line-height:1.6;margin-bottom:16px}
+.product-meta{display:flex;gap:12px;font-size:0.6rem;color:#52525b;font-family:'JetBrains Mono',monospace}
+.product-meta span{padding:2px 8px;background:rgba(255,255,255,0.04);border-radius:4px}
+.product-link{font-size:0.7rem;color:#818cf8;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:4px;margin-top:12px;transition:gap .3s}
+.product-link:hover{gap:8px}
+
 /* Lab / Experiments */
 .lab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.04)}
 .lab-item{background:#0a0a0d;padding:32px;transition:background .3s;position:relative;overflow:hidden;cursor:pointer}
@@ -108,6 +147,20 @@ canvas{border-radius:8px;background:rgba(0,0,0,0.3)}
 .writing-item:hover{padding-left:12px}
 .writing-item .title{font-size:0.9rem;font-weight:500;color:#e4e4e7}
 .writing-item .meta{font-size:0.65rem;color:#52525b;font-family:'JetBrains Mono',monospace}
+
+/* Products */
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.product-card{background:#0a0a0d;border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:28px;transition:all .3s;position:relative;overflow:hidden}
+.product-card:hover{background:rgba(99,102,241,0.04);border-color:rgba(99,102,241,0.15);transform:translateY(-4px)}
+.product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
+.product-card:hover::before{opacity:1}
+.product-icon{font-size:1.5rem;color:#818cf8;margin-bottom:12px}
+.product-card h4{font-size:0.95rem;font-weight:600;color:#fafafa;margin-bottom:8px}
+.product-card p{font-size:0.75rem;color:#71717a;line-height:1.6;margin-bottom:16px}
+.product-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.product-meta span{padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:4px;font-size:0.55rem;color:#52525b;font-family:'JetBrains Mono',monospace}
+.product-link{font-size:0.7rem;color:#818cf8;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .3s}
+.product-link:hover{gap:10px}
 
 /* Contact */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
@@ -129,19 +182,20 @@ canvas{border-radius:8px;background:rgba(0,0,0,0.3)}
 @media(max-width:900px){
 .nav{padding:16px 24px}.nav-links{gap:20px}
 section{padding:80px 24px}
-.about-grid,.work-item,.work-item:nth-child(even),.contact-grid{grid-template-columns:1fr}
+.about-grid,.work-item,.work-item:nth-child(even),.contact-grid,.products-grid{grid-template-columns:1fr}
 .work-item:nth-child(even) .work-visual{order:0}
 .lab-grid{grid-template-columns:1fr 1fr}
 .hero{padding:0 24px}
 .hero h1{font-size:clamp(2rem,8vw,3.5rem)}
 .cursor{display:none}body{cursor:auto}
 }
-@media(max-width:600px){.lab-grid{grid-template-columns:1fr}.hero-metrics{flex-direction:column;gap:20px}}
+@media(max-width:600px){.lab-grid{grid-template-columns:1fr}.hero-metrics{flex-direction:column;gap:20px}.products-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <div class="cursor" id="cur"></div>
+<div class="progress-bar" id="progress"></div>
 <canvas id="three-bg"></canvas>
 
 <nav class="nav">
@@ -150,6 +204,7 @@ section{padding:80px 24px}
 <a href="#about">About</a>
 <a href="#work">Work</a>
 <a href="#lab">Lab</a>
+<a href="#products">Products</a>
 <a href="#writing">Writing</a>
 <a href="#contact">Contact</a>
 </div>
@@ -294,6 +349,58 @@ I build systems<br>
 </div>
 </section>
 
+<section id="products" style="background:#08080b">
+<div class="section-inner">
+<div class="label">Products</div>
+<h2>Systems <span>in production</span></h2>
+<p class="sub">12+ SaaS products. Live. Revenue-generating. Autonomous.</p>
+<div class="products-grid">
+<div class="product-card reveal">
+<div class="product-icon">🤖</div>
+<h4>LeadPilot</h4>
+<p>AI lead generation with free SMS, email outreach, and Hermes consensus AI. 1,247 leads generated.</p>
+<div class="product-meta"><span>FastAPI</span><span>PostgreSQL</span><span>Twilio</span><span>SendGrid</span></div>
+<a href="https://leadpilot-gop3.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">🎨</div>
+<h4>NEXUS Image Gen</h4>
+<p>Multi-model AI image generation with Stable Diffusion, DALL-E 3, and custom fine-tunes.</p>
+<div class="product-meta"><span>Python</span><span>Replicate</span><span>Vercel</span><span>Razorpay</span></div>
+<a href="https://nexus-image-gen-two.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">📱</div>
+<h4>Social Post AI</h4>
+<p>Automated social media content generation with scheduling, analytics, and multi-platform publishing.</p>
+<div class="product-meta"><span>FastAPI</span><span>Telegram Bot</span><span>OpenAI</span><span>PostgreSQL</span></div>
+<a href="https://nexus-social-post.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">🎯</div>
+<h4>AI Headshots</h4>
+<p>Professional AI headshot generator with style transfer, background replacement, and batch processing.</p>
+<div class="product-meta"><span>Stable Diffusion</span><span>ControlNet</span><span>FastAPI</span><span>Stripe</span></div>
+<a href="https://nexus-headshots.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">📊</div>
+<h4>NEXUS Store</h4>
+<p>E-commerce platform for AI products with subscription management, affiliate system, and analytics.</p>
+<div class="product-meta"><span>Next.js</span><span>Supabase</span><span>Razorpay</span><span>Tailwind</span></div>
+<a href="https://swastik2209.github.io/nexus-store" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">🤝</div>
+<h4>Telegram Marketing Bot</h4>
+<p>Automated Telegram marketing with broadcast, segmentation, analytics, and payment integration.</p>
+<div class="product-meta"><span>Python</span><span>Telethon</span><span>PostgreSQL</span><span>Async</span></div>
+<a href="https://t.me/AutoMarketing2209Bot" class="product-link" target="_blank">Live →</a>
+</div>
+</div>
+</div>
+</section>
+
 <section id="writing" style="background:#08080b">
 <div class="section-inner">
 <div class="label">Writing</div>
@@ -304,6 +411,58 @@ I build systems<br>
 <div class="writing-item reveal"><div class="title">The Physics of Finance: From Brownian Motion to Black-Scholes</div><div class="meta">2025 — Research</div></div>
 <div class="writing-item reveal"><div class="title">Climate Economics: What Glacial Retreat Tells Us About GDP</div><div class="meta">2025 — Research</div></div>
 <div class="writing-item reveal"><div class="title">Why Every Physics Student Should Learn to Code</div><div class="meta">2025 — Ideas</div></div>
+</div>
+</div>
+</section>
+
+<section id="products">
+<div class="section-inner">
+<div class="label">Products</div>
+<h2>Systems <span>in production</span></h2>
+<p class="sub">Real SaaS products running in production. Built solo. Generating revenue.</p>
+<div class="products-grid">
+<div class="product-card reveal">
+<div class="product-icon">◈</div>
+<h4>LeadPilot</h4>
+<p>AI-powered lead generation with SMS, email, and WhatsApp outreach. Multi-channel automation for B2B sales.</p>
+<div class="product-meta"><span>FastAPI</span><span>Twilio</span><span>Render</span></div>
+<a href="https://leadpilot-gop3.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">◆</div>
+<h4>NEXUS Image Gen</h4>
+<p>AI image generation API with multiple model support. Production-ready with payment integration.</p>
+<div class="product-meta"><span>Next.js</span><span>Stripe</span><span>Vercel</span></div>
+<a href="https://nexus-image-gen-two.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">◇</div>
+<h4>Social Post Generator</h4>
+<p>AI-powered social media content automation. Generates, schedules, and posts across platforms.</p>
+<div class="product-meta"><span>Python</span><span>Telegram</span><span>APIs</span></div>
+<a href="https://nexus-social-post.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">◆</div>
+<h4>Headshots AI</h4>
+<p>Professional AI headshot generation. Studio-quality photos from selfies in minutes.</p>
+<div class="product-meta"><span>Diffusion</span><span>GPU</span><span>Vercel</span></div>
+<a href="https://nexus-headshots.vercel.app" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">◇</div>
+<h4>NEXUS Store</h4>
+<p>Digital product marketplace with Gumroad integration. Automated delivery and analytics.</p>
+<div class="product-meta"><span>GitHub Pages</span><span>JS</span><span>Free</span></div>
+<a href="https://swastik2209.github.io/nexus-store" class="product-link" target="_blank">Live →</a>
+</div>
+<div class="product-card reveal">
+<div class="product-icon">◆</div>
+<h4>Telegram Bot</h4>
+<p>@AutoMarketing2209Bot — Automated marketing workflows. Lead capture, nurture sequences, analytics.</p>
+<div class="product-meta"><span>Telethon</span><span>Python</span><span>24/7</span></div>
+<a href="https://t.me/AutoMarketing2209Bot" class="product-link" target="_blank">Open Bot →</a>
+</div>
 </div>
 </div>
 </section>
@@ -727,6 +886,14 @@ ScrollTrigger.create({
 start:'top -80',
 onEnter:()=>document.querySelector('.nav').style.background='rgba(5,5,8,0.92)',
 onLeaveBack:()=>document.querySelector('.nav').style.background='rgba(5,5,8,0.6)'
+});
+
+// Progress bar
+ScrollTrigger.create({
+trigger:document.body,
+start:'top top',
+end:'bottom bottom',
+onUpdate:self=>{document.getElementById('progress').style.transform=`scaleX(${self.progress})`;},
 });
 })();
 
