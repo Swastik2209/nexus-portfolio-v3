@@ -10,6 +10,9 @@
 <meta property="og:description" content="Physics student. AI engineer. Quantitative researcher. Building autonomous systems that bridge mathematics, computation, and intelligence.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://swastik2209.github.io/nexus-portfolio-v3/photo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Swastik Mishra — Systems Architect">
+<meta name="twitter:description" content="Physics student building AI systems. Quantitative finance, autonomous agents, computational physics.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -19,12 +22,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}html{scroll-behavior:auto}}
 body{background:#050508;color:#e4e4e7;font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none}
 ::selection{background:#6366f1;color:#fff}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#050508}::-webkit-scrollbar-thumb{background:#27272a;border-radius:3px}
 
 .cursor{position:fixed;width:16px;height:16px;border:1.5px solid #818cf8;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .3s,height .3s}
 .cursor.hover{width:56px;height:56px;border-color:#c7d2fe}
+
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#6366f1,#8b5cf6);z-index:99;transform-origin:left;transform:scaleX(0);will-change:transform}
 
 #three-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
 
@@ -37,9 +43,6 @@ body{background:#050508;color:#e4e4e7;font-family:'Space Grotesk',sans-serif;ove
 .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:#818cf8;transition:width .3s}
 .nav-links a:hover::after{width:100%}
 
-/* Progress bar */
-.progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#6366f1,#8b5cf6);z-index:99;transform-origin:left;transform:scaleX(0);will-change:transform}
-
 /* Section label */
 .label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#6366f1;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .label::before{content:'';width:24px;height:1px;background:#6366f1}
@@ -50,7 +53,7 @@ body{background:#050508;color:#e4e4e7;font-family:'Space Grotesk',sans-serif;ove
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:100px;font-size:0.65rem;color:#818cf8;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;margin-bottom:24px}
 .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#6366f1;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.hero h1{font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:1;letter-spacing:-0.03em;margin-bottom:20px;color:#fafafa}
+.hero h1{font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.03em;margin-bottom:20px;color:#fafafa}
 .hero h1 .line2{display:block;color:#a1a1aa;font-weight:300}
 .hero h1 em{font-style:normal;background:linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .hero-desc{font-size:1rem;color:#71717a;max-width:480px;line-height:1.8;margin-bottom:32px}
@@ -117,18 +120,18 @@ section .sub{font-size:1rem;color:#71717a;max-width:500px;line-height:1.7;margin
 .cs-challenge p{font-size:0.8rem;color:#a1a1aa;line-height:1.6}
 
 /* Products Section */
-.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .product-card{background:#0a0a0d;border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:28px;transition:all .3s;position:relative;overflow:hidden}
-.product-card:hover{background:rgba(99,102,241,0.04);border-color:rgba(99,102,241,0.2);transform:translateY(-4px)}
+.product-card:hover{background:rgba(99,102,241,0.04);border-color:rgba(99,102,241,0.15);transform:translateY(-4px)}
 .product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
 .product-card:hover::before{opacity:1}
 .product-icon{font-size:1.5rem;margin-bottom:12px;opacity:0.8}
-.product-card h4{font-size:0.95rem;font-weight:600;color:#fafafa;margin-bottom:6px}
+.product-card h4{font-size:0.95rem;font-weight:600;color:#fafafa;margin-bottom:8px}
 .product-card p{font-size:0.75rem;color:#71717a;line-height:1.6;margin-bottom:16px}
-.product-meta{display:flex;gap:12px;font-size:0.6rem;color:#52525b;font-family:'JetBrains Mono',monospace}
-.product-meta span{padding:2px 8px;background:rgba(255,255,255,0.04);border-radius:4px}
-.product-link{font-size:0.7rem;color:#818cf8;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:4px;margin-top:12px;transition:gap .3s}
-.product-link:hover{gap:8px}
+.product-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.product-meta span{padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:4px;font-size:0.55rem;color:#52525b;font-family:'JetBrains Mono',monospace}
+.product-link{font-size:0.7rem;color:#818cf8;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .3s}
+.product-link:hover{gap:10px}
 
 /* Lab / Experiments */
 .lab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.04)}
@@ -143,24 +146,10 @@ canvas{border-radius:8px;background:rgba(0,0,0,0.3)}
 
 /* Writing */
 .writing-list{display:flex;flex-direction:column}
-.writing-item{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:padding .3s}
+.writing-item{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:padding .3s;cursor:pointer}
 .writing-item:hover{padding-left:12px}
 .writing-item .title{font-size:0.9rem;font-weight:500;color:#e4e4e7}
 .writing-item .meta{font-size:0.65rem;color:#52525b;font-family:'JetBrains Mono',monospace}
-
-/* Products */
-.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.product-card{background:#0a0a0d;border:1px solid rgba(255,255,255,0.04);border-radius:12px;padding:28px;transition:all .3s;position:relative;overflow:hidden}
-.product-card:hover{background:rgba(99,102,241,0.04);border-color:rgba(99,102,241,0.15);transform:translateY(-4px)}
-.product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
-.product-card:hover::before{opacity:1}
-.product-icon{font-size:1.5rem;color:#818cf8;margin-bottom:12px}
-.product-card h4{font-size:0.95rem;font-weight:600;color:#fafafa;margin-bottom:8px}
-.product-card p{font-size:0.75rem;color:#71717a;line-height:1.6;margin-bottom:16px}
-.product-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.product-meta span{padding:3px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:4px;font-size:0.55rem;color:#52525b;font-family:'JetBrains Mono',monospace}
-.product-link{font-size:0.7rem;color:#818cf8;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .3s}
-.product-link:hover{gap:10px}
 
 /* Contact */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
@@ -185,11 +174,17 @@ section{padding:80px 24px}
 .about-grid,.work-item,.work-item:nth-child(even),.contact-grid,.products-grid{grid-template-columns:1fr}
 .work-item:nth-child(even) .work-visual{order:0}
 .lab-grid{grid-template-columns:1fr 1fr}
+.products-grid{grid-template-columns:1fr 1fr}
 .hero{padding:0 24px}
 .hero h1{font-size:clamp(2rem,8vw,3.5rem)}
 .cursor{display:none}body{cursor:auto}
 }
-@media(max-width:600px){.lab-grid{grid-template-columns:1fr}.hero-metrics{flex-direction:column;gap:20px}.products-grid{grid-template-columns:1fr}}
+@media(max-width:600px){
+.lab-grid{grid-template-columns:1fr}
+.products-grid{grid-template-columns:1fr}
+.hero-metrics{flex-direction:column;gap:20px}
+.lab-item:first-child{grid-column:span 1}
+}
 </style>
 </head>
 <body>
@@ -213,7 +208,7 @@ section{padding:80px 24px}
 <section class="hero">
 <div class="hero-content">
 <div class="hero-badge"><span class="dot"></span>Open to opportunities</div>
-<h1>
+<h1 class="text-reveal">
 I build systems<br>
 <span class="line2">that <em>think</em></span>
 </h1>
@@ -224,7 +219,7 @@ I build systems<br>
 </div>
 <div class="hero-metrics">
 <div class="metric"><div class="val">9.0</div><div class="desc">CGPA</div></div>
-<div class="metric"><div class="val">5+</div><div class="desc">Systems Built</div></div>
+<div class="metric"><div class="val">6</div><div class="desc">Products Live</div></div>
 <div class="metric"><div class="val">$1M</div><div class="desc">Revenue Target</div></div>
 </div>
 </div>
@@ -271,13 +266,19 @@ I build systems<br>
 <div class="num">01</div>
 <h3>Experimental Methods Lab</h3>
 <p>Designed and executed Torricelli's Theorem experiments — measuring efflux speed, calibrating apparatus, analyzing fluid dynamics in real-time. Physics isn't theory. It's doing.</p>
-<a href="https://github.com/Swastik2209" class="link">View Research →</a>
+<div class="cs-meta">
+<div class="cs-meta-item"><strong>Role</strong>Lead Researcher</div>
+<div class="cs-meta-item"><strong>Tools</strong>Python, R, Lab Equipment</div>
+<div class="cs-meta-item"><strong>Course</strong>PHY-205 Experimental Methods</div>
+</div>
+<div class="cs-challenge"><h5>Challenge</h5><p>Measuring efflux velocity with sub-millisecond precision using smartphone cameras and custom timing circuits. Solved by building a photogate timer with Arduino + laser diode.</p></div>
+<a href="https://github.com/Swastik2209" class="link" target="_blank">View Research →</a>
 </div>
 </div>
 
 <div class="work-item reveal">
 <div class="work-visual">
-<img src="images/pendulum-analysis.png" alt="Double Pendulum">
+<img src="images/pendulum-analysis.png" alt="Double Pendulum Chaos">
 <div class="overlay"></div>
 <div class="tag-row"><span>Chaos Theory</span><span>Simulation</span><span>Python</span></div>
 </div>
@@ -285,13 +286,19 @@ I build systems<br>
 <div class="num">02</div>
 <h3>Double Pendulum Analysis</h3>
 <p>Built a chaos theory visualization — tracking the unpredictable motion of coupled pendulums. Small changes in initial conditions produce wildly different outcomes. That's chaos.</p>
-<a href="https://github.com/Swastik2209" class="link">View Code →</a>
+<div class="cs-meta">
+<div class="cs-meta-item"><strong>Role</strong>Developer & Physicist</div>
+<div class="cs-meta-item"><strong>Stack</strong>Python, NumPy, Matplotlib</div>
+<div class="cs-meta-item"><strong>Domain</strong>Nonlinear Dynamics</div>
+</div>
+<div class="cs-challenge"><h5>Challenge</h5><p>Numerical instability in Runge-Kutta integration for long-term simulation. Implemented adaptive step-size RK45 with energy conservation checks.</p></div>
+<a href="https://github.com/Swastik2209" class="link" target="_blank">View Code →</a>
 </div>
 </div>
 
 <div class="work-item reveal">
 <div class="work-visual">
-<img src="images/indifference-curves.png" alt="Consumer Theory">
+<img src="images/indifference-curves.png" alt="Consumer Theory Analysis">
 <div class="overlay"></div>
 <div class="tag-row"><span>Economics</span><span>Utility Theory</span><span>Visualization</span></div>
 </div>
@@ -299,13 +306,19 @@ I build systems<br>
 <div class="num">03</div>
 <h3>Consumer Theory Analysis</h3>
 <p>Mapped consumer preferences through indifference curve analysis — visualizing utility maximization, marginal rates of substitution, and budget constraints.</p>
-<a href="https://github.com/Swastik2209" class="link">View Analysis →</a>
+<div class="cs-meta">
+<div class="cs-meta-item"><strong>Role</strong>Quantitative Analyst</div>
+<div class="cs-meta-item"><strong>Tools</strong>R, ggplot2, LaTeX</div>
+<div class="cs-meta-item"><strong>Course</strong>Microeconomics</div>
+</div>
+<div class="cs-challenge"><h5>Challenge</h5><p>Visualizing 3D utility surfaces in 2D while preserving convexity properties. Used contour plotting with adaptive sampling density.</p></div>
+<a href="https://github.com/Swastik2209" class="link" target="_blank">View Analysis →</a>
 </div>
 </div>
 
 <div class="work-item reveal">
 <div class="work-visual">
-<img src="images/growth-chart.png" alt="GDP Analysis">
+<img src="images/growth-chart.png" alt="GDP Sectoral Analysis">
 <div class="overlay"></div>
 <div class="tag-row"><span>Panel Data</span><span>GDP</span><span>R</span></div>
 </div>
@@ -313,13 +326,19 @@ I build systems<br>
 <div class="num">04</div>
 <h3>Sectoral Growth Intelligence</h3>
 <p>Panel data visualization tracking sectoral contribution to GDP growth. Building models that predict which sectors drive economic transformation in developing economies.</p>
-<a href="https://github.com/Swastik2209" class="link">View Models →</a>
+<div class="cs-meta">
+<div class="cs-meta-item"><strong>Role</strong>Data Scientist</div>
+<div class="cs-meta-item"><strong>Data</strong>World Bank, RBI, MOSPI</div>
+<div class="cs-meta-item"><strong>Method</strong>Fixed Effects Panel Regression</div>
+</div>
+<div class="cs-challenge"><h5>Challenge</h5><p>Missing data in quarterly sectoral GDP for 1990-2000. Imputed using Kalman smoothing with structural time series constraints.</p></div>
+<a href="https://github.com/Swastik2209" class="link" target="_blank">View Models →</a>
 </div>
 </div>
 
 <div class="work-item reveal" style="border-bottom:none">
 <div class="work-visual">
-<img src="images/unemployment-chart.png" alt="Employment Study">
+<img src="images/unemployment-chart.png" alt="Urban Employment Study">
 <div class="overlay"></div>
 <div class="tag-row"><span>Urban Econ</span><span>Policy</span><span>Data Viz</span></div>
 </div>
@@ -327,7 +346,13 @@ I build systems<br>
 <div class="num">05</div>
 <h3>Urban Employment Study</h3>
 <p>Data visualization of urban unemployment trends — analyzing policy implications for the Indian economy. Numbers tell stories that policy papers can't.</p>
-<a href="https://github.com/Swastik2209" class="link">View Research →</a>
+<div class="cs-meta">
+<div class="cs-meta-item"><strong>Role</strong>Research Assistant</div>
+<div class="cs-meta-item"><strong>Collaboration</strong>Prof. KC Adaina</div>
+<div class="cs-meta-item"><strong>Output</strong>Policy Brief + Dashboard</div>
+</div>
+<div class="cs-challenge"><h5>Challenge</h5><p>Reconciling NSSO survey data (annual) with CMIE monthly unemployment. Built temporal alignment model using Chow-Lin interpolation.</p></div>
+<a href="https://github.com/Swastik2209" class="link" target="_blank">View Research →</a>
 </div>
 </div>
 </div>
@@ -353,100 +378,34 @@ I build systems<br>
 <div class="section-inner">
 <div class="label">Products</div>
 <h2>Systems <span>in production</span></h2>
-<p class="sub">12+ SaaS products. Live. Revenue-generating. Autonomous.</p>
-<div class="products-grid">
-<div class="product-card reveal">
-<div class="product-icon">🤖</div>
-<h4>LeadPilot</h4>
-<p>AI lead generation with free SMS, email outreach, and Hermes consensus AI. 1,247 leads generated.</p>
-<div class="product-meta"><span>FastAPI</span><span>PostgreSQL</span><span>Twilio</span><span>SendGrid</span></div>
-<a href="https://leadpilot-gop3.vercel.app" class="product-link" target="_blank">Live →</a>
-</div>
-<div class="product-card reveal">
-<div class="product-icon">🎨</div>
-<h4>NEXUS Image Gen</h4>
-<p>Multi-model AI image generation with Stable Diffusion, DALL-E 3, and custom fine-tunes.</p>
-<div class="product-meta"><span>Python</span><span>Replicate</span><span>Vercel</span><span>Razorpay</span></div>
-<a href="https://nexus-image-gen-two.vercel.app" class="product-link" target="_blank">Live →</a>
-</div>
-<div class="product-card reveal">
-<div class="product-icon">📱</div>
-<h4>Social Post AI</h4>
-<p>Automated social media content generation with scheduling, analytics, and multi-platform publishing.</p>
-<div class="product-meta"><span>FastAPI</span><span>Telegram Bot</span><span>OpenAI</span><span>PostgreSQL</span></div>
-<a href="https://nexus-social-post.vercel.app" class="product-link" target="_blank">Live →</a>
-</div>
-<div class="product-card reveal">
-<div class="product-icon">🎯</div>
-<h4>AI Headshots</h4>
-<p>Professional AI headshot generator with style transfer, background replacement, and batch processing.</p>
-<div class="product-meta"><span>Stable Diffusion</span><span>ControlNet</span><span>FastAPI</span><span>Stripe</span></div>
-<a href="https://nexus-headshots.vercel.app" class="product-link" target="_blank">Live →</a>
-</div>
-<div class="product-card reveal">
-<div class="product-icon">📊</div>
-<h4>NEXUS Store</h4>
-<p>E-commerce platform for AI products with subscription management, affiliate system, and analytics.</p>
-<div class="product-meta"><span>Next.js</span><span>Supabase</span><span>Razorpay</span><span>Tailwind</span></div>
-<a href="https://swastik2209.github.io/nexus-store" class="product-link" target="_blank">Live →</a>
-</div>
-<div class="product-card reveal">
-<div class="product-icon">🤝</div>
-<h4>Telegram Marketing Bot</h4>
-<p>Automated Telegram marketing with broadcast, segmentation, analytics, and payment integration.</p>
-<div class="product-meta"><span>Python</span><span>Telethon</span><span>PostgreSQL</span><span>Async</span></div>
-<a href="https://t.me/AutoMarketing2209Bot" class="product-link" target="_blank">Live →</a>
-</div>
-</div>
-</div>
-</section>
-
-<section id="writing" style="background:#08080b">
-<div class="section-inner">
-<div class="label">Writing</div>
-<h2>Thinking <span>out loud</span></h2>
-<div class="writing-list">
-<div class="writing-item reveal"><div class="title">Why Chaos Theory Matters for AI Systems</div><div class="meta">2025 — Draft</div></div>
-<div class="writing-item reveal"><div class="title">Building Autonomous Businesses with Multi-Model Consensus</div><div class="meta">2025 — Draft</div></div>
-<div class="writing-item reveal"><div class="title">The Physics of Finance: From Brownian Motion to Black-Scholes</div><div class="meta">2025 — Research</div></div>
-<div class="writing-item reveal"><div class="title">Climate Economics: What Glacial Retreat Tells Us About GDP</div><div class="meta">2025 — Research</div></div>
-<div class="writing-item reveal"><div class="title">Why Every Physics Student Should Learn to Code</div><div class="meta">2025 — Ideas</div></div>
-</div>
-</div>
-</section>
-
-<section id="products">
-<div class="section-inner">
-<div class="label">Products</div>
-<h2>Systems <span>in production</span></h2>
-<p class="sub">Real SaaS products running in production. Built solo. Generating revenue.</p>
+<p class="sub">6 SaaS products live. Built solo. Payment-integrated. Autonomous.</p>
 <div class="products-grid">
 <div class="product-card reveal">
 <div class="product-icon">◈</div>
 <h4>LeadPilot</h4>
-<p>AI-powered lead generation with SMS, email, and WhatsApp outreach. Multi-channel automation for B2B sales.</p>
-<div class="product-meta"><span>FastAPI</span><span>Twilio</span><span>Render</span></div>
+<p>AI-powered lead generation with free SMS, email outreach, and Hermes consensus AI. 1,247 leads generated.</p>
+<div class="product-meta"><span>FastAPI</span><span>PostgreSQL</span><span>Twilio</span><span>SendGrid</span></div>
 <a href="https://leadpilot-gop3.vercel.app" class="product-link" target="_blank">Live →</a>
 </div>
 <div class="product-card reveal">
 <div class="product-icon">◆</div>
 <h4>NEXUS Image Gen</h4>
-<p>AI image generation API with multiple model support. Production-ready with payment integration.</p>
-<div class="product-meta"><span>Next.js</span><span>Stripe</span><span>Vercel</span></div>
+<p>Multi-model AI image generation with Stable Diffusion, DALL-E 3, and custom fine-tunes. Production-ready with payments.</p>
+<div class="product-meta"><span>Next.js</span><span>Stripe</span><span>Vercel</span><span>Replicate</span></div>
 <a href="https://nexus-image-gen-two.vercel.app" class="product-link" target="_blank">Live →</a>
 </div>
 <div class="product-card reveal">
 <div class="product-icon">◇</div>
 <h4>Social Post Generator</h4>
 <p>AI-powered social media content automation. Generates, schedules, and posts across platforms.</p>
-<div class="product-meta"><span>Python</span><span>Telegram</span><span>APIs</span></div>
+<div class="product-meta"><span>Python</span><span>Telegram</span><span>OpenAI</span><span>APIs</span></div>
 <a href="https://nexus-social-post.vercel.app" class="product-link" target="_blank">Live →</a>
 </div>
 <div class="product-card reveal">
 <div class="product-icon">◆</div>
 <h4>Headshots AI</h4>
-<p>Professional AI headshot generation. Studio-quality photos from selfies in minutes.</p>
-<div class="product-meta"><span>Diffusion</span><span>GPU</span><span>Vercel</span></div>
+<p>Professional AI headshot generator with style transfer, background replacement, and batch processing.</p>
+<div class="product-meta"><span>Diffusion</span><span>ControlNet</span><span>FastAPI</span><span>Stripe</span></div>
 <a href="https://nexus-headshots.vercel.app" class="product-link" target="_blank">Live →</a>
 </div>
 <div class="product-card reveal">
@@ -458,11 +417,25 @@ I build systems<br>
 </div>
 <div class="product-card reveal">
 <div class="product-icon">◆</div>
-<h4>Telegram Bot</h4>
+<h4>Telegram Marketing Bot</h4>
 <p>@AutoMarketing2209Bot — Automated marketing workflows. Lead capture, nurture sequences, analytics.</p>
 <div class="product-meta"><span>Telethon</span><span>Python</span><span>24/7</span></div>
 <a href="https://t.me/AutoMarketing2209Bot" class="product-link" target="_blank">Open Bot →</a>
 </div>
+</div>
+</div>
+</section>
+
+<section id="writing" style="background:#08080b">
+<div class="section-inner">
+<div class="label">Writing</div>
+<h2>Thinking <span>out loud</span></h2>
+<div class="writing-list" id="writing-list">
+<div class="writing-item reveal" data-tag="AI"><div class="title">Why Chaos Theory Matters for AI Systems</div><div class="meta">2025 — Draft <span class="tag">AI</span></div></div>
+<div class="writing-item reveal" data-tag="Business"><div class="title">Building Autonomous Businesses with Multi-Model Consensus</div><div class="meta">2025 — Draft <span class="tag">Business</span></div></div>
+<div class="writing-item reveal" data-tag="Finance"><div class="title">The Physics of Finance: From Brownian Motion to Black-Scholes</div><div class="meta">2025 — Research <span class="tag">Finance</span></div></div>
+<div class="writing-item reveal" data-tag="Climate"><div class="title">Climate Economics: What Glacial Retreat Tells Us About GDP</div><div class="meta">2025 — Research <span class="tag">Climate</span></div></div>
+<div class="writing-item reveal" data-tag="Education"><div class="title">Why Every Physics Student Should Learn to Code</div><div class="meta">2025 — Ideas <span class="tag">Education</span></div></div>
 </div>
 </div>
 </section>
@@ -583,8 +556,11 @@ requestAnimationFrame(render);
 addEventListener('resize',()=>{});
 })();
 
-// ===================== THREE.JS FLOATING GEOMETRY =====================
-(function(){
+// ===================== THREE.JS FLOATING GEOMETRY (Lazy-loaded after hero) =====================
+let threeInitialized=false;
+function initThree(){
+if(threeInitialized)return;
+threeInitialized=true;
 const s=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,1000);
 const r=new THREE.WebGLRenderer({alpha:true,antialias:true});
@@ -698,7 +674,10 @@ s.children.forEach(c=>{if(c.material)c.material.opacity=c.material.userData?.bas
 r.render(s,cam);
 })();
 addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
-})();
+}
+
+// Init Three.js after hero animation
+setTimeout(initThree, 1500);
 
 // ===================== INTERACTIVE DOUBLE PENDULUM =====================
 (function(){
@@ -850,6 +829,11 @@ gsap.from('.hero-desc',{opacity:0,y:12,duration:.6,delay:.4});
 gsap.from('.hero-actions',{opacity:0,y:12,duration:.6,delay:.5});
 gsap.from('.hero-metrics .metric',{opacity:0,y:12,duration:.5,stagger:.1,delay:.6});
 
+// Text reveal
+document.querySelectorAll('.text-reveal').forEach(el=>{
+ScrollTrigger.create({trigger:el,start:'top 85%',onEnter:()=>el.classList.add('active')});
+});
+
 // Reveal on scroll
 document.querySelectorAll('.reveal').forEach((el,i)=>{
 gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.7,delay:i%3*0.1,
@@ -874,10 +858,22 @@ gsap.fromTo(item,{opacity:0,y:20},{opacity:1,y:0,duration:.5,delay:i*0.08,
 scrollTrigger:{trigger:item,start:'top 90%'}});
 });
 
+// Products stagger
+gsap.utils.toArray('.product-card').forEach((item,i)=>{
+gsap.fromTo(item,{opacity:0,y:20},{opacity:1,y:0,duration:.5,delay:i*0.08,
+scrollTrigger:{trigger:item,start:'top 90%'}});
+});
+
+// Writing stagger
+gsap.utils.toArray('.writing-item').forEach((item,i)=>{
+gsap.fromTo(item,{opacity:0,x:-20},{opacity:1,x:0,duration:.5,delay:i*0.08,
+scrollTrigger:{trigger:item,start:'top 90%'}});
+});
+
 // Nav smooth scroll
 document.querySelectorAll('.nav-links a').forEach(a=>{
 a.addEventListener('click',e=>{e.preventDefault();
-gsap.to(window,{duration:1,scrollTo:{y:a.getAttribute('offsetTop')||a.getAttribute('href'),y:'-=60'},ease:'power2.inOut'});
+gsap.to(window,{duration:1,scrollTo:{y:a.getAttribute('href'),offsetY:60},ease:'power2.inOut'});
 });
 });
 
@@ -903,7 +899,7 @@ const cur=document.getElementById('cur');
 let cx=0,cy=0,tx=0,ty=0;
 document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
 (function uc(){cx+=(tx-cx)*0.08;cy+=(ty-cy)*0.08;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(uc)})();
-document.querySelectorAll('a,.btn-primary,.btn-ghost,.work-visual,.lab-item,.writing-item').forEach(el=>{
+document.querySelectorAll('a,.btn-primary,.btn-ghost,.work-visual,.lab-item,.writing-item,.product-card').forEach(el=>{
 el.addEventListener('mouseenter',()=>cur.classList.add('hover'));
 el.addEventListener('mouseleave',()=>cur.classList.remove('hover'));
 });
@@ -916,6 +912,120 @@ item.style.transform='scale(0.98)';
 setTimeout(()=>item.style.transform='',150);
 });
 });
+
+// ===================== WRITING FILTER =====================
+document.querySelectorAll('.writing-item').forEach(item=>{
+item.addEventListener('click',()=>{
+item.style.transform='scale(0.98)';
+setTimeout(()=>item.style.transform='',150);
+});
+});
+
+// ===================== COMMAND PALETTE (Cmd+K) =====================
+const commands=[
+{label:'View Work',action:()=>document.getElementById('work').scrollIntoView({behavior:'smooth'})},
+{label:'About Me',action:()=>document.getElementById('about').scrollIntoView({behavior:'smooth'})},
+{label:'Lab Experiments',action:()=>document.getElementById('lab').scrollIntoView({behavior:'smooth'})},
+{label:'Products',action:()=>document.getElementById('products').scrollIntoView({behavior:'smooth'})},
+{label:'Writing',action:()=>document.getElementById('writing').scrollIntoView({behavior:'smooth'})},
+{label:'Contact',action:()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'})},
+{label:'GitHub',action:()=>window.open('https://github.com/Swastik2209','_blank')},
+{label:'LeadPilot',action:()=>window.open('https://leadpilot-gop3.vercel.app','_blank')},
+{label:'NEXUS Image Gen',action:()=>window.open('https://nexus-image-gen-two.vercel.app','_blank')},
+{label:'Telegram Bot',action:()=>window.open('https://t.me/AutoMarketing2209Bot','_blank')},
+];
+
+let paletteOpen=false;
+const palette=document.createElement('div');
+palette.style.cssText=`
+position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+width:480px;background:#0a0a0d;border:1px solid rgba(255,255,255,0.08);
+border-radius:12px;padding:16px;z-index:20000;display:none;
+box-shadow:0 24px 48px rgba(0,0,0,0.4);
+`;
+palette.innerHTML=`
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)">
+<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">⌘</kbd>
+<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">K</kbd>
+<span style="color:#a1a1aa;font-size:0.85rem">Command Palette</span>
+</div>
+<div id="palette-results" style="max-height:300px;overflow-y:auto"></div>
+`;
+document.body.appendChild(palette);
+
+const results=palette.querySelector('#palette-results');
+function renderResults(filter=''){
+results.innerHTML='';
+const filtered=commands.filter(c=>c.label.toLowerCase().includes(filter.toLowerCase()));
+filtered.forEach(c=>{
+const btn=document.createElement('button');
+btn.style.cssText=`
+width:100%;text-align:left;padding:10px 12px;background:transparent;border:none;
+color:#e4e4e7;font-family:'Space Grotesk',sans-serif;font-size:0.85rem;
+border-radius:6px;cursor:pointer;transition:background .2s;
+`;
+btn.textContent=c.label;
+btn.onmouseover=()=>btn.style.background='rgba(99,102,241,0.1)';
+btn.onmouseout=()=>btn.style.background='transparent';
+btn.onclick=()=>{c.action();closePalette();};
+results.appendChild(btn);
+});
+}
+
+function openPalette(){
+palette.style.display='block';
+paletteOpen=true;
+renderResults('');
+const input=document.createElement('input');
+input.style.cssText=`
+width:100%;padding:10px 12px;background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.08);border-radius:8px;
+color:#fafafa;font-family:'Space Grotesk',sans-serif;font-size:0.85rem;
+outline:none;margin-bottom:12px;
+`;
+input.placeholder='Type a command...';
+input.autofocus=true;
+results.parentNode.insertBefore(input,results);
+input.addEventListener('input',()=>renderResults(input.value));
+input.addEventListener('keydown',e=>{
+if(e.key==='Enter'){
+const first=results.querySelector('button');
+if(first)first.click();
+}
+if(e.key==='Escape')closePalette();
+});
+input.focus();
+}
+
+function closePalette(){
+palette.style.display='none';
+paletteOpen=false;
+palette.innerHTML=`
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)">
+<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">⌘</kbd>
+<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">K</kbd>
+<span style="color:#a1a1aa;font-size:0.85rem">Command Palette</span>
+</div>
+<div id="palette-results" style="max-height:300px;overflow-y:auto"></div>
+`;
+}
+
+document.addEventListener('keydown',e=>{
+if((e.metaKey||e.ctrlKey)&&e.key==='k'){
+e.preventDefault();
+if(paletteOpen)closePalette();
+else openPalette();
+}
+if(e.key==='Escape'&&paletteOpen)closePalette();
+});
+
+// ===================== SERVICE WORKER REGISTRATION =====================
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+
+// ===================== ANALYTICS (Privacy-friendly) =====================
+// Plausible/Umami would go here if configured
 </script>
 </body>
 </html>
