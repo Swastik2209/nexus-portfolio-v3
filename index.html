@@ -8,6 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{background:#050508;color:#e4e4e7;font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none}
@@ -92,13 +93,14 @@ section .sub{font-size:1rem;color:#71717a;max-width:500px;line-height:1.7;margin
 
 /* Lab / Experiments */
 .lab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.04)}
-.lab-item{background:#0a0a0d;padding:32px;transition:background .3s;position:relative;overflow:hidden}
+.lab-item{background:#0a0a0d;padding:32px;transition:background .3s;position:relative;overflow:hidden;cursor:pointer}
 .lab-item:hover{background:rgba(99,102,241,0.04)}
 .lab-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
 .lab-item:hover::before{opacity:1}
 .lab-item .lab-icon{font-size:1.5rem;margin-bottom:12px}
 .lab-item h4{font-size:0.85rem;font-weight:600;color:#e4e4e7;margin-bottom:6px}
 .lab-item p{font-size:0.72rem;color:#52525b;line-height:1.6}
+canvas{border-radius:8px;background:rgba(0,0,0,0.3)}
 
 /* Writing */
 .writing-list{display:flex;flex-direction:column}
@@ -282,8 +284,8 @@ I build systems<br>
 <h2>Experiments <span>& explorations</span></h2>
 <p class="sub">Where curiosity meets computation. Physics simulations, AI experiments, financial models.</p>
 <div class="lab-grid">
-<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">01</div><h4>Pendulum Dynamics</h4><p>Simulating coupled oscillator systems and chaos theory with real-time visualization.</p></div>
-<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">02</div><h4>Black-Scholes Engine</h4><p>European option pricing using Brownian motion, GARCH volatility, and Monte Carlo.</p></div>
+<div class="lab-item reveal" style="grid-column:span 2;position:relative"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">01</div><h4>Pendulum Dynamics</h4><p>Interactive double pendulum — move your mouse to disturb the system and watch chaos emerge.</p><canvas id="pendulum-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">02</div><h4>Black-Scholes Engine</h4><p>European option pricing — move mouse to change volatility and see the payoff curve respond.</p><canvas id="bs-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
 <div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">03</div><h4>Climate Economics</h4><p>Himalayan glacial retreat modeling — correlating temperature anomalies with regional GDP.</p></div>
 <div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">04</div><h4>Force Analysis</h4><p>Electromagnetic force measurement using gaussmeter data and uncertainty propagation.</p></div>
 <div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">05</div><h4>Portfolio Optimizer</h4><p>Mean-variance optimization with Sharpe ratio maximization on Indian equity data.</p></div>
@@ -332,90 +334,420 @@ I build systems<br>
 </footer>
 
 <script>
-// Three.js Background
+// ===================== WEBGL SHADER BACKGROUND =====================
 (function(){
 const c=document.getElementById('three-bg');
-const s=new THREE.Scene();
-const cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
-const r=new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:true});
-r.setSize(innerWidth,innerHeight);
-r.setPixelRatio(Math.min(devicePixelRatio,2));
-cam.position.z=5;
+c.width=innerWidth;c.height=innerHeight;
+const gl=c.getContext('webgl')||c.getContext('experimental-webgl');
+if(!gl)return;
 
-// Geometry pool
-const geos=[
-new THREE.IcosahedronGeometry(0.3,0),
-new THREE.OctahedronGeometry(0.25,0),
-new THREE.TorusGeometry(0.25,0.06,8,16),
-new THREE.TetrahedronGeometry(0.28,0)
-];
-const objs=[];
-for(let i=0;i<12;i++){
-const g=geos[i%geos.length];
-const m=new THREE.MeshBasicMaterial({color:new THREE.Color().setHSL(0.62+Math.random()*0.08,0.5,0.45),wireframe:true,transparent:true,opacity:0.08});
-const mesh=new THREE.Mesh(g,m);
-mesh.position.set((Math.random()-0.5)*10,(Math.random()-0.5)*7,(Math.random()-0.5)*5);
-mesh.rotation.set(Math.random()*6.28,Math.random()*6.28,0);
-mesh.userData={rx:(.001+Math.random()*.005)*(Math.random()>.5?1:-1),ry:(.001+Math.random()*.004)*(Math.random()>.5?1:-1),
-bx:mesh.position.x,by:mesh.position.y,sx:(Math.random()-.5)*.002,sy:(Math.random()-.5)*.0015};
-s.add(mesh);objs.push(mesh);
+const vsSource='attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0,1);}';
+const fsSource=`
+precision mediump float;
+uniform float u_time;
+uniform vec2 u_mouse;
+uniform vec2 u_resolution;
+uniform float u_scroll;
+
+float noise(vec2 p){
+vec2 i=floor(p);vec2 f=fract(p);
+f=f*f*(3.0-2.0*f);
+float a=fract(sin(dot(i,vec2(127.1,311.7)))*43758.5453);
+float b=fract(sin(dot(i+vec2(1.0,0.0),vec2(127.1,311.7)))*43758.5453);
+float c=fract(sin(dot(i+vec2(0.0,1.0),vec2(127.1,311.7)))*43758.5453);
+float d=fract(sin(dot(i+vec2(1.0,1.0),vec2(127.1,311.7)))*43758.5453);
+return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
 }
 
-// Particles
-const pg=new THREE.BufferGeometry();
-const pc=200;
-const pp=new Float32Array(pc*3);
-for(let i=0;i<pc*3;i++)pp[i]=(Math.random()-0.5)*16;
-pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
-const pm=new THREE.PointsMaterial({color:0x6366f1,size:0.012,transparent:true,opacity:0.25});
-s.add(new THREE.Points(pg,pm));
+float fbm(vec2 p){
+float v=0.0;float a=0.5;
+for(int i=0;i<5;i++){v+=a*noise(p);p*=2.0;a*=0.5;}
+return v;
+}
+
+void main(){
+vec2 uv=gl_FragCoord.xy/u_resolution;
+vec2 mouse=u_mouse/u_resolution;
+float t=u_time*0.15;
+
+vec2 q=uv;
+q.x+=sin(q.y*3.0+t)*0.02;
+q.y+=cos(q.x*2.5+t*0.7)*0.02;
+
+float f=fbm(q*3.0+vec2(t*0.3,t*0.1));
+float f2=fbm(q*4.0-vec2(t*0.2,t*0.15)+f*0.5);
+
+float d=length(uv-mouse);
+float glow=exp(-d*3.0)*0.08;
+
+vec3 col=vec3(0.02,0.02,0.03);
+col+=vec3(0.24,0.39,0.94)*f*0.15;
+col+=vec3(0.39,0.33,0.93)*f2*0.08;
+col+=vec3(0.51,0.55,0.97)*glow;
+
+float scan=sin(uv.y*u_resolution.y*0.5)*0.02;
+col+=scan;
+
+float scrollFade=clamp(1.0-u_scroll*0.0005,0.3,1.0);
+col*=scrollFade;
+
+gl_FragColor=vec4(col,1.0);
+}`;
+
+function createShader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
+const vs=createShader(gl.VERTEX_SHADER,vsSource);
+const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
+const pg=gl.createProgram();gl.attachShader(pg,vs);gl.attachShader(pg,fs);gl.linkProgram(pg);gl.useProgram(pg);
+
+const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+const pos=gl.getAttribLocation(pg,'a_position');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+
+const uTime=gl.getUniformLocation(pg,'u_time');
+const uMouse=gl.getUniformLocation(pg,'u_mouse');
+const uRes=gl.getUniformLocation(pg,'u_resolution');
+const uScroll=gl.getUniformLocation(pg,'u_scroll');
 
 let mx=innerWidth/2,my=innerHeight/2;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
 
+(function render(){
+c.width=innerWidth;c.height=innerHeight;gl.viewport(0,0,innerWidth,innerHeight);
+gl.uniform1f(uTime,performance.now()*0.001);
+gl.uniform2f(uMouse,mx,innerHeight-my);
+gl.uniform2f(uRes,innerWidth,innerHeight);
+gl.uniform1f(uScroll,window.scrollY);
+gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+requestAnimationFrame(render);
+})();
+
+addEventListener('resize',()=>{});
+})();
+
+// ===================== THREE.JS FLOATING GEOMETRY =====================
+(function(){
+const s=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,1000);
+const r=new THREE.WebGLRenderer({alpha:true,antialias:true});
+r.setSize(innerWidth,innerHeight);
+r.setPixelRatio(Math.min(devicePixelRatio,2));
+r.domElement.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none';
+document.body.appendChild(r.domElement);
+cam.position.z=8;
+
+const geos=[
+new THREE.IcosahedronGeometry(0.35,0),
+new THREE.OctahedronGeometry(0.3,0),
+new THREE.TorusGeometry(0.3,0.06,8,24),
+new THREE.TetrahedronGeometry(0.32,0),
+new THREE.DodecahedronGeometry(0.28,0),
+new THREE.TorusKnotGeometry(0.2,0.05,64,8,2,3)
+];
+const objs=[];
+for(let i=0;i<18;i++){
+const g=geos[i%geos.length];
+const hue=0.62+Math.random()*0.1;
+const mat=new THREE.MeshBasicMaterial({color:new THREE.Color().setHSL(hue,0.5,0.5),wireframe:true,transparent:true,opacity:0.06+Math.random()*0.04});
+const mesh=new THREE.Mesh(g,mat);
+const spread=12;
+mesh.position.set((Math.random()-0.5)*spread,(Math.random()-0.5)*spread*0.7,(Math.random()-0.5)*6-2);
+mesh.rotation.set(Math.random()*6.28,Math.random()*6.28,0);
+mesh.userData={
+rx:(0.001+Math.random()*0.004)*(Math.random()>0.5?1:-1),
+ry:(0.001+Math.random()*0.003)*(Math.random()>0.5?1:-1),
+rz:(0.0005+Math.random()*0.002)*(Math.random()>0.5?1:-1),
+bx:mesh.position.x,by:mesh.position.y,bz:mesh.position.z,
+sx:0.0003+Math.random()*0.001,
+sy:0.0002+Math.random()*0.0008,
+amplitude:0.3+Math.random()*0.5
+};
+s.add(mesh);objs.push(mesh);
+}
+
+// Particle system with depth
+const pg=new THREE.BufferGeometry();
+const pc=400;
+const pp=new Float32Array(pc*3);
+const pv=new Float32Array(pc*3);
+for(let i=0;i<pc*3;i++){pp[i]=(Math.random()-0.5)*20;pv[i]=(Math.random()-0.5)*0.001;}
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+const pm=new THREE.PointsMaterial({color:0x6366f1,size:0.018,transparent:true,opacity:0.2,blending:THREE.AdditiveBlending});
+const particles=new THREE.Points(pg,pm);
+s.add(particles);
+
+// Line connections
+const lg=new THREE.BufferGeometry();
+const lp=new Float32Array(600);
+const lmat=new THREE.LineBasicMaterial({color:0x6366f1,transparent:true,opacity:0.04,blending:THREE.AdditiveBlending});
+const lines=new THREE.LineSegments(lg,lmat);
+s.add(lines);
+
+let mx=innerWidth/2,my=innerHeight/2;
+let scrollY=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+window.addEventListener('scroll',()=>{scrollY=window.scrollY});
+
 (function anim(){
 requestAnimationFrame(anim);
 const t=Date.now();
-objs.forEach(o=>{o.rotation.x+=o.userData.rx;o.rotation.y+=o.userData.ry;
-o.position.x=o.userData.bx+Math.sin(t*o.userData.sx)*.6;
-o.position.y=o.userData.by+Math.cos(t*o.userData.sy)*.4;});
-const tx=(mx/innerWidth-.5)*.2,ty=(my/innerHeight-.5)*.2;
-cam.position.x+=(tx-cam.position.x)*.015;
-cam.position.y+=(-ty-cam.position.y)*.015;
+
+// Rotate objects
+objs.forEach((o,i)=>{
+o.rotation.x+=o.userData.rx;
+o.rotation.y+=o.userData.ry;
+o.rotation.z+=o.userData.rz;
+o.position.x=o.userData.bx+Math.sin(t*o.userData.sx+i)*o.userData.amplitude;
+o.position.y=o.userData.by+Math.cos(t*o.userData.sy+i*0.7)*o.userData.amplitude*0.6;
+});
+
+// Animate particles
+const pa=particles.geometry.attributes.position.array;
+for(let i=0;i<pc*3;i++){pa[i]+=pv[i];if(Math.abs(pa[i])>10)pv[i]*=-1;}
+particles.geometry.attributes.position.needsUpdate=true;
+
+// Build dynamic line connections between nearby objects
+const linePositions=lines.geometry.attributes.position?lines.geometry.attributes.position.array:new Float32Array(600);
+let li=0;
+for(let i=0;i<objs.length&&li<600;i++){
+for(let j=i+1;j<objs.length&&li<600;j++){
+const d=objs[i].position.distanceTo(objs[j].position);
+if(d<4){
+linePositions[li++]=objs[i].position.x;
+linePositions[li++]=objs[i].position.y;
+linePositions[li++]=objs[i].position.z;
+linePositions[li++]=objs[j].position.x;
+linePositions[li++]=objs[j].position.y;
+linePositions[li++]=objs[j].position.z;
+}
+}
+}
+for(;li<600;li++)linePositions[li]=0;
+lines.geometry.setAttribute('position',new THREE.BufferAttribute(linePositions,3));
+
+// Camera follows mouse with parallax
+const tx=(mx/innerWidth-0.5)*0.6;
+const ty=(my/innerHeight-0.5)*0.4;
+cam.position.x+=(tx-cam.position.x)*0.02;
+cam.position.y+=(-ty-cam.position.y)*0.02;
+cam.position.z=8-scrollY*0.001;
 cam.lookAt(0,0,0);
+
+// Fade scene based on scroll
+const fade=Math.max(0.3,1-scrollY/(innerHeight*2));
+s.children.forEach(c=>{if(c.material)c.material.opacity=c.material.userData?.baseOpacity?c.material.userData.baseOpacity*fade:c.material.opacity;});
+
 r.render(s,cam);
 })();
 addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
 })();
 
-// Cursor
-const cur=document.getElementById('cur');
-let cx=0,cy=0,tx=0,ty=0;
-document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
-(function uc(){cx+=(tx-cx)*.1;cy+=(ty-cy)*.1;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(uc)})();
-document.querySelectorAll('a,.btn-primary,.btn-ghost,.work-visual,.lab-item').forEach(el=>{
-el.addEventListener('mouseenter',()=>cur.classList.add('hover'));
-el.addEventListener('mouseleave',()=>cur.classList.remove('hover'));
+// ===================== INTERACTIVE DOUBLE PENDULUM =====================
+(function(){
+const canvas=document.getElementById('pendulum-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+resize();
+window.addEventListener('resize',resize);
+
+const g=9.81;
+let a1=Math.PI/0.7,a2=Math.PI/0.5;
+let v1=0,v2=0;
+const m1=10,m2=10,l1=80,l2=80;
+const trail=[];
+const maxTrail=200;
+
+canvas.addEventListener('mousemove',e=>{
+const rect=canvas.getBoundingClientRect();
+a1=(e.clientX-rect.left-W/2)*0.01;
+a2=(e.clientY-rect.top-H/2)*0.01;
+v1=0;v2=0;
 });
 
-// GSAP
+function step(){
+const d1=-g*(2*m1+m2)*Math.sin(a1)-m2*g*Math.sin(a1-2*a2);
+const d2=2*Math.sin(a1-a2)*(v1*v1*l1*(m1+m2)+g*(m1+m2)*Math.cos(a1)+m2*v2*v2*l2*Math.cos(a1-a2));
+const den1=l1*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
+const den2=l2*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
+const a1acc=d1/den1;
+const a2acc=d2/den2;
+
+v1+=a1acc*0.016;
+v2+=a2acc*0.016;
+v1*=0.999;
+v2*=0.999;
+a1+=v1*0.016;
+a2+=v2*0.016;
+}
+
+function draw(){
+ctx.clearRect(0,0,W,H);
+const ox=W/2,oy=H/3;
+const x1=ox+l1*Math.sin(a1);
+const y1=oy+l1*Math.cos(a1);
+const x2=x1+l2*Math.sin(a2);
+const y2=y1+l2*Math.cos(a2);
+
+// Trail
+trail.push({x:x2,y:y2});
+if(trail.length>maxTrail)trail.shift();
+for(let i=1;i<trail.length;i++){
+const alpha=i/trail.length;
+ctx.beginPath();
+ctx.moveTo(trail[i-1].x,trail[i-1].y);
+ctx.lineTo(trail[i].x,trail[i].y);
+ctx.strokeStyle=`rgba(99,102,241,${alpha*0.4})`;
+ctx.lineWidth=1;
+ctx.stroke();
+}
+
+// Rods
+ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(x1,y1);ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.stroke();
+ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.stroke();
+
+// Pivot
+ctx.beginPath();ctx.arc(ox,oy,3,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,0.6)';ctx.fill();
+
+// Masses
+ctx.beginPath();ctx.arc(x1,y1,m1/3,0,Math.PI*2);ctx.fillStyle='rgba(129,140,248,0.7)';ctx.fill();
+ctx.beginPath();ctx.arc(x2,y2,m2/3,0,Math.PI*2);ctx.fillStyle='rgba(167,139,250,0.8)';ctx.fill();
+
+// Glow on tip
+const grd=ctx.createRadialGradient(x2,y2,0,x2,y2,20);
+grd.addColorStop(0,'rgba(99,102,241,0.3)');grd.addColorStop(1,'rgba(99,102,241,0)');
+ctx.fillStyle=grd;ctx.fillRect(x2-20,y2-20,40,40);
+
+step();
+requestAnimationFrame(draw);
+}
+draw();
+})();
+
+// ===================== INTERACTIVE BLACK-SCHOLES =====================
+(function(){
+const canvas=document.getElementById('bs-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+resize();
+window.addEventListener('resize',resize);
+
+let mouseX=0;
+canvas.addEventListener('mousemove',e=>{
+const rect=canvas.getBoundingClientRect();
+mouseX=(e.clientX-rect.left)/rect.width;
+});
+
+function draw(){
+ctx.clearRect(0,0,W,H);
+const t=Date.now()*0.001;
+const strike=W*0.5;
+const vol=mouseX*0.8+0.1;
+
+// Draw option payoff
+ctx.beginPath();
+ctx.moveTo(0,H*0.4);
+for(let x=0;x<W;x++){
+const payoff=Math.max(0,x-strike)*vol;
+ctx.lineTo(x,H*0.4-payoff*0.3);
+}
+ctx.strokeStyle='rgba(99,102,241,0.6)';ctx.lineWidth=1.5;ctx.stroke();
+
+// Fill under curve
+ctx.lineTo(W,H*0.4);ctx.lineTo(0,H*0.4);ctx.closePath();
+ctx.fillStyle='rgba(99,102,241,0.05)';ctx.fill();
+
+// Brownian motion
+ctx.beginPath();
+ctx.moveTo(0,H*0.7);
+let y=H*0.7;
+for(let x=0;x<W;x++){
+y+=Math.sin(x*0.02+t+mouseX*5)*0.8+Math.cos(x*0.013+t*0.7)*0.5;
+ctx.lineTo(x,y);
+}
+ctx.strokeStyle='rgba(167,139,250,0.3)';ctx.lineWidth=1;ctx.stroke();
+
+// Labels
+ctx.font='10px JetBrains Mono, monospace';
+ctx.fillStyle='rgba(113,113,122,0.5)';
+ctx.fillText('Volatility: '+(vol*100).toFixed(0)+'%',8,16);
+ctx.fillText('Move mouse to change',8,H-8);
+
+requestAnimationFrame(draw);
+}
+draw();
+})();
+
+// ===================== SCROLL-DRIVEN PARALLAX =====================
+(function(){
 gsap.registerPlugin(ScrollTrigger);
-// Hero
+
+// Hero entrance
 gsap.from('.hero-badge',{opacity:0,y:12,duration:.6,delay:.1});
-gsap.from('.hero h1',{opacity:0,y:20,duration:.8,delay:.2});
+gsap.from('.hero h1',{opacity:0,y:30,duration:1,delay:.2,ease:'power3.out'});
 gsap.from('.hero-desc',{opacity:0,y:12,duration:.6,delay:.4});
 gsap.from('.hero-actions',{opacity:0,y:12,duration:.6,delay:.5});
 gsap.from('.hero-metrics .metric',{opacity:0,y:12,duration:.5,stagger:.1,delay:.6});
 
 // Reveal on scroll
-document.querySelectorAll('.reveal').forEach(el=>{
-ScrollTrigger.create({trigger:el,start:'top 88%',onEnter:()=>el.classList.add('active')});
+document.querySelectorAll('.reveal').forEach((el,i)=>{
+gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.7,delay:i%3*0.1,
+scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
+});
+
+// Parallax on sections
+gsap.utils.toArray('section h2').forEach(h=>{
+gsap.fromTo(h,{y:20,opacity:0},{y:0,opacity:1,duration:.8,
+scrollTrigger:{trigger:h,start:'top 85%'}});
+});
+
+// Work visuals parallax
+gsap.utils.toArray('.work-visual').forEach(v=>{
+gsap.fromTo(v,{y:40,opacity:0,scale:0.95},{y:0,opacity:1,scale:1,duration:.8,
+scrollTrigger:{trigger:v,start:'top 85%'}});
+});
+
+// Lab grid stagger
+gsap.utils.toArray('.lab-item').forEach((item,i)=>{
+gsap.fromTo(item,{opacity:0,y:20},{opacity:1,y:0,duration:.5,delay:i*0.08,
+scrollTrigger:{trigger:item,start:'top 90%'}});
 });
 
 // Nav smooth scroll
 document.querySelectorAll('.nav-links a').forEach(a=>{
 a.addEventListener('click',e=>{e.preventDefault();
-document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})});
+gsap.to(window,{duration:1,scrollTo:{y:a.getAttribute('offsetTop')||a.getAttribute('href'),y:'-=60'},ease:'power2.inOut'});
+});
+});
+
+// Nav background on scroll
+ScrollTrigger.create({
+start:'top -80',
+onEnter:()=>document.querySelector('.nav').style.background='rgba(5,5,8,0.92)',
+onLeaveBack:()=>document.querySelector('.nav').style.background='rgba(5,5,8,0.6)'
+});
+})();
+
+// ===================== CURSOR =====================
+(function(){
+const cur=document.getElementById('cur');
+let cx=0,cy=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function uc(){cx+=(tx-cx)*0.08;cy+=(ty-cy)*0.08;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(uc)})();
+document.querySelectorAll('a,.btn-primary,.btn-ghost,.work-visual,.lab-item,.writing-item').forEach(el=>{
+el.addEventListener('mouseenter',()=>cur.classList.add('hover'));
+el.addEventListener('mouseleave',()=>cur.classList.remove('hover'));
+});
+})();
+
+// ===================== INTERACTIVE LAB ITEMS =====================
+document.querySelectorAll('.lab-item').forEach(item=>{
+item.addEventListener('click',()=>{
+item.style.transform='scale(0.98)';
+setTimeout(()=>item.style.transform='',150);
+});
 });
 </script>
 </body>
