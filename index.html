@@ -82,6 +82,9 @@ section .sub{font-size:1.1rem;color:#c8c8c8;max-width:550px;line-height:1.8;marg
 .about-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:filter .5s}
 .about-img:hover img{filter:grayscale(0%)}
 .about-img::before{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,0.1);border-radius:16px;z-index:1;pointer-events:none}
+.about-nameplate{position:absolute;left:20px;bottom:20px;z-index:2;background:rgba(5,5,8,0.85);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 16px}
+.nameplate-name{font-size:0.95rem;font-weight:600;color:#fafafa;letter-spacing:0.5px;font-family:'Space Grotesk',sans-serif}
+.nameplate-role{font-size:0.6rem;color:#9ca3af;margin-top:3px;letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
 .about-floating{position:absolute;top:-20px;right:-20px;background:#111114;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 24px;z-index:2;backdrop-filter:blur(12px)}
 .about-floating .num{font-size:1.8rem;font-weight:700;color:#818cf8}
 .about-floating .txt{font-size:0.65rem;color:#9ca3af;margin-top:2px}
@@ -227,13 +230,15 @@ I build systems<br>
 <h2>The story behind <span>the systems</span></h2>
 <div class="about-grid">
 <div class="about-visual reveal">
-<div class="about-img"><img src="photo.jpg" alt="Swastik Mishra"></div>
+<div class="about-img"><img src="photo.jpg" alt="Swastik Mishra"><div class="about-nameplate"><div class="nameplate-name">Swastik Mishra</div><div class="nameplate-role">Physics · AI · Systems</div></div></div>
 <div class="about-floating"><div class="num">9.0</div><div class="txt">CGPA — APU</div></div>
 </div>
 <div class="about-text reveal">
-<p><strong>Physics taught me to see patterns.</strong> At Azim Premji University, I study B.Sc. Physics while building AI systems on the side. Not because I have to — because I can't stop.</p>
-<p>My work spans <strong>Black-Scholes derivatives pricing</strong>, autonomous AI pipelines, and climate economics research with Prof. KC Adaina. I build FastAPI backends, train ML models, and ship payment-integrated platforms.</p>
-<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products. The goal isn't just revenue. It's proving that a physics student can build something that matters.</p>
+<p><strong>Physics taught me to see patterns.</strong> At Azim Premji University, I study B.Sc. Physics while building AI systems on the side. Not because I have to — because I can't stop. Equations describe nature. Code describes systems. Markets describe behavior. I study all three.</p>
+<p>Most days begin in a lab coat — calibrating a force sensor, timing a pendulum, plotting gaussmeter readings. Most nights end in front of a terminal — pricing an option, training a model, deploying a service. The two worlds don't feel separate. They feel like the same question asked twice: <em>what is the underlying structure?</em></p>
+<p>My work spans <strong>Black-Scholes derivatives pricing</strong>, autonomous AI pipelines, and climate economics research with Prof. KC Adaina. I build FastAPI backends, train ML models, and ship payment-integrated platforms. I read papers on turbulence, write code at 2am, and argue with my models until they admit when they're wrong.</p>
+<p>I grew up in a small town where nobody knew what a quant was. I taught myself derivatives pricing off lecture notes from MIT OpenCourseWare. I built my first lead-generation system in college, my first options pricer on a long train ride, my first autonomous pipeline between lectures. None of it was planned. All of it compounded.</p>
+<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products. The goal isn't just revenue. It's proving that a physics student from a town most people have never heard of can build something that an investor in Bangalore, a researcher in Zurich, and a quant in New York all take seriously. <strong>That matters more to me than the revenue line.</strong></p>
 <div class="about-tags">
 <span>B.Sc. Physics</span>
 <span>Azim Premji University</span>
@@ -358,14 +363,20 @@ I build systems<br>
 <div class="section-inner">
 <div class="label">The Laboratory</div>
 <h2>Experiments <span>& explorations</span></h2>
-<p class="sub">Where curiosity meets computation. Physics simulations, AI experiments, financial models.</p>
+<p class="sub">Where curiosity meets computation. Physics simulations, AI experiments, financial models. Move your cursor — they're alive.</p>
 <div class="lab-grid">
 <div class="lab-item reveal" style="grid-column:span 2;position:relative"><div class="lab-icon">01</div><h4>Pendulum Dynamics</h4><p>Interactive double pendulum — move your mouse to disturb the system and watch chaos emerge.</p><canvas id="pendulum-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
 <div class="lab-item reveal"><div class="lab-icon">02</div><h4>Black-Scholes Engine</h4><p>European option pricing — move mouse to change volatility and see the payoff curve respond.</p><canvas id="bs-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
 <div class="lab-item reveal"><div class="lab-icon">03</div><h4>Climate Economics</h4><p>Himalayan glacial retreat modeling — correlating temperature anomalies with regional GDP.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">04</div><h4>Force Analysis</h4><p>Electromagnetic force measurement using gaussmeter data and uncertainty propagation.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">05</div><h4>Portfolio Optimizer</h4><p>Mean-variance optimization with Sharpe ratio maximization on Indian equity data.</p></div>
-<div class="lab-item reveal"><div class="lab-icon">06</div><h4>AI Pipeline</h4><p>Multi-model consensus system using Ollama, Hermes, and Lord AI for autonomous decisions.</p></div>
+<div class="lab-item reveal"><div class="lab-icon">06</div><h4>AI Pipeline</h4><p>Multi-model consensus system using Ollama, Hermes, and Lord AI for autonomous decisions.</p><canvas id="ai-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
+</div>
+<div class="lab-grid" style="margin-top:2px">
+<div class="lab-item reveal"><div class="lab-icon">07</div><h4>Wave Interference</h4><p>Superposition of two oscillators — adjust frequency and phase to watch beats emerge.</p><canvas id="wave-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">08</div><h4>Lorenz Attractor</h4><p>The strange attractor that broke classical determinism — sensitive dependence on initial conditions.</p><canvas id="lorenz-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">09</div><h4>Random Walk</h4><p>Brownian motion as the bridge between physics and financial markets. Monte Carlo sampling.</p><canvas id="walk-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
+</div>
 </div>
 </div>
 </section>
@@ -449,7 +460,7 @@ I build systems<br>
 </div>
 <div class="contact-cta">
 <h3>Open to collaborations</h3>
-<p>Research partnerships, AI engineering roles, quantitative finance positions, or anything that involves building systems that think.</p>
+<p>Research partnerships, AI engineering roles, quantitative finance positions, and work that involves building systems that think.</p>
 <a href="mailto:swastikmishra3558@gmail.com" class="btn-primary" style="text-decoration:none">Get in Touch →</a>
 </div>
 </div>
@@ -812,6 +823,132 @@ ctx.fillText('Move mouse to change',8,H-10);
 requestAnimationFrame(draw);
 }
 draw();
+})();
+
+// ===================== AI CONSENSUS PIPELINE =====================
+(function(){
+const canvas=document.getElementById('ai-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}resize();window.addEventListener('resize',resize);
+const nodes=[{x:.15,y:.5,l:'Ollama'},{x:.38,y:.25,l:'Hermes'},{x:.38,y:.75,l:'Mistral'},{x:.62,y:.5,l:'Lord'},{x:.85,y:.5,l:'Output'}];
+let sig=[];
+function draw(){
+ctx.clearRect(0,0,W,H);
+const t=Date.now()*0.001;
+sig.unshift(Math.sin(t*1.3)*0.5+0.5);if(sig.length>W)sig.pop();
+ctx.beginPath();ctx.moveTo(0,H);
+sig.forEach((v,i)=>ctx.lineTo(i,H-v*H*0.7));
+ctx.strokeStyle='rgba(99,102,241,0.55)';ctx.lineWidth=1.2;ctx.stroke();
+ctx.fillStyle='rgba(99,102,241,0.04)';ctx.fill();
+nodes.forEach((n,i)=>{
+const x=n.x*W,y=n.y*H;
+const pulse=(Math.sin(t*2+i)+1)/2;
+ctx.beginPath();ctx.arc(x,y,4+pulse*3,0,Math.PI*2);
+ctx.fillStyle=`rgba(${99+i*20},${102+i*10},${241-i*30},${0.4+pulse*0.5})`;ctx.fill();
+ctx.beginPath();ctx.arc(x,y,7+pulse*5,0,Math.PI*2);
+ctx.strokeStyle='rgba(99,102,241,0.15)';ctx.lineWidth=1;ctx.stroke();
+ctx.font='9px JetBrains Mono';ctx.fillStyle='rgba(148,163,184,0.6)';ctx.fillText(n.l,x+10,y+3);
+});
+nodes.slice(0,-1).forEach((a,i)=>{
+const b=nodes[i+1];
+ctx.beginPath();ctx.moveTo(a.x*W,a.y*H);ctx.lineTo(b.x*W,b.y*H);
+ctx.strokeStyle='rgba(99,102,241,0.18)';ctx.lineWidth=0.8;ctx.stroke();
+for(let j=0;j<2;j++){
+const p=(t*0.6+j*0.5)%1;
+ctx.beginPath();
+ctx.moveTo((a.x+(b.x-a.x)*p)*W,(a.y+(b.y-a.y)*p)*H);
+ctx.arc((a.x+(b.x-a.x)*p)*W,(a.y+(b.y-a.y)*p)*H,2,0,Math.PI*2);
+ctx.fillStyle='rgba(167,139,250,0.7)';ctx.fill();
+}
+});
+requestAnimationFrame(draw);
+}draw();
+})();
+
+// ===================== WAVE INTERFERENCE =====================
+(function(){
+const canvas=document.getElementById('wave-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}resize();window.addEventListener('resize',resize);
+let freq=0.05,phase=0;
+canvas.addEventListener('mousemove',e=>{
+const r=canvas.getBoundingClientRect();
+const x=(e.clientX-r.left)/r.width;
+freq=0.02+x*0.08;
+phase=x*Math.PI*2;
+});
+function draw(){
+ctx.clearRect(0,0,W,H);
+const t=Date.now()*0.002;
+for(let y=0;y<H;y+=2){
+let s='';const amp=H*0.3;
+for(let x=0;x<W;x++){
+const w1=Math.sin(x*freq+t)*amp*0.5;
+const w2=Math.sin(x*freq*(1+(y/H))*1.5+t*1.4+phase)*amp*0.3;
+const v=y+((w1+w2));
+const a=Math.min(1,(Math.abs(w1+w2))/amp);
+ctx.fillStyle=`rgba(${99+a*50},${102+a*30},${241},${0.15+a*0.4})`;
+ctx.fillRect(x,v,1,1);
+}
+}
+requestAnimationFrame(draw);
+}draw();
+})();
+
+// ===================== LORENZ ATTRACTOR =====================
+(function(){
+const canvas=document.getElementById('lorenz-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}resize();window.addEventListener('resize',resize);
+let x=0.1,y=0,z=0;
+const s=10,r=28,b=8/3,dt=0.01;
+const points=[];
+function step(){
+const dx=s*(y-x)*dt;
+const dy=(x*(r-z)-y)*dt;
+const dz=(x*y-b*z)*dt;
+x+=dx;y+=dy;z+=dz;
+points.push([x,y]);if(points.length>800)points.shift();
+}
+function draw(){
+step();
+ctx.fillStyle='rgba(5,5,8,0.08)';ctx.fillRect(0,0,W,H);
+const sx=W*0.05,sy=W*0.045,ox=W*0.1,oy=H*0.6;
+ctx.beginPath();
+points.forEach((p,i)=>{
+const px=ox+p[0]*sx,py=oy-p[1]*sy;
+if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+});
+ctx.strokeStyle='rgba(167,139,250,0.7)';ctx.lineWidth=0.8;ctx.stroke();
+ctx.beginPath();ctx.arc(ox+x*sx,oy-y*sy,3,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,1)';ctx.fill();
+requestAnimationFrame(draw);
+}draw();
+})();
+
+// ===================== RANDOM WALK / BROWNIAN MOTION =====================
+(function(){
+const canvas=document.getElementById('walk-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}resize();window.addEventListener('resize',resize);
+const walks=[];
+const colors=['rgba(99,102,241,0.7)','rgba(167,139,250,0.6)','rgba(56,189,248,0.5)','rgba(244,114,182,0.4)'];
+for(let i=0;i<4;i++)walks.push({path:[H/2],y:H/2,color:colors[i]});
+function draw(){
+ctx.fillStyle='rgba(5,5,8,0.06)';ctx.fillRect(0,0,W,H);
+walks.forEach(w=>{
+const step=(Math.random()-0.5)*4;
+w.y=Math.max(20,Math.min(H-20,w.y+step));
+w.path.push(w.y);if(w.path.length>W)w.path.shift();
+ctx.beginPath();
+w.path.forEach((y,i)=>{if(i===0)ctx.moveTo(i,y);else ctx.lineTo(i,y);});
+ctx.strokeStyle=w.color;ctx.lineWidth=1;ctx.stroke();
+});
+requestAnimationFrame(draw);
+}draw();
 })();
 
 // ===================== SCROLL-DRIVEN PARALLAX =====================
