@@ -146,7 +146,7 @@ section .sub{font-size:1.1rem;color:#c8c8c8;max-width:550px;line-height:1.8;marg
 .lab-item .lab-icon{font-size:1.5rem;margin-bottom:14px;color:#818cf8}
 .lab-item h4{font-size:0.95rem;font-weight:600;color:#fafafa;margin-bottom:8px}
 .lab-item p{font-size:0.85rem;color:#b0b0b0;line-height:1.7}
-canvas{border-radius:10px;background:#050508;border:1px solid rgba(255,255,255,0.04)}
+canvas{border-radius:10px;background:#08080e;border:1px solid rgba(99,102,241,0.12);box-shadow:0 0 20px rgba(99,102,241,0.05)}
 
 /* Writing */
 .writing-list{display:flex;flex-direction:column}
@@ -396,11 +396,11 @@ I build systems<br>
 <div class="lab-item reveal"><div class="lab-icon">03</div><h4>Climate Economics</h4><p>Himalayan glacial retreat modeling — correlating temperature anomalies with regional GDP.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">04</div><h4>Force Analysis</h4><p>Electromagnetic force measurement using gaussmeter data and uncertainty propagation.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">05</div><h4>Portfolio Optimizer</h4><p>Mean-variance optimization with Sharpe ratio maximization on Indian equity data.</p></div>
-<div class="lab-item reveal"><div class="lab-icon">06</div><h4>Wave Interference</h4><p>Superposition of two oscillators — drag to adjust frequency and phase, watch constructive and destructive interference form.</p><canvas id="wave-canvas" style="width:100%;height:180px;cursor:crosshair;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">06</div><h4>Wave Interference</h4><p>Superposition of two oscillators — drag to adjust frequency and phase, watch constructive and destructive interference form.</p><canvas id="wave-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
 <div class="lab-item reveal"><div class="lab-icon">07</div><h4>Lorenz Attractor</h4><p>The strange attractor that broke determinism — sensitive dependence on initial conditions. Watch the butterfly form.</p><canvas id="lorenz-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
 <div class="lab-item reveal"><div class="lab-icon">08</div><h4>Brownian Motion</h4><p>Geometric Brownian Motion — the stochastic process behind every asset price in financial markets.</p><canvas id="walk-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
 <div class="lab-item reveal" style="grid-column:span 2"><div class="lab-icon">09</div><h4>Shortest Path — A* Search</h4><p>Pathfinding through a weighted maze — A* explores nodes using heuristic cost. Watch the frontier expand and the optimal route emerge.</p><canvas id="astar-canvas" style="width:100%;height:220px;cursor:crosshair;margin-top:12px"></canvas></div>
-<div class="lab-item reveal"><div class="lab-icon">10</div><h4>Orbital Mechanics</h4><p>Two-body gravitational simulation — planets trace ellipses, perturbations create resonance patterns.</p><canvas id="orbital-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">10</div><h4>Orbital Mechanics</h4><p>Two-body gravitational simulation — planets trace ellipses, perturbations create resonance patterns.</p><canvas id="orbital-canvas" style="width:100%;height:220px;cursor:crosshair;margin-top:12px"></canvas></div>
 </div>
 </div>
 </section>
@@ -1240,7 +1240,7 @@ const ang=Math.atan2(ey,ex);
 ctx.save();ctx.translate(cx,cy);ctx.rotate(ang);
 ctx.beginPath();ctx.ellipse(ex*cx/ecc||0,0,sma,b,0,0,Math.PI*2);
 ctx.restore();
-ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.8;ctx.stroke();
+ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=0.8;ctx.stroke();
 }
 }
 });
