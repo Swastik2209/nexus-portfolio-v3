@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swastik Mishra — Systems Architect</title>
+<title>Swastik Mishra</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
@@ -13,22 +12,14 @@
 body{background:#09090b;color:#fafafa;font-family:'Inter',sans-serif;overflow-x:hidden}
 ::selection{background:#3b82f6;color:#fff}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#09090b}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
-
-/* Custom Cursor */
-.cur{position:fixed;width:20px;height:20px;border:1.5px solid #3b82f6;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .4s cubic-bezier(.4,0,.2,1),height .4s,border-color .3s}
-.cur.big{width:48px;height:48px;border-color:#818cf8}
-
-/* Layout */
+.c{position:fixed;width:20px;height:20px;border:1.5px solid #3b82f6;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .4s,height .4s,border-color .3s}
+.c.big{width:48px;height:48px;border-color:#818cf8}
 .page{max-width:1200px;margin:0 auto;padding:0 48px}
-
-/* Header */
 .h{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:56px;display:flex;justify-content:space-between;align-items:center;background:rgba(9,9,11,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
-.h-name{font-weight:700;font-size:0.95rem;letter-spacing:-0.02em}
+.h-name{font-weight:700;font-size:0.95rem}
 .h nav{display:flex;gap:24px}
 .h nav a{font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#71717a;text-decoration:none;transition:color .2s;font-weight:500}
 .h nav a:hover{color:#fafafa}
-
-/* Hero - Full screen with video background */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:0}
 .hero-bg video{width:100%;height:100%;object-fit:cover;opacity:0.15}
@@ -43,10 +34,8 @@ body{background:#09090b;color:#fafafa;font-family:'Inter',sans-serif;overflow-x:
 .hero-stats{display:flex;gap:40px;margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06)}
 .hero-stats .n{font-size:2rem;font-weight:800}
 .hero-stats .l{font-size:0.7rem;color:#52525b;margin-top:2px;font-family:'JetBrains Mono',monospace}
-
-/* About */
 .about{padding:120px 0}
-.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
 .about-photo{width:100%;aspect-ratio:3/4;border-radius:16px;overflow:hidden;position:relative}
 .about-photo img{width:100%;height:100%;object-fit:cover}
 .about-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,0.4));pointer-events:none}
@@ -54,84 +43,66 @@ body{background:#09090b;color:#fafafa;font-family:'Inter',sans-serif;overflow-x:
 .about-content p{color:#a1a1aa;line-height:1.8;margin-bottom:16px;font-size:1rem}
 .about-content strong{color:#fafafa;font-weight:600}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.tag{padding:5px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:0.7rem;color:#71717a;font-weight:500;transition:border-color .2s}
-.tag:hover{border-color:#3b82f6}
+.tag{padding:5px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:0.7rem;color:#71717a}
 .ach{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:20px;margin-bottom:12px;border-radius:8px;transition:all .3s}
 .ach:hover{border-color:rgba(59,130,246,0.3);transform:translateX(4px)}
 .ach h4{font-size:0.9rem;font-weight:600;margin-bottom:4px}
 .ach p{font-size:0.85rem;color:#71717a;line-height:1.6}
-
-/* Work */
 .work{padding:120px 0}
 .work-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.work h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
+.work h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
 .wcard{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;padding:48px 0;border-bottom:1px solid rgba(255,255,255,0.06);align-items:center}
 .wcard:nth-child(even){direction:rtl}.wcard:nth-child(even)>*{direction:ltr}
-.wvis{height:320px;border-radius:12px;overflow:hidden;transition:transform .5s cubic-bezier(.4,0,.2,1);position:relative}
+.wvis{height:320px;border-radius:12px;overflow:hidden;transition:transform .5s;position:relative}
+.wvis img{width:100%;height:100%;object-fit:cover}
 .wvis:hover{transform:scale(1.02)}
 .winfo .yr{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#52525b;margin-bottom:8px}
 .winfo h3{font-size:1.6rem;font-weight:600;margin-bottom:8px}
 .winfo p{color:#a1a1aa;font-size:0.9rem;line-height:1.7;max-width:400px;margin-bottom:16px}
 .winfo a{font-size:0.85rem;color:#fafafa;text-decoration:none;font-weight:500;transition:color .2s}
 .winfo a:hover{color:#3b82f6}
-
-/* Skills */
 .skills{padding:120px 0;background:#111113}
 .skills-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.skills h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
+.skills h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
 .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06)}
 .sitem{padding:28px;background:#111113;transition:background .3s}
 .sitem:hover{background:rgba(255,255,255,0.03)}
 .sitem h4{font-size:0.9rem;font-weight:600;color:#fafafa;margin-bottom:4px}
-.sitem .lv{font-size:0.65rem;color:#52525b;letter-spacing:0.05em}
-
-/* Experience */
+.sitem .lv{font-size:0.65rem;color:#52525b}
 .exp{padding:120px 0}
 .exp-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.exp h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
+.exp h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
 .eitem{display:grid;grid-template-columns:120px 1fr;gap:32px;padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
 .eitem:last-child{border-bottom:none}
 .edate{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#52525b;padding-top:2px}
 .eitem h4{font-size:1rem;font-weight:600;margin-bottom:4px}
 .eitem p{color:#a1a1aa;font-size:0.9rem;line-height:1.7}
-
-/* Contact */
 .contact{padding:120px 0;background:#111113}
 .contact-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.contact h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:48px}
+.contact h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
 .clinks{display:flex;flex-direction:column;max-width:500px}
 .clink{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fafafa;transition:all .3s;font-size:0.9rem;font-weight:500}
 .clink:hover{padding-left:12px;color:#3b82f6}
 .clink .arr{color:#52525b;transition:transform .3s}
 .clink:hover .arr{transform:translateX(6px)}
-
-/* Footer */
 .f{padding:32px 48px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:0.72rem;color:#52525b}
-
-/* Reveal */
 .rv{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.4,0,.2,1)}.rv.on{opacity:1;transform:none}
-
-@media(max-width:768px){.page{padding:0 20px}.hero-inner{padding:0 20px}.about-inner,.wcard{grid-template-columns:1fr;gap:24px}.wcard:nth-child(even){direction:ltr}.sgrid{grid-template-columns:1fr 1fr}.eitem{grid-template-columns:1fr;gap:8px}.h{padding:0 20px}.sec{padding:60px 0}.f{padding:24px 20px}.c{display:none}body{cursor:auto}}
+@media(max-width:768px){.page{padding:0 20px}.hero-inner{padding:0 20px}.about-inner,.wcard{grid-template-columns:1fr;gap:24px}.wcard:nth-child(even){direction:ltr}.sgrid{grid-template-columns:1fr 1fr}.eitem{grid-template-columns:1fr;gap:8px}.h{padding:0 20px}.f{padding:24px 20px}.c{display:none}body{cursor:auto}}
 </style>
 </head>
 <body>
 <div class="c" id="cur"></div>
-
 <header class="h">
 <div class="h-name">Swastik Mishra</div>
 <nav><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#exp">Experience</a><a href="#contact">Contact</a></nav>
 </header>
 
 <section class="hero">
-<div class="hero-bg">
-<video autoplay muted loop playsinline>
-<source src="https://cdn.coverr.co/videos/coverr-digital-animation-of-futuristic-devices-99786/1080p.mp4" type="video/mp4">
-</video>
-</div>
+<div class="hero-bg"><video autoplay muted loop playsinline><source src="https://cdn.coverr.co/videos/coverr-digital-animation-of-futuristic-devices-99786/1080p.mp4" type="video/mp4"></video></div>
 <div class="hero-inner">
 <div class="hero-tag">Systems Architect · AI · Quantitative Finance</div>
 <h1>Building<br>systems that<br><span class="grad">think.</span></h1>
-<p class="hero-sub">Physics honours student at Azim Premji University (9.0 CGPA). Building AI automation pipelines, FastAPI backends, and quantitative finance systems. Running NEXUS AI — autonomous business targeting $1M ARR.</p>
+<p class="hero-sub">Physics honours student at Azim Premji University (9.0 CGPA). Building AI automation pipelines, FastAPI backends, and quantitative finance systems.</p>
 <a href="#work" class="hero-btn">View Selected Work →</a>
 <div class="hero-stats">
 <div><div class="n">9.0</div><div class="l">CGPA</div></div>
@@ -152,16 +123,14 @@ body{background:#09090b;color:#fafafa;font-family:'Inter',sans-serif;overflow-x:
 <p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products targeting $1M ARR.</p>
 <div class="tags">
 <span class="tag">B.Sc. Physics — 9.0 CGPA</span>
-<span class="tag">Azim Premji University</span>
 <span class="tag">NEXUS AI Founder</span>
 <span class="tag">Quantitative Finance</span>
 <span class="tag">Climate Economics</span>
 </div>
 <div style="margin-top:24px">
-<div class="ach"><h4>NEXUS AI — $1M ARR Target</h4><p>12+ SaaS products, autonomous revenue generation.</p></div>
-<div class="ach"><h4>Research with Prof. KC Adaina</h4><p>Environmental economics collaboration.</p></div>
+<div class="ach"><h4>NEXUS AI — $1M ARR</h4><p>12+ SaaS products, autonomous revenue.</p></div>
+<div class="ach"><h4>Research — Prof. KC Adaina</h4><p>Environmental economics collaboration.</p></div>
 <div class="ach"><h4>Climate Economics Paper</h4><p>Himalayan glacial retreat study.</p></div>
-<div class="ach"><h4>Quantitative Finance</h4><p>Black-Scholes, GARCH, portfolio optimization.</p></div>
 </div>
 </div>
 </div>
@@ -169,23 +138,32 @@ body{background:#09090b;color:#fafafa;font-family:'Inter',sans-serif;overflow-x:
 
 <section class="work" id="work">
 <div class="work-inner">
-<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Selected Work</div>
-<h2>Things I've built</h2>
+<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Research & Projects</div>
+<h2>Real work, real results</h2>
 
-<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">$499/mo</div><div style="font-size:0.65rem;color:#888">Revenue</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">12</div><div style="font-size:0.65rem;color:#888">Clients</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">1,247</div><div style="font-size:0.65rem;color:#888">Leads</div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>NEXUS AI</h3><p>Autonomous AI business with 12+ SaaS products. Automated lead generation.</p><a href="https://github.com/Swastik2209">Source →</a></div></div>
+<div class="wcard rv">
+<div class="wvis"><img src="images/lab-setup.png" alt="Lab Setup"></div>
+<div class="winfo"><div class="yr">Physics Lab</div><h3>Experimental Methods</h3><p>PHY-205 lab work — Torricelli's Theorem, efflux speed analysis, experimental apparatus setup.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+</div>
 
-<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#064e3b,#065f46);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:0.6rem;color:#888">SOURCES</div><div style="font-size:0.8rem;line-height:1.8;color:#ccc"><div>CoinGecko ✓</div><div>FDA Data ✓</div><div>FRED API ✓</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:0.6rem;color:#888">STATUS</div><div style="font-size:0.8rem;line-height:1.8;color:#ccc"><div>Uptime 99.9%</div><div>Requests 12.4K</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:0.6rem;color:#888">STACK</div><div style="font-size:0.8rem;line-height:1.8;color:#ccc"><div>Ollama</div><div>FastAPI</div><div>Python</div></div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>MiMo / Hermes</h3><p>Ollama-based system with scrapers for CoinGecko, FDA, and FRED data.</p><a href="https://github.com/Swastik2209">Source →</a></div></div>
+<div class="wcard rv">
+<div class="wvis"><img src="images/pendulum-analysis.png" alt="Pendulum Analysis"></div>
+<div class="winfo"><div class="yr">Physics Analysis</div><h3>Double Pendulum Analysis</h3><p>Chaos theory visualization — tracking the unpredictable motion of coupled pendulums.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+</div>
 
-<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#581c87);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%"><div style="background:rgba(0,0,0,0.4);border-radius:8px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#22c55e;line-height:1.8"><div style="color:#888">def black_scholes(S, K, T, r, sigma):</div><div>&nbsp;&nbsp;d1 = (log(S/K) + (r + σ²/2)*T) / (σ * sqrt(T))</div><div>&nbsp;&nbsp;d2 = d1 - σ * sqrt(T)</div><div style="margin-top:6px">&nbsp;&nbsp;return S*N(d1) - K*e^(-rT)*N(d2)</div><div style="margin-top:10px;color:#888"># Portfolio optimization</div><div>&nbsp;&nbsp;sharpe = returns / volatility</div><div style="color:#22c55e">Sharpe: 1.42 | CAGR: 18.7%</div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>Quantitative Finance Toolkit</h3><p>Brownian motion simulator, NIFTY drawdown analysis, portfolio-optimization models.</p><a href="https://github.com/Swastik2209">Source →</a></div></div>
+<div class="wcard rv">
+<div class="wvis"><img src="images/indifference-curves.png" alt="Indifference Curves"></div>
+<div class="winfo"><div class="yr">Economics</div><h3>Consumer Theory</h3><p>Indifference curve analysis — mapping consumer preferences and utility maximization.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+</div>
 
-<div class="wcard rv"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%;display:flex;flex-direction:column"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><span style="font-size:0.8rem;font-weight:600;color:#fff">India GDP vs Inflation</span><span style="font-size:0.65rem;color:#888">INTERACTIVE</span></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:0.65rem;color:#888;width:36px">2024</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:72%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:0.7rem;font-weight:600;width:36px;text-align:right">7.2%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:0.65rem;color:#888;width:36px">2023</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:78%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:0.7rem;font-weight:600;width:36px;text-align:right">7.8%</span></div><div style="display:flex;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)"><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">$3.7T</div><div style="font-size:0.55rem;color:#888">GDP</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">5th</div><div style="font-size:0.55rem;color:#888">Rank</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">1.4B</div><div style="font-size:0.55rem;color:#888">People</div></div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>IndiaEcon Intelligence</h3><p>Interactive economics platform translating macroeconomic data into visual exploration.</p><a href="https://github.com/Swastik2209">Source →</a></div></div>
+<div class="wcard rv">
+<div class="wvis"><img src="images/growth-chart.png" alt="Growth Chart"></div>
+<div class="winfo"><div class="yr">Economics</div><h3>Sectoral Growth Analysis</h3><p>Panel data visualization — tracking sectoral contribution to GDP growth over time.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+</div>
 
-<div class="wcard rv" style="border-bottom:none"><div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center"><div style="padding:24px;width:100%;display:flex;flex-direction:column;justify-content:space-between;height:100%"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:0.8rem;font-weight:600;color:#fff">Palo Alto Central Dental</span><span style="font-size:0.65rem;color:#22c55e">PRODUCTION</span></div><div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:20px;color:#fff"><div style="font-size:0.6rem;color:#888">NEXT APPOINTMENT</div><div style="font-size:1rem;font-weight:600;margin:8px 0">Dr. Smith — Cleaning</div><div style="display:flex;gap:12px;font-size:0.7rem;color:#888;margin-bottom:16px"><span>Jul 15</span><span>10:30 AM</span><span>Room 4</span></div><div style="display:flex;gap:8px"><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">$12.4K</div><div style="font-size:0.55rem;color:#888">Revenue</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">342</div><div style="font-size:0.55rem;color:#888">Patients</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">98%</div><div style="font-size:0.55rem;color:#888">Satisfaction</div></div></div></div></div></div>
-<div class="winfo"><div class="yr">2025 — Present</div><h3>Client Demo — Palo Alto Central Dental</h3><p>Live production demo for booking flows and payment integration.</p><a href="https://github.com/Swastik2209">Source →</a></div></div>
+<div class="wcard rv" style="border-bottom:none">
+<div class="wvis"><img src="images/unemployment-chart.png" alt="Unemployment Chart"></div>
+<div class="winfo"><div class="yr">Economics</div><h3>Urban Employment Study</h3><p>Data visualization of urban unemployment trends — policy implications for Indian economy.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 </div>
 </section>
@@ -241,80 +219,13 @@ const c=document.getElementById('cur');let mx=0,my=0,cx=0,cy=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
 !function a(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;c.style.left=cx+'px';c.style.top=cy+'px';requestAnimationFrame(a)}();
 document.querySelectorAll('a,.wvis,.sitem').forEach(el=>{el.addEventListener('mouseenter',()=>c.classList.add('big'));el.addEventListener('mouseleave',()=>c.classList.remove('big'))});
-
 gsap.registerPlugin(ScrollTrigger);
 document.querySelectorAll('.rv').forEach(el=>{gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.7,scrollTrigger:{trigger:el,start:'top 85%'}})});
 gsap.fromTo('.hero h1',{opacity:0,y:20},{opacity:1,y:0,duration:1,delay:.2});
 gsap.fromTo('.hero-sub',{opacity:0,y:15},{opacity:1,y:0,duration:.8,delay:.4});
 gsap.fromTo('.hero-btn',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.6});
 gsap.fromTo('.hero-stats',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.8});
-
 document.querySelectorAll('.h nav a').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})})});
 </script>
-
-<canvas id="scene" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none"></canvas>
-<script>
-// 3D Scene with Three.js
-(function(){
-const canvas=document.getElementById('scene');
-if(!canvas)return;
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
-const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
-renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-camera.position.z=5;
-
-// Floating geometric objects
-const objects=[];
-const geo1=new THREE.IcosahedronGeometry(0.4,0);
-const geo2=new THREE.OctahedronGeometry(0.3,0);
-const geo3=new THREE.TorusGeometry(0.3,0.08,8,16);
-const geo4=new THREE.BoxGeometry(0.35,0.35,0.35);
-
-for(let i=0;i<15;i++){
-const geos=[geo1,geo2,geo3,geo4];
-const geo=geos[Math.floor(Math.random()*geos.length)];
-const mat=new THREE.MeshBasicMaterial({color:new THREE.Color().setHSL(0.6+Math.random()*0.1,0.6,0.5),wireframe:true,transparent:true,opacity:0.12});
-const mesh=new THREE.Mesh(geo,mat);
-mesh.position.set((Math.random()-0.5)*8,(Math.random()-0.5)*6,(Math.random()-0.5)*4);
-mesh.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,0);
-mesh.userData={rx:Math.random()*0.008,ry:Math.random()*0.006,rz:Math.random()*0.004,
-  bx:mesh.position.x,by:mesh.position.y,bz:mesh.position.z,
-  sx:(Math.random()-0.5)*0.003,sy:(Math.random()-0.5)*0.002};
-scene.add(mesh);objects.push(mesh);
-}
-
-// Particles
-const pGeo=new THREE.BufferGeometry();
-const pCount=100;
-const pPos=new Float32Array(pCount*3);
-for(let i=0;i<pCount*3;i++)pPos[i]=(Math.random()-0.5)*12;
-pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
-const pMat=new THREE.PointsMaterial({color:0x3b82f6,size:0.015,transparent:true,opacity:0.3});
-const particles=new THREE.Points(pGeo,pMat);
-scene.add(particles);
-
-let mx=innerWidth/2,my=innerHeight/2;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-
-function animate(){
-requestAnimationFrame(animate);
-objects.forEach(o=>{
-o.rotation.x+=o.userData.rx;o.rotation.y+=o.userData.ry;o.rotation.z+=o.userData.rz;
-o.position.x=o.userData.bx+Math.sin(Date.now()*o.userData.sx)*0.5;
-o.position.y=o.userData.by+Math.cos(Date.now()*o.userData.sy)*0.3;
-});
-particles.rotation.y+=0.001;particles.rotation.x+=0.0005;
-const tx=(mx/innerWidth-0.5)*0.3,ty=(my/innerHeight-0.5)*0.3;
-camera.position.x+=(tx-camera.position.x)*0.02;
-camera.position.y+=(-ty-camera.position.y)*0.02;
-renderer.render(scene,camera);
-}
-animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-})();
-</script>
-
 </body>
 </html>
