@@ -508,171 +508,44 @@ I build systems<br>
 </footer>
 
 <script>
-// ===================== WEBGL SHADER BACKGROUND =====================
-(function(){
-const c=document.getElementById('three-bg');
-c.width=innerWidth;c.height=innerHeight;
-const gl=c.getContext('webgl')||c.getContext('experimental-webgl');
-if(!gl)return;
+// ===================== THREE.JS BACKGROUND =====================
+(function initThreeBackground(){
+const canvas=document.getElementById('three-bg');
+if(!canvas)return;
+let W,H;function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+resize();addEventListener('resize',resize);
 
-const vsSource='attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0,1);}';
-const fsSource=`
-precision mediump float;
-uniform float u_time;
-uniform vec2 u_mouse;
-uniform vec2 u_resolution;
-uniform float u_scroll;
-
-float noise(vec2 p){
-vec2 i=floor(p);vec2 f=fract(p);
-f=f*f*(3.0-2.0*f);
-float a=fract(sin(dot(i,vec2(127.1,311.7)))*43758.5453);
-float b=fract(sin(dot(i+vec2(1.0,0.0),vec2(127.1,311.7)))*43758.5453);
-float c=fract(sin(dot(i+vec2(0.0,1.0),vec2(127.1,311.7)))*43758.5453);
-float d=fract(sin(dot(i+vec2(1.0,1.0),vec2(127.1,311.7)))*43758.5453);
-return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
-}
-
-float fbm(vec2 p){
-float v=0.0;float a=0.5;
-for(int i=0;i<5;i++){v+=a*noise(p);p*=2.0;a*=0.5;}
-return v;
-}
-
-void main(){
-vec2 uv=gl_FragCoord.xy/u_resolution;
-vec2 mouse=u_mouse/u_resolution;
-float t=u_time*0.15;
-
-vec2 q=uv;
-q.x+=sin(q.y*3.0+t)*0.02;
-q.y+=cos(q.x*2.5+t*0.7)*0.02;
-
-float f=fbm(q*3.0+vec2(t*0.3,t*0.1));
-float f2=fbm(q*4.0-vec2(t*0.2,t*0.15)+f*0.5);
-
-float d=length(uv-mouse);
-float glow=exp(-d*3.0)*0.06;
-
-vec3 col=vec3(0.02,0.02,0.03);
-col+=vec3(0.22,0.37,0.92)*f*0.12;
-col+=vec3(0.37,0.31,0.91)*f2*0.06;
-col+=vec3(0.51,0.55,0.97)*glow;
-
-float scan=sin(uv.y*u_resolution.y*0.5)*0.015;
-col+=scan;
-
-float scrollFade=clamp(1.0-u_scroll*0.0005,0.3,1.0);
-col*=scrollFade;
-
-gl_FragColor=vec4(col,1.0);
-}`;
-
-function createShader(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
-const vs=createShader(gl.VERTEX_SHADER,vsSource);
-const fs=createShader(gl.FRAGMENT_SHADER,fsSource);
-const pg=gl.createProgram();gl.attachShader(pg,vs);gl.attachShader(pg,fs);gl.linkProgram(pg);gl.useProgram(pg);
-
-const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
-const pos=gl.getAttribLocation(pg,'a_position');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
-
-const uTime=gl.getUniformLocation(pg,'u_time');
-const uMouse=gl.getUniformLocation(pg,'u_mouse');
-const uRes=gl.getUniformLocation(pg,'u_resolution');
-const uScroll=gl.getUniformLocation(pg,'u_scroll');
-
-let mx=innerWidth/2,my=innerHeight/2;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-
-(function render(){
-c.width=innerWidth;c.height=innerHeight;gl.viewport(0,0,innerWidth,innerHeight);
-gl.uniform1f(uTime,performance.now()*0.001);
-gl.uniform2f(uMouse,mx,innerHeight-my);
-gl.uniform2f(uRes,innerWidth,innerHeight);
-gl.uniform1f(uScroll,window.scrollY);
-gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-requestAnimationFrame(render);
-})();
-
-addEventListener('resize',()=>{});
-})();
-
-// ===================== INIT ON DOM READY =====================
-document.addEventListener('DOMContentLoaded',()=>{
+let renderer,scene,camera,objs;
 try{
-// ===================== THREE.JS FLOATING GEOMETRY (Lazy-loaded after hero) =====================
-let threeInitialized=false;
-function initThree(){
-if(threeInitialized)return;
-threeInitialized=true;
-try{
-const s=new THREE.Scene();
-const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,1000);
-const r=new THREE.WebGLRenderer({alpha:true,antialias:true});
-r.setSize(innerWidth,innerHeight);
-r.setPixelRatio(Math.min(devicePixelRatio,2));
-r.domElement.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none';
-document.body.appendChild(r.domElement);
-cam.position.z=8;
+renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+scene=new THREE.Scene();
+camera=new THREE.PerspectiveCamera(45,W/H,0.1,100);
+camera.position.z=8;
 
-const geos=[
-new THREE.IcosahedronGeometry(0.35,0),
-new THREE.OctahedronGeometry(0.3,0),
-new THREE.TorusGeometry(0.3,0.06,8,24),
-new THREE.TetrahedronGeometry(0.32,0),
-new THREE.DodecahedronGeometry(0.28,0),
-new THREE.TorusKnotGeometry(0.2,0.05,64,8,2,3)
-];
-const objs=[];
+const geo=new THREE.IcosahedronGeometry(1,0);
+const mat=new THREE.MeshBasicMaterial({color:0x6366f1,wireframe:true,transparent:true,opacity:0.15});
+objs=[];
 for(let i=0;i<18;i++){
-const g=geos[i%geos.length];
-const hue=0.62+Math.random()*0.1;
-const mat=new THREE.MeshBasicMaterial({color:new THREE.Color().setHSL(hue,0.5,0.5),wireframe:true,transparent:true,opacity:0.05+Math.random()*0.03});
-const mesh=new THREE.Mesh(g,mat);
-const spread=12;
-mesh.position.set((Math.random()-0.5)*spread,(Math.random()-0.5)*spread*0.7,(Math.random()-0.5)*6-2);
-mesh.rotation.set(Math.random()*6.28,Math.random()*6.28,0);
-mesh.userData={
-rx:(0.001+Math.random()*0.004)*(Math.random()>0.5?1:-1),
-ry:(0.001+Math.random()*0.003)*(Math.random()>0.5?1:-1),
-rz:(0.0005+Math.random()*0.002)*(Math.random()>0.5?1:-1),
-bx:mesh.position.x,by:mesh.position.y,bz:mesh.position.z,
-sx:0.0003+Math.random()*0.001,
-sy:0.0002+Math.random()*0.0008,
-amplitude:0.3+Math.random()*0.5
-};
-s.add(mesh);objs.push(mesh);
+const m=new THREE.Mesh(geo,mat);
+m.userData={rx:(Math.random()-0.5)*0.0015,ry:(Math.random()-0.5)*0.0015,rz:(Math.random()-0.5)*0.0015,
+bx:(Math.random()-0.5)*14,by:(Math.random()-0.5)*8,sx:Math.random()*0.0008+0.0004,
+sy:Math.random()*0.0008+0.0004,amplitude:Math.random()*2.5+1.5};
+m.position.set(m.userData.bx,m.userData.by,(Math.random()-0.5)*6);
+scene.add(m);objs.push(m);
 }
 
-// Particle system with depth
-const pg=new THREE.BufferGeometry();
-const pc=400;
-const pp=new Float32Array(pc*3);
-const pv=new Float32Array(pc*3);
-for(let i=0;i<pc*3;i++){pp[i]=(Math.random()-0.5)*20;pv[i]=(Math.random()-0.5)*0.001;}
-pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
-const pm=new THREE.PointsMaterial({color:0x6366f1,size:0.016,transparent:true,opacity:0.15,blending:THREE.AdditiveBlending});
-const particles=new THREE.Points(pg,pm);
-s.add(particles);
+let mx=innerWidth/2,my=innerHeight/2,scrollY=0;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+addEventListener('scroll',()=>{scrollY=window.scrollY});
 
-// Line connections
-const lg=new THREE.BufferGeometry();
-const lp=new Float32Array(600);
-const lmat=new THREE.LineBasicMaterial({color:0x6366f1,transparent:true,opacity:0.03,blending:THREE.AdditiveBlending});
-const lines=new THREE.LineSegments(lg,lmat);
-s.add(lines);
-
-let mx=innerWidth/2,my=innerHeight/2;
-let scrollY=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-window.addEventListener('scroll',()=>{scrollY=window.scrollY});
-
-(function anim(){
+function anim(){
 requestAnimationFrame(anim);
 const t=Date.now();
-
-// Rotate objects
+camera.position.x+=(mx-innerWidth/2)*0.00003-camera.position.x)*0.02;
+camera.position.y+=(-my+innerHeight/2)*0.00003-camera.position.y)*0.02;
+camera.position.z=8-scrollY*0.001;
+camera.lookAt(0,0,0);
 objs.forEach((o,i)=>{
 o.rotation.x+=o.userData.rx;
 o.rotation.y+=o.userData.ry;
@@ -680,457 +553,22 @@ o.rotation.z+=o.userData.rz;
 o.position.x=o.userData.bx+Math.sin(t*o.userData.sx+i)*o.userData.amplitude;
 o.position.y=o.userData.by+Math.cos(t*o.userData.sy+i*0.7)*o.userData.amplitude*0.6;
 });
-
-// Animate particles
-const pa=particles.geometry.attributes.position.array;
-for(let i=0;i<pc*3;i++){pa[i]+=pv[i];if(Math.abs(pa[i])>10)pv[i]*=-1;}
-particles.geometry.attributes.position.needsUpdate=true;
-
-// Build dynamic line connections between nearby objects
-const linePositions=lines.geometry.attributes.position?lines.geometry.attributes.position.array:new Float32Array(600);
-let li=0;
-for(let i=0;i<objs.length&&li<600;i++){
-for(let j=i+1;j<objs.length&&li<600;j++){
-const d=objs[i].position.distanceTo(objs[j].position);
-if(d<4){
-linePositions[li++]=objs[i].position.x;
-linePositions[li++]=objs[i].position.y;
-linePositions[li++]=objs[i].position.z;
-linePositions[li++]=objs[j].position.x;
-linePositions[li++]=objs[j].position.y;
-linePositions[li++]=objs[j].position.z;
-}
-}
-}
-for(;li<600;li++)linePositions[li]=0;
-lines.geometry.setAttribute('position',new THREE.BufferAttribute(linePositions,3));
-
-// Camera follows mouse with parallax
-const tx=(mx/innerWidth-0.5)*0.5;
-const ty=(my/innerHeight-0.5)*0.3;
-cam.position.x+=(tx-cam.position.x)*0.02;
-cam.position.y+=(-ty-cam.position.y)*0.02;
-cam.position.z=8-scrollY*0.001;
-cam.lookAt(0,0,0);
-
-// Fade scene based on scroll
 const fade=Math.max(0.3,1-scrollY/(innerHeight*2));
-s.children.forEach(c=>{if(c.material)c.material.opacity=c.material.userData?.baseOpacity?c.material.userData.baseOpacity*fade:c.material.opacity;});
-
-r.render(s,cam);
+objs.forEach(o=>{if(o.material)o.material.opacity=0.15*fade;});
+renderer.render(scene,camera);
+}
+anim();
+}catch(e){console.warn('Three.js bg failed:',e);}
 })();
-addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
-}
+</script>
 
-// Init Three.js after hero animation
-setTimeout(initThree, 1500);
+<script>
+// ===================== MAIN APP =====================
+document.addEventListener('DOMContentLoaded',()=>{
 
-// ===================== SIM: DOUBLE PENDULUM =====================
-(function(){
-const c=document.getElementById('pendulum-canvas');if(!c)return;
-const x=c.getContext('2d');
-function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}r();addEventListener('resize',r);
-const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
-let a1=Math.PI*0.7,a2=Math.PI*0.5,v1=0,v2=0;
-const m1=1,m2=1;
-let L1=Math.min(W(),H())*0.32,L2=L1*0.85;
-function step(){
-const g=1;
-const dt=0.018,steps=4;
-for(let i=0;i<steps;i++){
-const d1=-g*(2*m1+m2)*Math.sin(a1)-m2*Math.sin(a1-2*a2)*(v2*v2*L2+v1*v1*L1*Math.cos(a1-a2));
-const d2=2*Math.sin(a1-a2)*(v1*v1*L1*(m1+m2)+g*(m1+m2)*Math.cos(a1)+m2*v2*v2*L2*Math.cos(a1-a2));
-const D=L1*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
-const a1a=d1/D;
-const a2a=(d2/D);
-// semi-implicit Euler with damping
-v1+=a1a*dt;v2+=a2a*dt;v1*=0.9994;v2*=0.9994;
-a1+=v1*dt;a2+=v2*dt;
-}
-}
-const trail=[];
-let frame=0;
-function draw(){
-step();frame++;
-x.fillStyle='rgba(10,10,14,0.25)';x.fillRect(0,0,W(),H());
-const ox=W()/2,oy=H()*0.18;
-const x1=ox+L1*Math.sin(a1),y1=oy+L1*Math.cos(a1);
-const x2=x1+L2*Math.sin(a2),y2=y1+L2*Math.cos(a2);
-trail.push(x2,y2);if(trail.length>1500)trail.splice(0,trail.length-1500);
-for(let i=1;i<trail.length;i+=2){
-const px=trail[i-1],py=trail[i];
-const a=i/(trail.length);
-x.fillStyle=`rgba(167,139,250,${a*0.18})`;
-x.fillRect(px-0.5,py-0.5,1.2,1.2);
-}
-x.lineCap='round';
-x.beginPath();x.moveTo(ox,oy);x.lineTo(x1,y1);
-x.strokeStyle='rgba(255,255,255,0.4)';x.lineWidth=1.4;x.stroke();
-x.beginPath();x.moveTo(x1,y1);x.lineTo(x2,y2);
-x.stroke();
-x.fillStyle='rgba(15,15,20,0.95)';x.strokeStyle='rgba(244,114,182,0.95)';x.lineWidth=2;
-x.beginPath();x.arc(x2,y2,5,0,Math.PI*2);x.fill();x.stroke();
-x.beginPath();x.arc(x1,y1,5,0,Math.PI*2);x.fillStyle='rgba(15,15,20,0.95)';x.strokeStyle='rgba(99,102,241,0.95)';x.fill();x.stroke();
-x.fillStyle='rgba(255,255,255,0.3)';x.beginPath();x.arc(ox,oy,3,0,Math.PI*2);x.fill();
-x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.6)';
-x.fillText('θ₁='+a1.toFixed(2)+'  θ₂='+a2.toFixed(2)+'  E='+((m1+m2)*9.8*(H()-y2)/100).toFixed(2),10,16);
-requestAnimationFrame(draw);
-}c.addEventListener('mousemove',e=>{const re=c.getBoundingClientRect();const dx=(e.clientX-re.left-re.width/2)/re.width;v1+=dx*1.2;v2+=dx*0.9;});
-draw();
-})();
-
-// ===================== SIM: BLACK-SCHOLES =====================
-(function(){
-const c=document.getElementById('bs-canvas');if(!c)return;
-const x=c.getContext('2d');
-function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}r();addEventListener('resize',r);
-const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
-let vol=0.25;
-function norm(z){const t=1/(1+0.2316419*Math.abs(z));const d=0.3989422804014327*Math.exp(-z*z/2);const p=d*t*(0.31938153+t*(-0.356563756+t*(1.781477937+t*(-1.821255978+t*1.330274429))));return z>0?1-p:p;}
-function callPrice(S,K,t,r,sigma){if(t<=0)return Math.max(0,S-K);const d1=(Math.log(S/K)+(r+sigma*sigma/2)*t)/(sigma*Math.sqrt(t));const d2=d1-sigma*Math.sqrt(t);return S*norm(d1)-K*Math.exp(-r*t)*norm(d2);}
-const K=100;let mouseX=-1;
-c.addEventListener('mousemove',e=>{const re=c.getBoundingClientRect();mouseX=(e.clientX-re.left)/re.width;if(mouseX>=0)vol=0.1+mouseX*0.8;});
-c.addEventListener('mouseleave',()=>mouseX=-1);
-function draw(){
-x.fillStyle='rgba(10,10,14,0.45)';x.fillRect(0,0,W(),H());
-const pad=20,plotW=W()-pad*2-30,plotH=H()-pad*2-14;
-const ox=pad+30,oy=pad+plotH/2;
-// grid
-x.strokeStyle='rgba(255,255,255,0.05)';x.lineWidth=1;
-for(let i=1;i<5;i++){const y=pad+plotH*i/5;x.beginPath();x.moveTo(ox,y);x.lineTo(ox+plotW,y);x.stroke();}
-for(let i=1;i<5;i++){const px=ox+plotW*i/5;x.beginPath();x.moveTo(px,pad);x.lineTo(px,pad+plotH);x.stroke();}
-// axes
-x.strokeStyle='rgba(255,255,255,0.18)';
-x.beginPath();x.moveTo(ox,pad);x.lineTo(ox,pad+plotH);x.lineTo(ox+plotW,pad+plotH);x.stroke();
-// BS curve
-const points=[];
-for(let i=0;i<=120;i++){
-const S=50+i*(100/120);const p=callPrice(S,K,1,0.05,vol);
-const y=pad+plotH-Math.min(p,60)/60*plotH;
-points.push({x:ox+(S-50)/100*plotW,y});
-}
-x.beginPath();x.moveTo(points[0].x,points[0].y);
-for(let i=1;i<points.length;i++)x.lineTo(points[i].x,points[i].y);
-x.strokeStyle='rgba(99,102,241,0.95)';x.lineWidth=1.6;x.stroke();
-// fill under
-const fill=new Path2D();fill.moveTo(points[0].x,pad+plotH);points.forEach(p=>fill.lineTo(p.x,p.y));fill.lineTo(points[points.length-1].x,pad+plotH);fill.closePath();
-x.fillStyle='rgba(99,102,241,0.1)';x.fill(fill);
-// strike line
-const strikeX=ox+(K-50)/100*plotW;
-x.strokeStyle='rgba(255,255,255,0.12)';x.setLineDash([3,3]);
-x.beginPath();x.moveTo(strikeX,pad);x.lineTo(strikeX,pad+plotH);x.stroke();
-x.setLineDash([]);
-// spot price indicator (animated)
-const t=Date.now()*0.001;
-const S=80+Math.sin(t*0.4)*15;
-const p=callPrice(S,K,1,0.05,vol);
-const px=ox+(S-50)/100*plotW;
-const py=pad+plotH-Math.min(p,60)/60*plotH;
-x.beginPath();x.arc(px,py,8,0,Math.PI*2);x.fillStyle='rgba(244,114,182,0.15)';x.fill();
-x.beginPath();x.arc(px,py,3,0,Math.PI*2);x.fillStyle='#fff';x.fill();
-x.fillStyle='rgba(244,114,182,0.85)';x.fillRect(px-1,pad,2,plotH);
-// labels
-x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
-x.fillText('σ '+(vol*100).toFixed(0)+'%',10,16);
-x.fillText('S='+S.toFixed(0)+' K=100',W()/2-50,16);
-x.fillText('Call = ₹'+p.toFixed(2),ox+10,pad-4);
-x.fillText('S (Spot)',ox+plotW+4,pad+plotH+10);
-requestAnimationFrame(draw);
-}draw();
-})();
-
-// ===================== SIM: MARKET PREDICTION ENGINE (NEW) =====================
-(function(){
-const c=document.getElementById('market-canvas');if(!c)return;
-const x=c.getContext('2d');
-function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}r();addEventListener('resize',r);
-const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
-const N=240;
-const series=new Array(N).fill(0).map((_,i)=>100+Math.sin(i*0.05)*5+(Math.random()-0.5)*1.2);
-function EMA(s,n){const k=2/(n+1);let e=s[0];const r=[e];for(let i=1;i<s.length;i++){e=s[i]*k+e*(1-k);r.push(e);}return r;}
-function RSI(s,n=14){
-const r=new Array(s.length).fill(50);
-let g=0,l=0;
-for(let i=1;i<=n;i++){const d=s[i]-s[i-1];if(d>0)g+=d;else l-=d;}g/=n;l/=n;
-r[n]=100-100/(1+g/l);
-for(let i=n+1;i<s.length;i++){
-const d=s[i]-s[i-1];const gd=Math.max(0,d),ld=Math.max(0,-d);
-g=(g*(n-1)+gd)/n;l=(l*(n-1)+ld)/n;
-r[i]=100-100/(1+(l===0?100:g/l));
-}return r;
-}
-let pred=null;
-function draw(){
-// extend series with a random walk
-const last=series[series.length-1];
-for(let i=0;i<2;i++){
-let v=last+(Math.random()-0.48)*0.8;v=Math.max(70,Math.min(130,v));
-series.push(v);if(series.length>N)series.shift();
-}
-const ema12=EMA(series,12),ema26=EMA(series,26);
-const macd=ema12.map((v,i)=>v-ema26[i]);
-const sig=EMA(macd,9);
-const rsi=RSI(series,14);
-x.fillStyle='rgba(10,10,14,0.6)';x.fillRect(0,0,W(),H());
-const pad=10;
-const priceH=H()*0.55;
-const indicatorH=H()*0.18;
-const gap=8;
-// price chart
-const priceBox={x:pad,y:pad,w:W()-pad*2,h:priceH};
-const priceMin=Math.min(...series),priceMax=Math.max(...series);
-const range=priceMax-priceMin||1;
-x.strokeStyle='rgba(255,255,255,0.05)';
-for(let i=0;i<5;i++){const y=priceBox.y+priceBox.h*i/5;x.beginPath();x.moveTo(priceBox.x,y);x.lineTo(priceBox.x+priceBox.w,y);x.stroke();}
-x.strokeStyle='rgba(255,255,255,0.18)';
-x.beginPath();x.moveTo(priceBox.x,priceBox.y);x.lineTo(priceBox.x,priceBox.y+priceBox.h);x.lineTo(priceBox.x+priceBox.w,priceBox.y+priceBox.h);x.stroke();
-// price line
-x.beginPath();
-series.forEach((v,i)=>{
-const px=priceBox.x+priceBox.w*i/(series.length-1);
-const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;
-if(i===0)x.moveTo(px,py);else x.lineTo(px,py);
-});
-x.strokeStyle='rgba(99,102,241,0.95)';x.lineWidth=1.6;x.stroke();
-// gradient fill under
-const grad=x.createLinearGradient(0,priceBox.y,0,priceBox.y+priceBox.h);
-grad.addColorStop(0,'rgba(99,102,241,0.18)');grad.addColorStop(1,'rgba(99,102,241,0)');
-x.fillStyle=grad;
-x.beginPath();series.forEach((v,i)=>{const px=priceBox.x+priceBox.w*i/(series.length-1);const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-x.lineTo(priceBox.x+priceBox.w,priceBox.y+priceBox.h);x.lineTo(priceBox.x,priceBox.y+priceBox.h);x.closePath();x.fill();
-// EMA overlays
-x.beginPath();ema12.forEach((v,i)=>{const px=priceBox.x+priceBox.w*i/(ema12.length-1);const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-x.strokeStyle='rgba(244,114,182,0.6)';x.lineWidth=1;x.stroke();
-x.beginPath();ema26.forEach((v,i)=>{const px=priceBox.x+priceBox.w*i/(ema26.length-1);const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-x.strokeStyle='rgba(34,211,238,0.6)';x.lineWidth=1;x.stroke();
-// prediction line
-const last5=series.slice(-5);const mean=last5.reduce((a,b)=>a+b,0)/5;
-const lastDot=series[series.length-1];
-const predDir=lastDot>mean+0.5?-1:lastDot<mean-0.5?1:0;
-pred=null;
-if(predDir!==0){
-pred=[];
-let p=lastDot;
-for(let i=0;i<30;i++){
-p+=predDir*0.4-0.6+Math.random()*0.8;
-pred.push(p);
-}
-x.beginPath();
-pred.forEach((v,i)=>{
-const baseX=priceBox.x+priceBox.w;
-const px=baseX+(i/pred.length)*priceBox.w*0.25;
-const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;
-if(i===0)x.moveTo(px,py);else x.lineTo(px,py);
-});
-x.strokeStyle=predDir>0?'rgba(34,197,94,0.8)':'rgba(239,68,68,0.8)';
-x.lineWidth=2;x.setLineDash([4,4]);x.stroke();x.setLineDash([]);
-// shaded prediction cone
-x.fillStyle=predDir>0?'rgba(34,197,94,0.06)':'rgba(239,68,68,0.06)';
-x.beginPath();
-pred.forEach((v,i)=>{const baseX=priceBox.x+priceBox.w;const px=baseX+(i/pred.length)*priceBox.w*0.25;const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-const lastPred=pred[pred.length-1];const pxLast=priceBox.x+priceBox.w+0.25*priceBox.w;const pyLast=priceBox.y+priceBox.h-(lastPred-priceMin)/range*priceBox.h;x.lineTo(pxLast,priceBox.y+priceBox.h);x.lineTo(priceBox.x+priceBox.w,priceBox.y+priceBox.h);x.closePath();x.fill();
-}
-// current price line
-const curX=priceBox.x+priceBox.w;
-const curY=priceBox.y+priceBox.h-(lastDot-priceMin)/range*priceBox.h;
-x.fillStyle='rgba(255,255,255,0.18)';x.fillRect(curX-1,priceBox.y,2,priceBox.h);
-x.fillStyle='rgba(255,255,255,0.95)';x.beginPath();x.arc(curX,curY,3,0,Math.PI*2);x.fill();
-// MACD subplot
-const macdBox={x:pad,y:priceBox.y+priceBox.h+gap,w:priceBox.w,h:indicatorH};
-const macdMax=Math.max(...macd.slice(-60).map(Math.abs));
-const macdRange=macdMax||1;
-x.strokeStyle='rgba(255,255,255,0.18)';
-x.strokeRect(macdBox.x,macdBox.y,macdBox.w,macdBox.h);
-x.fillStyle='rgba(255,255,255,0.06)';
-x.fillRect(macdBox.x,macdBox.y+macdBox.h/2-0.5,macdBox.w,1);
-// macd histogram
-macd.forEach((v,i)=>{const px=macdBox.x+macdBox.w*i/macd.length;const py=macdBox.y+macdBox.h/2;const h=-v/macdRange*macdBox.h/3;
-x.fillStyle=v>=0?'rgba(34,197,94,0.4)':'rgba(239,68,68,0.4)';x.fillRect(px,py,macdBox.w/macd.length-1,h);
-});
-// macd line + signal
-x.beginPath();macd.slice(-60).forEach((v,i)=>{const px=macdBox.x+macdBox.w*0.75+macdBox.w*0.25*i/60;const py=macdBox.y+macdBox.h/2-v/macdRange*macdBox.h/3;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-x.strokeStyle='rgba(99,102,241,0.95)';x.lineWidth=1.5;x.stroke();
-x.beginPath();sig.slice(-60).forEach((v,i)=>{const px=macdBox.x+macdBox.w*0.75+macdBox.w*0.25*i/60;const py=macdBox.y+macdBox.h/2-v/macdRange*macdBox.h/3;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-x.strokeStyle='rgba(244,114,182,0.95)';x.lineWidth=1.5;x.stroke();
-// RSI box
-const rsiBox={x:pad,y:macdBox.y+macdBox.h+gap,w:priceBox.w,h:indicatorH};
-x.strokeStyle='rgba(255,255,255,0.18)';x.strokeRect(rsiBox.x,rsiBox.y,rsiBox.w,rsiBox.h);
-// overbought/oversold lines
-x.strokeStyle='rgba(255,255,255,0.06)';
-[30,70].forEach(lvl=>{const y=rsiBox.y+rsiBox.h-((lvl/100)*rsiBox.h);x.beginPath();x.moveTo(rsiBox.x,y);x.lineTo(rsiBox.x+rsiBox.w,y);x.stroke();});
-const lastRSI=rsi[rsi.length-1];
-// shaded region
-const rsiColor=lastRSI>70?'rgba(239,68,68,0.08)':lastRSI<30?'rgba(34,197,94,0.08)':'rgba(255,255,255,0.02)';
-x.fillStyle=rsiColor;x.fillRect(rsiBox.x,rsiBox.y,rsiBox.w,rsiBox.h);
-// rsi line
-x.beginPath();rsi.slice(-60).forEach((v,i)=>{
-const px=rsiBox.x+rsiBox.w*(0.25+0.75*i/60);
-const py=rsiBox.y+rsiBox.h-(v/100)*rsiBox.h;
-if(i===0)x.moveTo(px,py);else x.lineTo(px,py);
-});
-x.strokeStyle='rgba(167,139,250,0.95)';x.lineWidth=1.5;x.stroke();
-// labels
-x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
-x.fillText('NIFTY 50  ₹'+lastDot.toFixed(2),10,16);
-x.fillText('EMA 12·26',10,priceBox.y-2);
-x.fillText('MACD  ▲',priceBox.x+priceBox.w-70,macdBox.y+10);
-x.fillText('RSI  '+lastRSI.toFixed(1),priceBox.x+priceBox.w-60,rsiBox.y+10);
-requestAnimationFrame(draw);
-}draw();
-})();
-
-// ===================== SIM: BROWNIAN MOTION (Geometric) =====================
-(function(){
-const c=document.getElementById('walk-canvas');if(!c)return;
-const x=c.getContext('2d');
-function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}r();addEventListener('resize',r);
-const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
-const path=[];const maxN=600;
-let drift=0;
-function draw(){
-x.fillStyle='rgba(10,10,14,0.18)';x.fillRect(0,0,W(),H());
-const pad=14,plotW=W()-pad*2,plotH=H()-pad*2-14;
-const ox=pad,oy=pad+plotH/2;
-// grid
-x.strokeStyle='rgba(255,255,255,0.05)';x.lineWidth=1;
-for(let i=1;i<6;i++){const y=pad+plotH*i/6;x.beginPath();x.moveTo(ox,y);x.lineTo(ox+plotW,y);x.stroke();}
-for(let i=1;i<8;i++){const px=ox+plotW*i/8;x.beginPath();x.moveTo(px,pad);x.lineTo(px,pad+plotH);x.stroke();}
-// axes
-x.strokeStyle='rgba(255,255,255,0.18)';
-x.beginPath();x.moveTo(ox,pad);x.lineTo(ox,pad+plotH);x.lineTo(ox+plotW,pad+plotH);x.stroke();
-// GBM step
-const dt=0.05,mu=0.08,sigma=0.4;
-const last=path.length?path[path.length-1].y:Math.log(100);
-const Z=Math.sqrt(dt)*((Math.random()+Math.random()+Math.random()+Math.random()+Math.random()+Math.random()-3)/Math.sqrt(1.5));
-const next=last+(mu-0.5*sigma*sigma)*dt+sigma*Z;
-const t=path.length/200;
-path.push({t,y:next});if(path.length>maxN)path.shift();
-const allY=path.map(p=>p.y);
-const minY=Math.min(...allY),maxY=Math.max(...allY);
-const range=(maxY-minY)||1;
-// price line
-x.beginPath();
-path.forEach((p,i)=>{const px=ox+plotW*i/(maxN-1);const py=pad+plotH/2-(p.y-((maxY+minY)/2))*plotH/range;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-x.strokeStyle='rgba(244,114,182,0.95)';x.lineWidth=1.5;x.stroke();
-x.fillStyle='rgba(244,114,182,0.08)';
-x.beginPath();path.forEach((p,i)=>{const px=ox+plotW*i/(maxN-1);const py=pad+plotH/2-(p.y-((maxY+minY)/2))*plotH/range;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
-x.lineTo(ox+plotW,pad+plotH);x.lineTo(ox,pad+plotH);x.closePath();x.fill();
-// glow tip
-const lastP=path[path.length-1];
-const tipX=ox+plotW*(path.length-1)/(maxN-1);
-const tipY=pad+plotH/2-(lastP.y-((maxY+minY)/2))*plotH/range;
-const g=x.createRadialGradient(tipX,tipY,0,tipX,tipY,18);
-g.addColorStop(0,'rgba(244,114,182,0.6)');g.addColorStop(1,'rgba(244,114,182,0)');
-x.fillStyle=g;x.fillRect(tipX-18,tipY-18,36,36);
-x.beginPath();x.arc(tipX,tipY,3,0,Math.PI*2);x.fillStyle='#fff';x.fill();
-// labels
-x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
-x.fillText('ln(S) GBM   μ='+mu.toFixed(2)+'   σ='+sigma.toFixed(2),10,16);
-x.fillText('t',ox+plotW+4,pad+plotH);
-requestAnimationFrame(draw);
-}draw();
-})();
-
-// ===================== SIM: LORENZ ATTRACTOR =====================
-(function(){
-const c=document.getElementById('lorenz-canvas');if(!c)return;
-const x=c.getContext('2d');
-function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}r();addEventListener('resize',r);
-const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
-let x0=0.1,y0=0,z0=0,s=10,r=28,b=8/3,dt=0.005;
-const path=[];const maxN=900;
-function draw(){
-for(let i=0;i<3;i++){
-const dx=s*(y0-x0)*dt;
-const dy=x0*(r-z0)-y0;
-const dz=x0*y0-b*z0;
-x0+=dx;y0+=dy*dt;z0+=dz*dt;
-path.push([x0,y0]);if(path.length>maxN)path.shift();
-}
-x.fillStyle='rgba(10,10,14,0.18)';x.fillRect(0,0,W(),H());
-const ox=W()*0.1,oy=H()*0.95;
-const sx=W()*0.04,sy=H()*0.06;
-// grid
-x.strokeStyle='rgba(255,255,255,0.05)';
-for(let i=1;i<5;i++){const px=ox+sx*i*5;x.beginPath();x.moveTo(px,oy-sy*50);x.lineTo(px,oy);x.stroke();}
-for(let i=1;i<6;i++){const py=oy-sy*i*10;x.beginPath();x.moveTo(ox,py);x.lineTo(ox+sx*30,py);x.stroke();}
-// axes
-x.strokeStyle='rgba(255,255,255,0.18)';
-x.beginPath();x.moveTo(ox,oy);x.lineTo(ox,oy-sy*50);x.lineTo(ox+sx*30,oy);x.stroke();
-// multi-strand draws color trail by index
-for(let layer=0;layer<3;layer++){
-const col=layer===0?'rgba(99,102,241,0.7)':layer===1?'rgba(167,139,250,0.5)':'rgba(244,114,182,0.4)';
-for(let i=1;i<path.length;i+=4){
-const lx=ox+path[i][0]*sx,ly=oy-path[i][1]*sy;
-const lx2=ox+path[i-1][0]*sx,ly2=oy-path[i-1][1]*sy;
-const a=Math.pow(i/path.length,1.2);
-x.strokeStyle=col.replace(/[\d.]+\)$/,`${(parseFloat(col.match(/[\d.]+\)$/)[0].slice(0,-1))*a*0.4).toFixed(3)})`);
-x.lineWidth=1;
-x.beginPath();x.moveTo(lx,ly);x.lineTo(lx2,ly2);x.stroke();
-}
-}
-// current position
-const cx=ox+x0*sx,cy=oy-y0*sy;
-const grd=x.createRadialGradient(cx,cy,0,cx,cy,16);
-grd.addColorStop(0,'rgba(244,114,182,0.55)');grd.addColorStop(1,'rgba(244,114,182,0)');
-x.fillStyle=grd;x.fillRect(cx-16,cy-16,32,32);
-x.beginPath();x.arc(cx,cy,2.5,0,Math.PI*2);x.fillStyle='#fff';x.fill();
-x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
-x.fillText('σ=10  ρ=28  β=8/3  x='+x0.toFixed(2),8,16);
-requestAnimationFrame(draw);
-}draw();
-})();
-
-// ===================== SIM: WAVE INTERFERENCE =====================
-(function(){
-const c=document.getElementById('wave-canvas');if(!c)return;
-const x=c.getContext('2d');
-function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}r();addEventListener('resize',r);
-const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
-let k1=0.04,k2=0.06,phi=0;
-c.addEventListener('mousemove',e=>{const re=c.getBoundingClientRect();const mx=(e.clientX-re.left)/re.width;const my=(e.clientY-re.top)/re.height;k1=0.02+mx*0.06;k2=0.02+my*0.06;phi=mx*Math.PI*4;});
-function draw(){
-x.fillStyle='rgba(10,10,14,0.35)';x.fillRect(0,0,W(),H());
-const pad=10,plotW=W()-pad*2,plotH=H()-pad*2-14;
-const amp=plotH*0.18;
-const t=Date.now()*0.003;
-// two source waves + sum
-const step=2;
-let lastY1=null,lastY2=null,lastSum=null,lastX=null;
-for(let i=0;i<=plotW;i+=step){
-const sx=pad+i;
-const y0=pad+plotH/2;
-const y1=y0-Math.sin(i*k1-t)*amp;
-const y2=y0-Math.sin(i*k2-t*1.3+phi)*amp*0.8;
-const sum=y0-((y0-y1)+(y0-y2))*0.5;
-// wave 1
-x.fillStyle='rgba(99,102,241,0.7)';
-x.fillRect(sx,y1-1,1.5,2.5);
-// wave 2
-x.fillStyle='rgba(244,114,182,0.7)';
-x.fillRect(sx,y2-1,1.5,2.5);
-// sum
-x.fillStyle='rgba(167,139,250,0.95)';
-x.fillRect(sx,sum-1.2,1.2,2.4);
-}
-// axis
-x.strokeStyle='rgba(255,255,255,0.18)';
-x.beginPath();x.moveTo(pad,pad+plotH);x.lineTo(pad+plotW,pad+plotH);x.stroke();
-// legend
-x.font='10px JetBrains Mono';x.fillStyle='rgba(99,102,241,0.9)';x.fillText('Wave A  k='+k1.toFixed(3),pad,pad+10);
-x.fillStyle='rgba(244,114,182,0.9)';x.fillText('Wave B  k='+k2.toFixed(3),pad+90,pad+10);
-x.fillStyle='rgba(167,139,250,0.9)';x.fillText('Sum A+B  φ='+phi.toFixed(1),pad+180,pad+10);
-x.fillStyle='rgba(148,163,184,0.6)';
-x.fillText('Drag to change k₁, k₂, φ',pad,pad+plotH+12);
-requestAnimationFrame(draw);
-}draw();
-})();
-
-
-
-// ===================== SCROLL-DRIVEN PARALLAX =====================
-(function(){
-gsap.registerPlugin(ScrollTrigger);
+// ===================== GSAP SCROLL ANIMATIONS =====================
+try{
+gsap.registerPlugin(ScrollTrigger,ScrollToPlugin);
 
 // Hero entrance
 gsap.from('.hero-badge',{opacity:0,y:12,duration:.35,delay:.05});
@@ -1146,8 +584,8 @@ ScrollTrigger.create({trigger:el,start:'top 85%',onEnter:()=>el.classList.add('a
 
 // Reveal on scroll
 document.querySelectorAll('.reveal').forEach((el,i)=>{
-gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.4,delay:0,
-scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
+gsap.fromTo(el,{opacity:0,y:14},{opacity:1,y:0,duration:.3,delay:0,
+scrollTrigger:{trigger:el,start:'top 92%',toggleActions:'play none none none'}});
 });
 
 // Parallax on sections
@@ -1176,8 +614,8 @@ scrollTrigger:{trigger:item,start:'top 92%'}});
 
 // Writing stagger
 gsap.utils.toArray('.writing-item').forEach((item,i)=>{
-gsap.fromTo(item,{opacity:0,x:-20},{opacity:1,x:0,duration:.5,delay:i*0.08,
-scrollTrigger:{trigger:item,start:'top 90%'}});
+gsap.fromTo(item,{opacity:0,x:-20},{opacity:1,x:0,duration:.3,delay:i*0.03,
+scrollTrigger:{trigger:item,start:'top 92%'}});
 });
 
 // Nav smooth scroll
@@ -1196,28 +634,353 @@ onLeaveBack:()=>document.querySelector('.nav').style.background='rgba(5,5,8,0.85
 
 // Progress bar
 ScrollTrigger.create({
-trigger:document.body,
-start:'top top',
-end:'bottom bottom',
-onUpdate:self=>{document.getElementById('progress').style.transform=`scaleX(${self.progress})`;},
+trigger:document.body,start:'top top',end:'bottom bottom',
+onUpdate:self=>{document.getElementById('progress').style.transform=`scaleX(${self.progress})`;}
 });
+}catch(e){console.warn('GSAP init failed:',e);}
+
+// ===================== SIM: DOUBLE PENDULUM =====================
+(function(){
+const c=document.getElementById('pendulum-canvas');if(!c)return;
+const x=c.getContext('2d');
+function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}
+r();addEventListener('resize',r);
+const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
+let a1=Math.PI*0.7,a2=Math.PI*0.5,v1=0,v2=0;
+const m1=1,m2=1;
+let L1=Math.min(W(),H())*0.32,L2=L1*0.85;
+function step(){
+const g=1,dt=0.018,steps=4;
+for(let i=0;i<steps;i++){
+const d1=-g*(2*m1+m2)*Math.sin(a1)-m2*Math.sin(a1-2*a2)*(v2*v2*L2+v1*v1*L1*Math.cos(a1-a2));
+const d2=2*Math.sin(a1-a2)*(v1*v1*L1*(m1+m2)+g*(m1+m2)*Math.cos(a1)+m2*v2*v2*L2*Math.cos(a1-a2));
+const D=L1*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
+const a1a=d1/D;const a2a=d2/D;
+v1+=a1a*dt;v2+=a2a*dt;v1*=0.9994;v2*=0.9994;
+a1+=v1*dt;a2+=v2*dt;
+}
+}
+const trail=[];
+function draw(){
+step();
+x.fillStyle='rgba(10,10,14,0.25)';x.fillRect(0,0,W(),H());
+const ox=W()/2,oy=H()*0.18;
+const x1=ox+L1*Math.sin(a1),y1=oy+L1*Math.cos(a1);
+const x2=x1+L2*Math.sin(a2),y2=y1+L2*Math.cos(a2);
+trail.push(x2,y2);if(trail.length>1500)trail.splice(0,trail.length-1500);
+for(let i=1;i<trail.length;i+=2){
+const px=trail[i-1],py=trail[i];
+const a=i/trail.length;
+x.fillStyle=`rgba(167,139,250,${a*0.18})`;
+x.fillRect(px-0.5,py-0.5,1.2,1.2);
+}
+x.lineCap='round';
+x.beginPath();x.moveTo(ox,oy);x.lineTo(x1,y1);
+x.strokeStyle='rgba(255,255,255,0.4)';x.lineWidth=1.4;x.stroke();
+x.beginPath();x.moveTo(x1,y1);x.lineTo(x2,y2);x.stroke();
+x.fillStyle='rgba(15,15,20,0.95)';x.strokeStyle='rgba(244,114,182,0.95)';x.lineWidth=2;
+x.beginPath();x.arc(x2,y2,5,0,Math.PI*2);x.fill();x.stroke();
+x.beginPath();x.arc(x1,y1,5,0,Math.PI*2);x.strokeStyle='rgba(99,102,241,0.95)';x.fill();x.stroke();
+x.fillStyle='rgba(255,255,255,0.3)';x.beginPath();x.arc(ox,oy,3,0,Math.PI*2);x.fill();
+x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.6)';
+x.fillText('\u03b8\u2081='+a1.toFixed(2)+'  \u03b8\u2082='+a2.toFixed(2)+'  E='+((m1+m2)*9.8*(H()-y2)/100).toFixed(2),10,16);
+requestAnimationFrame(draw);
+}
+c.addEventListener('mousemove',e=>{const re=c.getBoundingClientRect();const dx=(e.clientX-re.left-re.width/2)/re.width;v1+=dx*1.2;v2+=dx*0.9;});
+draw();
 })();
 
-// ===================== INTERACTIVE LAB ITEMS =====================
-document.querySelectorAll('.lab-item').forEach(item=>{
-item.addEventListener('click',()=>{
-item.style.transform='scale(0.98)';
-setTimeout(()=>item.style.transform='',150);
-});
-});
+// ===================== SIM: BLACK-SCHOLES =====================
+(function(){
+const c=document.getElementById('bs-canvas');if(!c)return;
+const x=c.getContext('2d');
+function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}
+r();addEventListener('resize',r);
+const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
+let vol=0.25;
+function norm(z){const t=1/(1+0.2316419*Math.abs(z));const d=0.3989422804014327*Math.exp(-z*z/2);const p=d*t*(0.31938153+t*(-0.356563756+t*(1.781477937+t*(-1.821255978+t*1.330274429))));return z>0?1-p:p;}
+function callPrice(S,K,t,r,sigma){if(t<=0)return Math.max(0,S-K);const d1=(Math.log(S/K)+(r+sigma*sigma/2)*t)/(sigma*Math.sqrt(t));const d2=d1-sigma*Math.sqrt(t);return S*norm(d1)-K*Math.exp(-r*t)*norm(d2);}
+const K=100;let mouseX=-1;
+c.addEventListener('mousemove',e=>{const re=c.getBoundingClientRect();mouseX=(e.clientX-re.left)/re.width;if(mouseX>=0)vol=0.1+mouseX*0.8;});
+c.addEventListener('mouseleave',()=>mouseX=-1);
+function draw(){
+x.fillStyle='rgba(10,10,14,0.45)';x.fillRect(0,0,W(),H());
+const pad=20,plotW=W()-pad*2-30,plotH=H()-pad*2-14;
+const ox=pad+30,oy=pad+plotH/2;
+x.strokeStyle='rgba(255,255,255,0.05)';x.lineWidth=1;
+for(let i=1;i<5;i++){const y=pad+plotH*i/5;x.beginPath();x.moveTo(ox,y);x.lineTo(ox+plotW,y);x.stroke();}
+for(let i=1;i<5;i++){const px=ox+plotW*i/5;x.beginPath();x.moveTo(px,pad);x.lineTo(px,pad+plotH);x.stroke();}
+x.strokeStyle='rgba(255,255,255,0.18)';
+x.beginPath();x.moveTo(ox,pad);x.lineTo(ox,pad+plotH);x.lineTo(ox+plotW,pad+plotH);x.stroke();
+const points=[];
+for(let i=0;i<=120;i++){
+const S=50+i*(100/120);const p=callPrice(S,K,1,0.05,vol);
+const y=pad+plotH-Math.min(p,60)/60*plotH;
+points.push({x:ox+(S-50)/100*plotW,y});
+}
+x.beginPath();x.moveTo(points[0].x,points[0].y);
+for(let i=1;i<points.length;i++)x.lineTo(points[i].x,points[i].y);
+x.strokeStyle='rgba(99,102,241,0.95)';x.lineWidth=1.6;x.stroke();
+const fill=new Path2D();fill.moveTo(points[0].x,pad+plotH);points.forEach(p=>fill.lineTo(p.x,p.y));fill.lineTo(points[points.length-1].x,pad+plotH);fill.closePath();
+x.fillStyle='rgba(99,102,241,0.1)';x.fill(fill);
+const strikeX=ox+(K-50)/100*plotW;
+x.strokeStyle='rgba(255,255,255,0.12)';x.setLineDash([3,3]);
+x.beginPath();x.moveTo(strikeX,pad);x.lineTo(strikeX,pad+plotH);x.stroke();x.setLineDash([]);
+const t=Date.now()*0.001;
+const S=80+Math.sin(t*0.4)*15;
+const p=callPrice(S,K,1,0.05,vol);
+const px=ox+(S-50)/100*plotW;
+const py=pad+plotH-Math.min(p,60)/60*plotH;
+x.beginPath();x.arc(px,py,8,0,Math.PI*2);x.fillStyle='rgba(244,114,182,0.15)';x.fill();
+x.beginPath();x.arc(px,py,3,0,Math.PI*2);x.fillStyle='#fff';x.fill();
+x.fillStyle='rgba(244,114,182,0.85)';x.fillRect(px-1,pad,2,plotH);
+x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
+x.fillText('\u03c3 '+(vol*100).toFixed(0)+'%',10,16);
+x.fillText('S='+S.toFixed(0)+' K=100',W()/2-50,16);
+x.fillText('Call = \u20b9'+p.toFixed(2),ox+10,pad-4);
+x.fillText('S (Spot)',ox+plotW+4,pad+plotH+10);
+requestAnimationFrame(draw);
+}draw();
+})();
 
-// ===================== WRITING FILTER =====================
-document.querySelectorAll('.writing-item').forEach(item=>{
-item.addEventListener('click',()=>{
-item.style.transform='scale(0.98)';
-setTimeout(()=>item.style.transform='',150);
+// ===================== SIM: MARKET PREDICTION =====================
+(function(){
+const c=document.getElementById('market-canvas');if(!c)return;
+const x=c.getContext('2d');
+function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}
+r();addEventListener('resize',r);
+const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
+const N=240;
+const series=new Array(N).fill(0).map((_,i)=>100+Math.sin(i*0.05)*5+(Math.random()-0.5)*1.2);
+function EMA(s,n){const k=2/(n+1);let e=s[0];const r=[e];for(let i=1;i<s.length;i++){e=s[i]*k+e*(1-k);r.push(e);}return r;}
+function RSI(s,n=14){
+const r=new Array(s.length).fill(50);
+let g=0,l=0;
+for(let i=1;i<=n;i++){const d=s[i]-s[i-1];if(d>0)g+=d;else l-=d;}g/=n;l/=n;
+r[n]=100-100/(1+g/l);
+for(let i=n+1;i<s.length;i++){
+const d=s[i]-s[i-1];const gd=Math.max(0,d),ld=Math.max(0,-d);
+g=(g*(n-1)+gd)/n;l=(l*(n-1)+ld)/n;r[i]=100-100/(1+(l===0?100:g/l));
+}return r;
+}
+let pred=null;
+function draw(){
+const last=series[series.length-1];
+for(let i=0;i<2;i++){
+let v=last+(Math.random()-0.48)*0.8;v=Math.max(70,Math.min(130,v));
+series.push(v);if(series.length>N)series.shift();
+}
+const ema12=EMA(series,12),ema26=EMA(series,26);
+const macd=ema12.map((v,i)=>v-ema26[i]);
+const sig=EMA(macd,9);
+const rsi=RSI(series,14);
+x.fillStyle='rgba(10,10,14,0.6)';x.fillRect(0,0,W(),H());
+const pad=10;
+const priceH=H()*0.55;
+const indH=H()*0.18;
+const gap=8;
+const priceBox={x:pad,y:pad,w:W()-pad*2,h:priceH};
+const priceMin=Math.min(...series),priceMax=Math.max(...series);
+const range=priceMax-priceMin||1;
+x.strokeStyle='rgba(255,255,255,0.05)';
+for(let i=0;i<5;i++){const y=priceBox.y+priceBox.h*i/5;x.beginPath();x.moveTo(priceBox.x,y);x.lineTo(priceBox.x+priceBox.w,y);x.stroke();}
+x.strokeStyle='rgba(255,255,255,0.18)';
+x.beginPath();x.moveTo(priceBox.x,priceBox.y);x.lineTo(priceBox.x,priceBox.y+priceBox.h);x.lineTo(priceBox.x+priceBox.w,priceBox.y+priceBox.h);x.stroke();
+x.beginPath();
+series.forEach((v,i)=>{
+const px=priceBox.x+priceBox.w*i/(series.length-1);
+const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;
+if(i===0)x.moveTo(px,py);else x.lineTo(px,py);
 });
+x.strokeStyle='rgba(99,102,241,0.95)';x.lineWidth=1.6;x.stroke();
+const grad=x.createLinearGradient(0,priceBox.y,0,priceBox.y+priceBox.h);
+grad.addColorStop(0,'rgba(99,102,241,0.18)');grad.addColorStop(1,'rgba(99,102,241,0)');
+x.fillStyle=grad;
+x.beginPath();series.forEach((v,i)=>{const px=priceBox.x+priceBox.w*i/(series.length-1);const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.lineTo(priceBox.x+priceBox.w,priceBox.y+priceBox.h);x.lineTo(priceBox.x,priceBox.y+priceBox.h);x.closePath();x.fill();
+x.beginPath();ema12.forEach((v,i)=>{const px=priceBox.x+priceBox.w*i/(ema12.length-1);const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.strokeStyle='rgba(244,114,182,0.6)';x.lineWidth=1;x.stroke();
+x.beginPath();ema26.forEach((v,i)=>{const px=priceBox.x+priceBox.w*i/(ema26.length-1);const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.strokeStyle='rgba(34,211,238,0.6)';x.lineWidth=1;x.stroke();
+const last5=series.slice(-5);const mean=last5.reduce((a,b)=>a+b,0)/5;
+const lastDot=series[series.length-1];
+const predDir=lastDot>mean+0.5?-1:lastDot<mean-0.5?1:0;
+pred=null;
+if(predDir!==0){
+pred=[];let p=lastDot;
+for(let i=0;i<30;i++){p+=predDir*0.4-0.6+Math.random()*0.8;pred.push(p);}
+x.beginPath();
+pred.forEach((v,i)=>{
+const baseX=priceBox.x+priceBox.w;
+const px=baseX+(i/pred.length)*priceBox.w*0.25;
+const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;
+if(i===0)x.moveTo(px,py);else x.lineTo(px,py);
 });
+x.strokeStyle=predDir>0?'rgba(34,197,94,0.8)':'rgba(239,68,68,0.8)';x.lineWidth=2;x.setLineDash([4,4]);x.stroke();x.setLineDash([]);
+x.fillStyle=predDir>0?'rgba(34,197,94,0.06)':'rgba(239,68,68,0.06)';
+x.beginPath();
+pred.forEach((v,i)=>{const baseX=priceBox.x+priceBox.w;const px=baseX+(i/pred.length)*priceBox.w*0.25;const py=priceBox.y+priceBox.h-(v-priceMin)/range*priceBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+const lastPred=pred[pred.length-1];const pxLast=priceBox.x+priceBox.w+0.25*priceBox.w;const pyLast=priceBox.y+priceBox.h-(lastPred-priceMin)/range*priceBox.h;x.lineTo(pxLast,priceBox.y+priceBox.h);x.lineTo(priceBox.x+priceBox.w,priceBox.y+priceBox.h);x.closePath();x.fill();
+}
+const curX=priceBox.x+priceBox.w;
+const curY=priceBox.y+priceBox.h-(lastDot-priceMin)/range*priceBox.h;
+x.fillStyle='rgba(255,255,255,0.18)';x.fillRect(curX-1,priceBox.y,2,priceBox.h);
+x.fillStyle='rgba(255,255,255,0.95)';x.beginPath();x.arc(curX,curY,3,0,Math.PI*2);x.fill();
+const macdBox={x:pad,y:priceBox.y+priceBox.h+gap,w:priceBox.w,h:indH};
+const macdMax=Math.max(...macd.slice(-60).map(Math.abs))||1;
+x.strokeStyle='rgba(255,255,255,0.18)';x.strokeRect(macdBox.x,macdBox.y,macdBox.w,macdBox.h);
+x.fillStyle='rgba(255,255,255,0.06)';x.fillRect(macdBox.x,macdBox.y+macdBox.h/2-0.5,macdBox.w,1);
+macd.forEach((v,i)=>{const px=macdBox.x+macdBox.w*i/macd.length;const py=macdBox.y+macdBox.h/2;const h=-v/macdMax*macdBox.h/3;
+x.fillStyle=v>=0?'rgba(34,197,94,0.4)':'rgba(239,68,68,0.4)';x.fillRect(px,py,macdBox.w/macd.length-1,h);});
+x.beginPath();macd.slice(-60).forEach((v,i)=>{const px=macdBox.x+macdBox.w*0.75+macdBox.w*0.25*i/60;const py=macdBox.y+macdBox.h/2-v/macdMax*macdBox.h/3;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.strokeStyle='rgba(99,102,241,0.95)';x.lineWidth=1.5;x.stroke();
+x.beginPath();sig.slice(-60).forEach((v,i)=>{const px=macdBox.x+macdBox.w*0.75+macdBox.w*0.25*i/60;const py=macdBox.y+macdBox.h/2-v/macdMax*macdBox.h/3;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.strokeStyle='rgba(244,114,182,0.95)';x.lineWidth=1.5;x.stroke();
+const rsiBox={x:pad,y:macdBox.y+macdBox.h+gap,w:priceBox.w,h:indH};
+x.strokeStyle='rgba(255,255,255,0.18)';x.strokeRect(rsiBox.x,rsiBox.y,rsiBox.w,rsiBox.h);
+x.strokeStyle='rgba(255,255,255,0.06)';
+[30,70].forEach(lvl=>{const y=rsiBox.y+rsiBox.h-((lvl/100)*rsiBox.h);x.beginPath();x.moveTo(rsiBox.x,y);x.lineTo(rsiBox.x+rsiBox.w,y);x.stroke();});
+const lastRSI=rsi[rsi.length-1];
+const rsiColor=lastRSI>70?'rgba(239,68,68,0.08)':lastRSI<30?'rgba(34,197,94,0.08)':'rgba(255,255,255,0.02)';
+x.fillStyle=rsiColor;x.fillRect(rsiBox.x,rsiBox.y,rsiBox.w,rsiBox.h);
+x.beginPath();rsi.slice(-60).forEach((v,i)=>{const px=rsiBox.x+rsiBox.w*(0.25+0.75*i/60);const py=rsiBox.y+rsiBox.h-(v/100)*rsiBox.h;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.strokeStyle='rgba(167,139,250,0.95)';x.lineWidth=1.5;x.stroke();
+x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
+x.fillText('NIFTY 50  \u20b9'+lastDot.toFixed(2),10,16);
+x.fillText('EMA 12\u00b726',10,priceBox.y-2);
+x.fillText('MACD  \u25b2',priceBox.x+priceBox.w-70,macdBox.y+10);
+x.fillText('RSI  '+lastRSI.toFixed(1),priceBox.x+priceBox.w-60,rsiBox.y+10);
+requestAnimationFrame(draw);
+}draw();
+})();
+
+// ===================== SIM: BROWNIAN MOTION (GBM) =====================
+(function(){
+const c=document.getElementById('walk-canvas');if(!c)return;
+const x=c.getContext('2d');
+function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}
+r();addEventListener('resize',r);
+const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
+const path=[];const maxN=600;
+function draw(){
+x.fillStyle='rgba(10,10,14,0.18)';x.fillRect(0,0,W(),H());
+const pad=14,plotW=W()-pad*2,plotH=H()-pad*2-14;
+const ox=pad,oy=pad+plotH/2;
+x.strokeStyle='rgba(255,255,255,0.05)';x.lineWidth=1;
+for(let i=1;i<6;i++){const y=pad+plotH*i/6;x.beginPath();x.moveTo(ox,y);x.lineTo(ox+plotW,y);x.stroke();}
+for(let i=1;i<8;i++){const px=ox+plotW*i/8;x.beginPath();x.moveTo(px,pad);x.lineTo(px,pad+plotH);x.stroke();}
+x.strokeStyle='rgba(255,255,255,0.18)';
+x.beginPath();x.moveTo(ox,pad);x.lineTo(ox,pad+plotH);x.lineTo(ox+plotW,pad+plotH);x.stroke();
+const dt=0.05,mu=0.08,sigma=0.4;
+const last=path.length?path[path.length-1].y:Math.log(100);
+const Z=Math.sqrt(dt)*((Math.random()+Math.random()+Math.random()+Math.random()+Math.random()+Math.random()-3)/Math.sqrt(1.5));
+const next=last+(mu-0.5*sigma*sigma)*dt+sigma*Z;
+const t=path.length/200;
+path.push({t,y:next});if(path.length>maxN)path.shift();
+const allY=path.map(p=>p.y);
+const minY=Math.min(...allY),maxY=Math.max(...allY);
+const range=(maxY-minY)||1;
+x.beginPath();
+path.forEach((p,i)=>{const px=ox+plotW*i/(maxN-1);const py=pad+plotH/2-(p.y-((maxY+minY)/2))*plotH/range;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.strokeStyle='rgba(244,114,182,0.95)';x.lineWidth=1.5;x.stroke();
+x.fillStyle='rgba(244,114,182,0.08)';
+x.beginPath();path.forEach((p,i)=>{const px=ox+plotW*i/(maxN-1);const py=pad+plotH/2-(p.y-((maxY+minY)/2))*plotH/range;if(i===0)x.moveTo(px,py);else x.lineTo(px,py);});
+x.lineTo(ox+plotW,pad+plotH);x.lineTo(ox,pad+plotH);x.closePath();x.fill();
+const lastP=path[path.length-1];
+const tipX=ox+plotW*(path.length-1)/(maxN-1);
+const tipY=pad+plotH/2-(lastP.y-((maxY+minY)/2))*plotH/range;
+const g=x.createRadialGradient(tipX,tipY,0,tipX,tipY,18);
+g.addColorStop(0,'rgba(244,114,182,0.6)');g.addColorStop(1,'rgba(244,114,182,0)');
+x.fillStyle=g;x.fillRect(tipX-18,tipY-18,36,36);
+x.beginPath();x.arc(tipX,tipY,3,0,Math.PI*2);x.fillStyle='#fff';x.fill();
+x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
+x.fillText('ln(S) GBM   \u03bc='+mu.toFixed(2)+'   \u03c3='+sigma.toFixed(2),10,16);
+x.fillText('t',ox+plotW+4,pad+plotH);
+requestAnimationFrame(draw);
+}draw();
+})();
+
+// ===================== SIM: LORENZ ATTRACTOR =====================
+(function(){
+const c=document.getElementById('lorenz-canvas');if(!c)return;
+const x=c.getContext('2d');
+function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}
+r();addEventListener('resize',r);
+const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
+let x0=0.1,y0=0,z0=0,s=10,r=28,b=8/3,dt=0.005;
+const path=[];const maxN=900;
+function draw(){
+for(let i=0;i<3;i++){
+const dx=s*(y0-x0)*dt;
+const dy=x0*(r-z0)-y0;
+const dz=x0*y0-b*z0;
+x0+=dx;y0+=dy*dt;z0+=dz*dt;
+path.push([x0,y0]);if(path.length>maxN)path.shift();
+}
+x.fillStyle='rgba(10,10,14,0.18)';x.fillRect(0,0,W(),H());
+const ox=W()*0.1,oy=H()*0.95;
+const sx=W()*0.04,sy=H()*0.06;
+x.strokeStyle='rgba(255,255,255,0.05)';
+for(let i=1;i<5;i++){const px=ox+sx*i*5;x.beginPath();x.moveTo(px,oy-sy*50);x.lineTo(px,oy);x.stroke();}
+for(let i=1;i<6;i++){const py=oy-sy*i*10;x.beginPath();x.moveTo(ox,py);x.lineTo(ox+sx*30,py);x.stroke();}
+x.strokeStyle='rgba(255,255,255,0.18)';
+x.beginPath();x.moveTo(ox,oy);x.lineTo(ox,oy-sy*50);x.lineTo(ox+sx*30,oy);x.stroke();
+for(let layer=0;layer<3;layer++){
+const col=layer===0?'rgba(99,102,241,0.7)':layer===1?'rgba(167,139,250,0.5)':'rgba(244,114,182,0.4)';
+for(let i=1;i<path.length;i+=4){
+const lx=ox+path[i][0]*sx,ly=oy-path[i][1]*sy;
+const lx2=ox+path[i-1][0]*sx,ly2=oy-path[i-1][1]*sy;
+const a=Math.pow(i/path.length,1.2);
+x.strokeStyle=col.replace(/[\d.]+\)$/,(parseFloat(col.match(/[\d.]+\)$/)[0])*a*0.4).toFixed(3)+')');
+x.lineWidth=1;
+x.beginPath();x.moveTo(lx,ly);x.lineTo(lx2,ly2);x.stroke();
+}
+}
+const cx=ox+x0*sx,cy=oy-y0*sy;
+const grd=x.createRadialGradient(cx,cy,0,cx,cy,16);
+grd.addColorStop(0,'rgba(244,114,182,0.55)');grd.addColorStop(1,'rgba(244,114,182,0)');
+x.fillStyle=grd;x.fillRect(cx-16,cy-16,32,32);
+x.beginPath();x.arc(cx,cy,2.5,0,Math.PI*2);x.fillStyle='#fff';x.fill();
+x.font='10px JetBrains Mono';x.fillStyle='rgba(148,163,184,0.7)';
+x.fillText('\u03c3=10  \u03c1=28  \u03b2=8/3  x='+x0.toFixed(2),8,16);
+requestAnimationFrame(draw);
+}draw();
+})();
+
+// ===================== SIM: WAVE INTERFERENCE =====================
+(function(){
+const c=document.getElementById('wave-canvas');if(!c)return;
+const x=c.getContext('2d');
+function r(){const d=devicePixelRatio||1;c.width=c.offsetWidth*d;c.height=c.offsetHeight*d;x.setTransform(d,0,0,d,0,0);}
+r();addEventListener('resize',r);
+const W=()=>c.offsetWidth,H=()=>c.offsetHeight;
+let k1=0.04,k2=0.06,phi=0;
+c.addEventListener('mousemove',e=>{const re=c.getBoundingClientRect();const mx=(e.clientX-re.left)/re.width;const my=(e.clientY-re.top)/re.height;k1=0.02+mx*0.06;k2=0.02+my*0.06;phi=mx*Math.PI*4;});
+function draw(){
+x.fillStyle='rgba(10,10,14,0.35)';x.fillRect(0,0,W(),H());
+const pad=10,plotW=W()-pad*2,plotH=H()-pad*2-14;
+const amp=plotH*0.18;
+const t=Date.now()*0.003;
+const step=2;
+for(let i=0;i<=plotW;i+=step){
+const sx=pad+i;
+const y0=pad+plotH/2;
+const y1=y0-Math.sin(i*k1-t)*amp;
+const y2=y0-Math.sin(i*k2-t*1.3+phi)*amp*0.8;
+const sum=y0-((y0-y1)+(y0-y2))*0.5;
+x.fillStyle='rgba(99,102,241,0.7)';x.fillRect(sx,y1-1,1.5,2.5);
+x.fillStyle='rgba(244,114,182,0.7)';x.fillRect(sx,y2-1,1.5,2.5);
+x.fillStyle='rgba(167,139,250,0.95)';x.fillRect(sx,sum-1.2,1.2,2.4);
+}
+x.strokeStyle='rgba(255,255,255,0.18)';
+x.beginPath();x.moveTo(pad,pad+plotH);x.lineTo(pad+plotW,pad+plotH);x.stroke();
+x.font='10px JetBrains Mono';x.fillStyle='rgba(99,102,241,0.9)';x.fillText('Wave A  k='+k1.toFixed(3),pad,pad+10);
+x.fillStyle='rgba(244,114,182,0.9)';x.fillText('Wave B  k='+k2.toFixed(3),pad+90,pad+10);
+x.fillStyle='rgba(167,139,250,0.9)';x.fillText('Sum A+B  \u03c6='+phi.toFixed(1),pad+180,pad+10);
+x.fillStyle='rgba(148,163,184,0.6)';x.fillText('Drag to change k\u2081, k\u2082, \u03c6',pad,pad+plotH+12);
+requestAnimationFrame(draw);
+}draw();
+})();
 
 // ===================== COMMAND PALETTE (Cmd+K) =====================
 const commands=[
@@ -1232,7 +995,6 @@ const commands=[
 {label:'NEXUS Image Gen',action:()=>window.open('https://nexus-image-gen-two.vercel.app','_blank')},
 {label:'Telegram Bot',action:()=>window.open('https://t.me/AutoMarketing2209Bot','_blank')},
 ];
-
 let paletteOpen=false;
 const palette=document.createElement('div');
 palette.style.cssText=`
@@ -1243,14 +1005,13 @@ box-shadow:0 24px 48px rgba(0,0,0,0.4);
 `;
 palette.innerHTML=`
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)">
-<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">⌘</kbd>
+<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">\u2318</kbd>
 <kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">K</kbd>
 <span style="color:#a1a1aa;font-size:0.85rem">Command Palette</span>
 </div>
 <div id="palette-results" style="max-height:300px;overflow-y:auto"></div>
 `;
 document.body.appendChild(palette);
-
 const results=palette.querySelector('#palette-results');
 function renderResults(filter=''){
 results.innerHTML='';
@@ -1269,11 +1030,8 @@ btn.onclick=()=>{c.action();closePalette();};
 results.appendChild(btn);
 });
 }
-
 function openPalette(){
-palette.style.display='block';
-paletteOpen=true;
-renderResults('');
+palette.style.display='block';paletteOpen=true;renderResults('');
 const input=document.createElement('input');
 input.style.cssText=`
 width:100%;padding:10px 12px;background:rgba(255,255,255,0.04);
@@ -1286,45 +1044,41 @@ input.autofocus=true;
 results.parentNode.insertBefore(input,results);
 input.addEventListener('input',()=>renderResults(input.value));
 input.addEventListener('keydown',e=>{
-if(e.key==='Enter'){
-const first=results.querySelector('button');
-if(first)first.click();
-}
+if(e.key==='Enter'){const first=results.querySelector('button');if(first)first.click();}
 if(e.key==='Escape')closePalette();
 });
 input.focus();
 }
-
 function closePalette(){
-palette.style.display='none';
-paletteOpen=false;
+palette.style.display='none';paletteOpen=false;
 palette.innerHTML=`
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06)">
-<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">⌘</kbd>
+<kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">\u2318</kbd>
 <kbd style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;font-size:0.7rem;color:#71717a">K</kbd>
 <span style="color:#a1a1aa;font-size:0.85rem">Command Palette</span>
 </div>
 <div id="palette-results" style="max-height:300px;overflow-y:auto"></div>
 `;
 }
-
 document.addEventListener('keydown',e=>{
-if((e.metaKey||e.ctrlKey)&&e.key==='k'){
-e.preventDefault();
-if(paletteOpen)closePalette();
-else openPalette();
-}
+if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();if(paletteOpen)closePalette();else openPalette();}
 if(e.key==='Escape'&&paletteOpen)closePalette();
 });
 
-// ===================== SERVICE WORKER REGISTRATION =====================
+// ===================== INTERACTIVE LAB ITEMS =====================
+document.querySelectorAll('.lab-item').forEach(item=>{
+item.addEventListener('click',()=>{item.style.transform='scale(0.98)';setTimeout(()=>item.style.transform='',150);});
+});
+
+// ===================== WRITING FILTER =====================
+document.querySelectorAll('.writing-item').forEach(item=>{
+item.addEventListener('click',()=>{item.style.transform='scale(0.98)';setTimeout(()=>item.style.transform='',150);});
+});
+
+// ===================== SERVICE WORKER =====================
 if('serviceWorker' in navigator){
 navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
-
-// ===================== ANALYTICS (Privacy-friendly) =====================
-// Plausible/Umami would go here if configured
-});
 });
 </script>
 </body>
