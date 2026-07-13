@@ -3,229 +3,420 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swastik Mishra</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Swastik Mishra — Systems Architect</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-body{background:#09090b;color:#fafafa;font-family:'Inter',sans-serif;overflow-x:hidden}
-::selection{background:#3b82f6;color:#fff}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#09090b}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
-.c{position:fixed;width:20px;height:20px;border:1.5px solid #3b82f6;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .4s,height .4s,border-color .3s}
-.c.big{width:48px;height:48px;border-color:#818cf8}
-.page{max-width:1200px;margin:0 auto;padding:0 48px}
-.h{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:56px;display:flex;justify-content:space-between;align-items:center;background:rgba(9,9,11,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
-.h-name{font-weight:700;font-size:0.95rem}
-.h nav{display:flex;gap:24px}
-.h nav a{font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#71717a;text-decoration:none;transition:color .2s;font-weight:500}
-.h nav a:hover{color:#fafafa}
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;z-index:0}
-.hero-bg video{width:100%;height:100%;object-fit:cover;opacity:0.15}
-.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,9,11,0.3) 0%,rgba(9,9,11,0.9) 100%)}
-.hero-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 48px}
-.hero-tag{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:24px}
-.hero h1{font-size:clamp(3.5rem,8vw,7rem);font-weight:800;line-height:0.9;letter-spacing:-0.04em;margin-bottom:24px}
-.hero h1 .grad{background:linear-gradient(135deg,#3b82f6,#8b5cf6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:1.1rem;color:#71717a;max-width:500px;line-height:1.8;margin-bottom:36px}
-.hero-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:#3b82f6;color:#fff;text-decoration:none;font-size:0.85rem;font-weight:500;transition:all .3s;border-radius:8px}
-.hero-btn:hover{background:#2563eb;transform:translateY(-2px);box-shadow:0 8px 30px rgba(59,130,246,0.3)}
-.hero-stats{display:flex;gap:40px;margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06)}
-.hero-stats .n{font-size:2rem;font-weight:800}
-.hero-stats .l{font-size:0.7rem;color:#52525b;margin-top:2px;font-family:'JetBrains Mono',monospace}
-.about{padding:120px 0}
-.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-.about-photo{width:100%;aspect-ratio:3/4;border-radius:16px;overflow:hidden;position:relative}
-.about-photo img{width:100%;height:100%;object-fit:cover}
-.about-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,0.4));pointer-events:none}
-.about-content h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;margin-bottom:24px}
-.about-content p{color:#a1a1aa;line-height:1.8;margin-bottom:16px;font-size:1rem}
-.about-content strong{color:#fafafa;font-weight:600}
-.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.tag{padding:5px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:0.7rem;color:#71717a}
-.ach{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:20px;margin-bottom:12px;border-radius:8px;transition:all .3s}
-.ach:hover{border-color:rgba(59,130,246,0.3);transform:translateX(4px)}
-.ach h4{font-size:0.9rem;font-weight:600;margin-bottom:4px}
-.ach p{font-size:0.85rem;color:#71717a;line-height:1.6}
-.work{padding:120px 0}
-.work-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.work h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
-.wcard{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;padding:48px 0;border-bottom:1px solid rgba(255,255,255,0.06);align-items:center}
-.wcard:nth-child(even){direction:rtl}.wcard:nth-child(even)>*{direction:ltr}
-.wvis{height:320px;border-radius:12px;overflow:hidden;transition:transform .5s;position:relative}
-.wvis img{width:100%;height:100%;object-fit:cover}
-.wvis:hover{transform:scale(1.02)}
-.winfo .yr{font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#52525b;margin-bottom:8px}
-.winfo h3{font-size:1.6rem;font-weight:600;margin-bottom:8px}
-.winfo p{color:#a1a1aa;font-size:0.9rem;line-height:1.7;max-width:400px;margin-bottom:16px}
-.winfo a{font-size:0.85rem;color:#fafafa;text-decoration:none;font-weight:500;transition:color .2s}
-.winfo a:hover{color:#3b82f6}
-.skills{padding:120px 0;background:#111113}
-.skills-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.skills h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
-.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06)}
-.sitem{padding:28px;background:#111113;transition:background .3s}
-.sitem:hover{background:rgba(255,255,255,0.03)}
-.sitem h4{font-size:0.9rem;font-weight:600;color:#fafafa;margin-bottom:4px}
-.sitem .lv{font-size:0.65rem;color:#52525b}
-.exp{padding:120px 0}
-.exp-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.exp h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
-.eitem{display:grid;grid-template-columns:120px 1fr;gap:32px;padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
-.eitem:last-child{border-bottom:none}
-.edate{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#52525b;padding-top:2px}
-.eitem h4{font-size:1rem;font-weight:600;margin-bottom:4px}
-.eitem p{color:#a1a1aa;font-size:0.9rem;line-height:1.7}
-.contact{padding:120px 0;background:#111113}
-.contact-inner{max-width:1200px;margin:0 auto;padding:0 48px}
-.contact h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:48px}
-.clinks{display:flex;flex-direction:column;max-width:500px}
-.clink{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#fafafa;transition:all .3s;font-size:0.9rem;font-weight:500}
-.clink:hover{padding-left:12px;color:#3b82f6}
-.clink .arr{color:#52525b;transition:transform .3s}
-.clink:hover .arr{transform:translateX(6px)}
-.f{padding:32px 48px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;font-size:0.72rem;color:#52525b}
-.rv{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.4,0,.2,1)}.rv.on{opacity:1;transform:none}
-@media(max-width:768px){.page{padding:0 20px}.hero-inner{padding:0 20px}.about-inner,.wcard{grid-template-columns:1fr;gap:24px}.wcard:nth-child(even){direction:ltr}.sgrid{grid-template-columns:1fr 1fr}.eitem{grid-template-columns:1fr;gap:8px}.h{padding:0 20px}.f{padding:24px 20px}.c{display:none}body{cursor:auto}}
+body{background:#050508;color:#e4e4e7;font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none}
+::selection{background:#6366f1;color:#fff}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#050508}::-webkit-scrollbar-thumb{background:#27272a;border-radius:3px}
+
+.cursor{position:fixed;width:16px;height:16px;border:1.5px solid #818cf8;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .3s,height .3s}
+.cursor.hover{width:56px;height:56px;border-color:#c7d2fe}
+
+#three-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:20px 48px;background:rgba(5,5,8,0.6);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.04)}
+.nav-logo{font-weight:700;font-size:0.85rem;letter-spacing:-0.02em;color:#fafafa}
+.nav-links{display:flex;gap:32px}
+.nav-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:#52525b;text-decoration:none;font-weight:500;transition:color .3s;position:relative}
+.nav-links a:hover{color:#e4e4e7}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:#818cf8;transition:width .3s}
+.nav-links a:hover::after{width:100%}
+
+/* Section label */
+.label{font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#6366f1;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.label::before{content:'';width:24px;height:1px;background:#6366f1}
+
+/* Hero */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:0 48px}
+.hero-content{max-width:800px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:100px;font-size:0.65rem;color:#818cf8;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;margin-bottom:24px}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#6366f1;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero h1{font-size:clamp(3rem,7vw,5.5rem);font-weight:700;line-height:1;letter-spacing:-0.03em;margin-bottom:20px;color:#fafafa}
+.hero h1 .line2{display:block;color:#a1a1aa;font-weight:300}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-desc{font-size:1rem;color:#71717a;max-width:480px;line-height:1.8;margin-bottom:32px}
+.hero-actions{display:flex;gap:16px;align-items:center}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:#fafafa;color:#050508;text-decoration:none;font-size:0.8rem;font-weight:600;border-radius:8px;transition:all .3s}
+.btn-primary:hover{background:#e4e4e7;transform:translateY(-1px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:1px solid rgba(255,255,255,0.1);color:#a1a1aa;text-decoration:none;font-size:0.8rem;font-weight:500;border-radius:8px;transition:all .3s}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.2);color:#fafafa}
+.hero-metrics{display:flex;gap:48px;margin-top:60px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06)}
+.metric .val{font-size:1.8rem;font-weight:700;color:#fafafa;letter-spacing:-0.02em}
+.metric .desc{font-size:0.6rem;color:#52525b;margin-top:2px;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;text-transform:uppercase}
+
+/* Section wrapper */
+section{position:relative;z-index:1;padding:140px 48px}
+.section-inner{max-width:1200px;margin:0 auto}
+section h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:700;letter-spacing:-0.03em;color:#fafafa;margin-bottom:16px}
+section h2 span{color:#52525b}
+section .sub{font-size:1rem;color:#71717a;max-width:500px;line-height:1.7;margin-bottom:48px}
+
+/* About */
+.about-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:80px;align-items:start}
+.about-visual{position:relative}
+.about-img{width:100%;aspect-ratio:3/4;border-radius:16px;overflow:hidden;position:relative}
+.about-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:filter .5s}
+.about-img:hover img{filter:grayscale(0%)}
+.about-img::before{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,0.08);border-radius:16px;z-index:1;pointer-events:none}
+.about-floating{position:absolute;top:-20px;right:-20px;background:#111114;border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px 20px;z-index:2;backdrop-filter:blur(12px)}
+.about-floating .num{font-size:1.6rem;font-weight:700;color:#818cf8}
+.about-floating .txt{font-size:0.6rem;color:#71717a;margin-top:2px}
+.about-text p{color:#a1a1aa;line-height:1.85;margin-bottom:16px;font-size:0.95rem}
+.about-text strong{color:#e4e4e7;font-weight:600}
+.about-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.about-tags span{padding:5px 12px;border:1px solid rgba(255,255,255,0.08);border-radius:6px;font-size:0.65rem;color:#71717a;font-family:'JetBrains Mono',monospace}
+
+/* Work - Case Studies */
+.work-item{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;padding:60px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center}
+.work-item:last-child{border-bottom:none}
+.work-item:nth-child(even){grid-template-columns:1fr 1.3fr}
+.work-item:nth-child(even) .work-visual{order:2}
+.work-visual{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:16/10;background:#111114;border:1px solid rgba(255,255,255,0.06)}
+.work-visual img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.work-visual:hover img{transform:scale(1.03)}
+.work-visual .overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(5,5,8,0.8));pointer-events:none}
+.work-visual .tag-row{position:absolute;bottom:12px;left:12px;display:flex;gap:6px;z-index:1}
+.work-visual .tag-row span{padding:3px 8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border-radius:4px;font-size:0.55rem;color:#a1a1aa;font-family:'JetBrains Mono',monospace}
+.work-text .num{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#3f3f46;margin-bottom:8px;letter-spacing:0.1em}
+.work-text h3{font-size:1.5rem;font-weight:600;color:#fafafa;margin-bottom:8px}
+.work-text p{color:#71717a;font-size:0.85rem;line-height:1.7;margin-bottom:16px}
+.work-text .link{font-size:0.75rem;color:#818cf8;text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:gap .3s}
+.work-text .link:hover{gap:10px}
+
+/* Lab / Experiments */
+.lab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.04)}
+.lab-item{background:#0a0a0d;padding:32px;transition:background .3s;position:relative;overflow:hidden}
+.lab-item:hover{background:rgba(99,102,241,0.04)}
+.lab-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
+.lab-item:hover::before{opacity:1}
+.lab-item .lab-icon{font-size:1.5rem;margin-bottom:12px}
+.lab-item h4{font-size:0.85rem;font-weight:600;color:#e4e4e7;margin-bottom:6px}
+.lab-item p{font-size:0.72rem;color:#52525b;line-height:1.6}
+
+/* Writing */
+.writing-list{display:flex;flex-direction:column}
+.writing-item{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:padding .3s}
+.writing-item:hover{padding-left:12px}
+.writing-item .title{font-size:0.9rem;font-weight:500;color:#e4e4e7}
+.writing-item .meta{font-size:0.65rem;color:#52525b;font-family:'JetBrains Mono',monospace}
+
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.contact-links a{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.04);text-decoration:none;color:#a1a1aa;font-size:0.85rem;font-weight:500;transition:all .3s}
+.contact-links a:hover{color:#fafafa;padding-left:8px}
+.contact-links a .arrow{color:#3f3f46;transition:transform .3s}
+.contact-links a:hover .arrow{transform:translateX(4px)}
+.contact-cta{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:16px;padding:40px}
+.contact-cta h3{font-size:1.2rem;color:#fafafa;margin-bottom:8px}
+.contact-cta p{font-size:0.85rem;color:#71717a;line-height:1.7;margin-bottom:20px}
+
+/* Footer */
+.footer{position:relative;z-index:1;padding:32px 48px;border-top:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;font-size:0.65rem;color:#3f3f46}
+
+/* Scroll reveals */
+.reveal{opacity:0;transform:translateY(24px)}
+.reveal.active{opacity:1;transform:none;transition:all .6s cubic-bezier(.4,0,.2,1)}
+
+@media(max-width:900px){
+.nav{padding:16px 24px}.nav-links{gap:20px}
+section{padding:80px 24px}
+.about-grid,.work-item,.work-item:nth-child(even),.contact-grid{grid-template-columns:1fr}
+.work-item:nth-child(even) .work-visual{order:0}
+.lab-grid{grid-template-columns:1fr 1fr}
+.hero{padding:0 24px}
+.hero h1{font-size:clamp(2rem,8vw,3.5rem)}
+.cursor{display:none}body{cursor:auto}
+}
+@media(max-width:600px){.lab-grid{grid-template-columns:1fr}.hero-metrics{flex-direction:column;gap:20px}}
 </style>
 </head>
 <body>
-<div class="c" id="cur"></div>
-<header class="h">
-<div class="h-name">Swastik Mishra</div>
-<nav><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#exp">Experience</a><a href="#contact">Contact</a></nav>
-</header>
+
+<div class="cursor" id="cur"></div>
+<canvas id="three-bg"></canvas>
+
+<nav class="nav">
+<div class="nav-logo">S M</div>
+<div class="nav-links">
+<a href="#about">About</a>
+<a href="#work">Work</a>
+<a href="#lab">Lab</a>
+<a href="#writing">Writing</a>
+<a href="#contact">Contact</a>
+</div>
+</nav>
 
 <section class="hero">
-<div class="hero-bg"><video autoplay muted loop playsinline><source src="https://cdn.coverr.co/videos/coverr-digital-animation-of-futuristic-devices-99786/1080p.mp4" type="video/mp4"></video></div>
-<div class="hero-inner">
-<div class="hero-tag">Systems Architect · AI · Quantitative Finance</div>
-<h1>Building<br>systems that<br><span class="grad">think.</span></h1>
-<p class="hero-sub">Physics honours student at Azim Premji University (9.0 CGPA). Building AI automation pipelines, FastAPI backends, and quantitative finance systems.</p>
-<a href="#work" class="hero-btn">View Selected Work →</a>
-<div class="hero-stats">
-<div><div class="n">9.0</div><div class="l">CGPA</div></div>
-<div><div class="n">5+</div><div class="l">Systems Built</div></div>
-<div><div class="n">$1M</div><div class="l">Revenue Target</div></div>
+<div class="hero-content">
+<div class="hero-badge"><span class="dot"></span>Open to opportunities</div>
+<h1>
+I build systems<br>
+<span class="line2">that <em>think</em></span>
+</h1>
+<p class="hero-desc">Physics student. AI engineer. Quantitative researcher. Building autonomous systems that bridge mathematics, computation, and intelligence.</p>
+<div class="hero-actions">
+<a href="#work" class="btn-primary">View Work →</a>
+<a href="#about" class="btn-ghost">Read Story</a>
+</div>
+<div class="hero-metrics">
+<div class="metric"><div class="val">9.0</div><div class="desc">CGPA</div></div>
+<div class="metric"><div class="val">5+</div><div class="desc">Systems Built</div></div>
+<div class="metric"><div class="val">$1M</div><div class="desc">Revenue Target</div></div>
 </div>
 </div>
 </section>
 
-<section class="about" id="about">
-<div class="about-inner page">
-<div class="about-photo"><img src="photo.jpg" alt="Swastik Mishra"></div>
-<div class="about-content">
-<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">About</div>
-<h2>Physics meets AI meets business</h2>
-<p>Physics honours student maintaining a <strong>9.0 CGPA</strong> at Azim Premji University, combining rigorous quantitative training with hands-on software engineering.</p>
-<p>I build AI automation pipelines, FastAPI backends, and payment-integrated web platforms for international clients. My work spans from <strong>Black-Scholes derivatives pricing</strong> to building self-running AI business empires.</p>
-<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products targeting $1M ARR.</p>
-<div class="tags">
-<span class="tag">B.Sc. Physics — 9.0 CGPA</span>
-<span class="tag">NEXUS AI Founder</span>
-<span class="tag">Quantitative Finance</span>
-<span class="tag">Climate Economics</span>
+<section id="about">
+<div class="section-inner">
+<div class="label">About</div>
+<h2>The story behind <span>the systems</span></h2>
+<div class="about-grid">
+<div class="about-visual reveal">
+<div class="about-img"><img src="photo.jpg" alt="Swastik Mishra"></div>
+<div class="about-floating"><div class="num">9.0</div><div class="txt">CGPA — APU</div></div>
 </div>
-<div style="margin-top:24px">
-<div class="ach"><h4>NEXUS AI — $1M ARR</h4><p>12+ SaaS products, autonomous revenue.</p></div>
-<div class="ach"><h4>Research — Prof. KC Adaina</h4><p>Environmental economics collaboration.</p></div>
-<div class="ach"><h4>Climate Economics Paper</h4><p>Himalayan glacial retreat study.</p></div>
+<div class="about-text reveal">
+<p><strong>Physics taught me to see patterns.</strong> At Azim Premji University, I study B.Sc. Physics while building AI systems on the side. Not because I have to — because I can't stop.</p>
+<p>My work spans <strong>Black-Scholes derivatives pricing</strong>, autonomous AI pipelines, and climate economics research with Prof. KC Adaina. I build FastAPI backends, train ML models, and ship payment-integrated platforms.</p>
+<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products. The goal isn't just revenue. It's proving that a physics student can build something that matters.</p>
+<div class="about-tags">
+<span>B.Sc. Physics</span>
+<span>Azim Premji University</span>
+<span>NEXUS AI Founder</span>
+<span>Quantitative Finance</span>
+<span>Climate Economics</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="work" style="background:#08080b">
+<div class="section-inner">
+<div class="label">Selected Work</div>
+<h2>Case studies, <span>not project cards</span></h2>
+<p class="sub">Every project started with a question. Every answer became a system.</p>
+
+<div class="work-item reveal">
+<div class="work-visual">
+<img src="images/lab-setup.png" alt="Experimental Physics Lab">
+<div class="overlay"></div>
+<div class="tag-row"><span>PHY-205</span><span>Torricelli</span><span>Experimental</span></div>
+</div>
+<div class="work-text">
+<div class="num">01</div>
+<h3>Experimental Methods Lab</h3>
+<p>Designed and executed Torricelli's Theorem experiments — measuring efflux speed, calibrating apparatus, analyzing fluid dynamics in real-time. Physics isn't theory. It's doing.</p>
+<a href="https://github.com/Swastik2209" class="link">View Research →</a>
+</div>
+</div>
+
+<div class="work-item reveal">
+<div class="work-visual">
+<img src="images/pendulum-analysis.png" alt="Double Pendulum">
+<div class="overlay"></div>
+<div class="tag-row"><span>Chaos Theory</span><span>Simulation</span><span>Python</span></div>
+</div>
+<div class="work-text">
+<div class="num">02</div>
+<h3>Double Pendulum Analysis</h3>
+<p>Built a chaos theory visualization — tracking the unpredictable motion of coupled pendulums. Small changes in initial conditions produce wildly different outcomes. That's chaos.</p>
+<a href="https://github.com/Swastik2209" class="link">View Code →</a>
+</div>
+</div>
+
+<div class="work-item reveal">
+<div class="work-visual">
+<img src="images/indifference-curves.png" alt="Consumer Theory">
+<div class="overlay"></div>
+<div class="tag-row"><span>Economics</span><span>Utility Theory</span><span>Visualization</span></div>
+</div>
+<div class="work-text">
+<div class="num">03</div>
+<h3>Consumer Theory Analysis</h3>
+<p>Mapped consumer preferences through indifference curve analysis — visualizing utility maximization, marginal rates of substitution, and budget constraints.</p>
+<a href="https://github.com/Swastik2209" class="link">View Analysis →</a>
+</div>
+</div>
+
+<div class="work-item reveal">
+<div class="work-visual">
+<img src="images/growth-chart.png" alt="GDP Analysis">
+<div class="overlay"></div>
+<div class="tag-row"><span>Panel Data</span><span>GDP</span><span>R</span></div>
+</div>
+<div class="work-text">
+<div class="num">04</div>
+<h3>Sectoral Growth Intelligence</h3>
+<p>Panel data visualization tracking sectoral contribution to GDP growth. Building models that predict which sectors drive economic transformation in developing economies.</p>
+<a href="https://github.com/Swastik2209" class="link">View Models →</a>
+</div>
+</div>
+
+<div class="work-item reveal" style="border-bottom:none">
+<div class="work-visual">
+<img src="images/unemployment-chart.png" alt="Employment Study">
+<div class="overlay"></div>
+<div class="tag-row"><span>Urban Econ</span><span>Policy</span><span>Data Viz</span></div>
+</div>
+<div class="work-text">
+<div class="num">05</div>
+<h3>Urban Employment Study</h3>
+<p>Data visualization of urban unemployment trends — analyzing policy implications for the Indian economy. Numbers tell stories that policy papers can't.</p>
+<a href="https://github.com/Swastik2209" class="link">View Research →</a>
 </div>
 </div>
 </div>
 </section>
 
-<section class="work" id="work">
-<div class="work-inner">
-<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Research & Projects</div>
-<h2>Real work, real results</h2>
-
-<div class="wcard rv">
-<div class="wvis"><img src="images/lab-setup.png" alt="Lab Setup"></div>
-<div class="winfo"><div class="yr">Physics Lab</div><h3>Experimental Methods</h3><p>PHY-205 lab work — Torricelli's Theorem, efflux speed analysis, experimental apparatus setup.</p><a href="https://github.com/Swastik2209">Source →</a></div>
-</div>
-
-<div class="wcard rv">
-<div class="wvis"><img src="images/pendulum-analysis.png" alt="Pendulum Analysis"></div>
-<div class="winfo"><div class="yr">Physics Analysis</div><h3>Double Pendulum Analysis</h3><p>Chaos theory visualization — tracking the unpredictable motion of coupled pendulums.</p><a href="https://github.com/Swastik2209">Source →</a></div>
-</div>
-
-<div class="wcard rv">
-<div class="wvis"><img src="images/indifference-curves.png" alt="Indifference Curves"></div>
-<div class="winfo"><div class="yr">Economics</div><h3>Consumer Theory</h3><p>Indifference curve analysis — mapping consumer preferences and utility maximization.</p><a href="https://github.com/Swastik2209">Source →</a></div>
-</div>
-
-<div class="wcard rv">
-<div class="wvis"><img src="images/growth-chart.png" alt="Growth Chart"></div>
-<div class="winfo"><div class="yr">Economics</div><h3>Sectoral Growth Analysis</h3><p>Panel data visualization — tracking sectoral contribution to GDP growth over time.</p><a href="https://github.com/Swastik2209">Source →</a></div>
-</div>
-
-<div class="wcard rv" style="border-bottom:none">
-<div class="wvis"><img src="images/unemployment-chart.png" alt="Unemployment Chart"></div>
-<div class="winfo"><div class="yr">Economics</div><h3>Urban Employment Study</h3><p>Data visualization of urban unemployment trends — policy implications for Indian economy.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<section id="lab">
+<div class="section-inner">
+<div class="label">The Laboratory</div>
+<h2>Experiments <span>& explorations</span></h2>
+<p class="sub">Where curiosity meets computation. Physics simulations, AI experiments, financial models.</p>
+<div class="lab-grid">
+<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">01</div><h4>Pendulum Dynamics</h4><p>Simulating coupled oscillator systems and chaos theory with real-time visualization.</p></div>
+<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">02</div><h4>Black-Scholes Engine</h4><p>European option pricing using Brownian motion, GARCH volatility, and Monte Carlo.</p></div>
+<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">03</div><h4>Climate Economics</h4><p>Himalayan glacial retreat modeling — correlating temperature anomalies with regional GDP.</p></div>
+<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">04</div><h4>Force Analysis</h4><p>Electromagnetic force measurement using gaussmeter data and uncertainty propagation.</p></div>
+<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">05</div><h4>Portfolio Optimizer</h4><p>Mean-variance optimization with Sharpe ratio maximization on Indian equity data.</p></div>
+<div class="lab-item reveal"><div class="lab-icon" style="font-size:1.2rem;color:#818cf8">06</div><h4>AI Pipeline</h4><p>Multi-model consensus system using Ollama, Hermes, and Lord AI for autonomous decisions.</p></div>
 </div>
 </div>
 </section>
 
-<section class="skills" id="skills">
-<div class="skills-inner">
-<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Technical Arsenal</div>
-<h2>Tools & technologies</h2>
-<div class="sgrid">
-<div class="sitem"><h4>Python</h4><div class="lv">Expert</div></div>
-<div class="sitem"><h4>FastAPI</h4><div class="lv">Expert</div></div>
-<div class="sitem"><h4>AI / ML Pipelines</h4><div class="lv">Advanced</div></div>
-<div class="sitem"><h4>Quantitative Finance</h4><div class="lv">Advanced</div></div>
-<div class="sitem"><h4>LaTeX / TikZ</h4><div class="lv">Expert</div></div>
-<div class="sitem"><h4>JavaScript</h4><div class="lv">Proficient</div></div>
-<div class="sitem"><h4>Razorpay / Stripe</h4><div class="lv">Advanced</div></div>
-<div class="sitem"><h4>Data Visualization</h4><div class="lv">Advanced</div></div>
+<section id="writing" style="background:#08080b">
+<div class="section-inner">
+<div class="label">Writing</div>
+<h2>Thinking <span>out loud</span></h2>
+<div class="writing-list">
+<div class="writing-item reveal"><div class="title">Why Chaos Theory Matters for AI Systems</div><div class="meta">2025 — Draft</div></div>
+<div class="writing-item reveal"><div class="title">Building Autonomous Businesses with Multi-Model Consensus</div><div class="meta">2025 — Draft</div></div>
+<div class="writing-item reveal"><div class="title">The Physics of Finance: From Brownian Motion to Black-Scholes</div><div class="meta">2025 — Research</div></div>
+<div class="writing-item reveal"><div class="title">Climate Economics: What Glacial Retreat Tells Us About GDP</div><div class="meta">2025 — Research</div></div>
+<div class="writing-item reveal"><div class="title">Why Every Physics Student Should Learn to Code</div><div class="meta">2025 — Ideas</div></div>
 </div>
 </div>
 </section>
 
-<section class="exp" id="exp">
-<div class="exp-inner">
-<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Experience</div>
-<h2>Where I've been</h2>
-<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Founder, NEXUS AI</h4><p>Autonomous AI business with 12+ SaaS products.</p></div></div>
-<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>AI Systems Builder</h4><p>AI automation pipelines, FastAPI backends.</p></div></div>
-<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Quantitative Finance Researcher</h4><p>Derivatives pricing, volatility modelling.</p></div></div>
-<div class="eitem rv"><div class="edate">2024 — Present</div><div><h4>B.Sc. Physics, Azim Premji University</h4><p>9.0 CGPA. Research with Prof. KC Adaina.</p></div></div>
+<section id="contact">
+<div class="section-inner">
+<div class="label">Contact</div>
+<h2>Let's build <span>something real</span></h2>
+<div class="contact-grid">
+<div class="contact-links">
+<a href="mailto:swastikmishra3558@gmail.com"><span>Email</span><span class="arrow">→</span></a>
+<a href="https://github.com/Swastik2209"><span>GitHub</span><span class="arrow">→</span></a>
+<a href="https://t.me/AutoMarketing2209Bot"><span>Telegram</span><span class="arrow">→</span></a>
+<a href="https://nexus-image-gen-two.vercel.app"><span>NEXUS AI</span><span class="arrow">→</span></a>
 </div>
-</section>
-
-<section class="contact" id="contact">
-<div class="contact-inner">
-<div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#3b82f6;margin-bottom:16px">Contact</div>
-<h2>Let's work together</h2>
-<div class="clinks">
-<a href="mailto:swastikmishra3558@gmail.com" class="clink"><span>Email</span><span class="arr">→</span></a>
-<a href="https://github.com/Swastik2209" class="clink"><span>GitHub</span><span class="arr">→</span></a>
-<a href="https://t.me/AutoMarketing2209Bot" class="clink"><span>Telegram</span><span class="arr">→</span></a>
-<a href="https://nexus-image-gen-two.vercel.app" class="clink"><span>NEXUS AI Products</span><span class="arr">→</span></a>
+<div class="contact-cta">
+<h3>Open to collaborations</h3>
+<p>Research partnerships, AI engineering roles, quantitative finance positions, or anything that involves building systems that think.</p>
+<a href="mailto:swastikmishra3558@gmail.com" class="btn-primary" style="text-decoration:none">Get in Touch →</a>
+</div>
 </div>
 </div>
 </section>
 
-<footer class="f">
-<span>Swastik Mishra — AI Systems · Quantitative Finance · Physics</span>
+<footer class="footer">
+<span>Swastik Mishra — Physics · AI · Systems</span>
 <span>© 2026</span>
 </footer>
 
 <script>
-const c=document.getElementById('cur');let mx=0,my=0,cx=0,cy=0;
+// Three.js Background
+(function(){
+const c=document.getElementById('three-bg');
+const s=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
+const r=new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:true});
+r.setSize(innerWidth,innerHeight);
+r.setPixelRatio(Math.min(devicePixelRatio,2));
+cam.position.z=5;
+
+// Geometry pool
+const geos=[
+new THREE.IcosahedronGeometry(0.3,0),
+new THREE.OctahedronGeometry(0.25,0),
+new THREE.TorusGeometry(0.25,0.06,8,16),
+new THREE.TetrahedronGeometry(0.28,0)
+];
+const objs=[];
+for(let i=0;i<12;i++){
+const g=geos[i%geos.length];
+const m=new THREE.MeshBasicMaterial({color:new THREE.Color().setHSL(0.62+Math.random()*0.08,0.5,0.45),wireframe:true,transparent:true,opacity:0.08});
+const mesh=new THREE.Mesh(g,m);
+mesh.position.set((Math.random()-0.5)*10,(Math.random()-0.5)*7,(Math.random()-0.5)*5);
+mesh.rotation.set(Math.random()*6.28,Math.random()*6.28,0);
+mesh.userData={rx:(.001+Math.random()*.005)*(Math.random()>.5?1:-1),ry:(.001+Math.random()*.004)*(Math.random()>.5?1:-1),
+bx:mesh.position.x,by:mesh.position.y,sx:(Math.random()-.5)*.002,sy:(Math.random()-.5)*.0015};
+s.add(mesh);objs.push(mesh);
+}
+
+// Particles
+const pg=new THREE.BufferGeometry();
+const pc=200;
+const pp=new Float32Array(pc*3);
+for(let i=0;i<pc*3;i++)pp[i]=(Math.random()-0.5)*16;
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+const pm=new THREE.PointsMaterial({color:0x6366f1,size:0.012,transparent:true,opacity:0.25});
+s.add(new THREE.Points(pg,pm));
+
+let mx=innerWidth/2,my=innerHeight/2;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-!function a(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;c.style.left=cx+'px';c.style.top=cy+'px';requestAnimationFrame(a)}();
-document.querySelectorAll('a,.wvis,.sitem').forEach(el=>{el.addEventListener('mouseenter',()=>c.classList.add('big'));el.addEventListener('mouseleave',()=>c.classList.remove('big'))});
+
+(function anim(){
+requestAnimationFrame(anim);
+const t=Date.now();
+objs.forEach(o=>{o.rotation.x+=o.userData.rx;o.rotation.y+=o.userData.ry;
+o.position.x=o.userData.bx+Math.sin(t*o.userData.sx)*.6;
+o.position.y=o.userData.by+Math.cos(t*o.userData.sy)*.4;});
+const tx=(mx/innerWidth-.5)*.2,ty=(my/innerHeight-.5)*.2;
+cam.position.x+=(tx-cam.position.x)*.015;
+cam.position.y+=(-ty-cam.position.y)*.015;
+cam.lookAt(0,0,0);
+r.render(s,cam);
+})();
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
+})();
+
+// Cursor
+const cur=document.getElementById('cur');
+let cx=0,cy=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
+(function uc(){cx+=(tx-cx)*.1;cy+=(ty-cy)*.1;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(uc)})();
+document.querySelectorAll('a,.btn-primary,.btn-ghost,.work-visual,.lab-item').forEach(el=>{
+el.addEventListener('mouseenter',()=>cur.classList.add('hover'));
+el.addEventListener('mouseleave',()=>cur.classList.remove('hover'));
+});
+
+// GSAP
 gsap.registerPlugin(ScrollTrigger);
-document.querySelectorAll('.rv').forEach(el=>{gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.7,scrollTrigger:{trigger:el,start:'top 85%'}})});
-gsap.fromTo('.hero h1',{opacity:0,y:20},{opacity:1,y:0,duration:1,delay:.2});
-gsap.fromTo('.hero-sub',{opacity:0,y:15},{opacity:1,y:0,duration:.8,delay:.4});
-gsap.fromTo('.hero-btn',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.6});
-gsap.fromTo('.hero-stats',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.8});
-document.querySelectorAll('.h nav a').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})})});
+// Hero
+gsap.from('.hero-badge',{opacity:0,y:12,duration:.6,delay:.1});
+gsap.from('.hero h1',{opacity:0,y:20,duration:.8,delay:.2});
+gsap.from('.hero-desc',{opacity:0,y:12,duration:.6,delay:.4});
+gsap.from('.hero-actions',{opacity:0,y:12,duration:.6,delay:.5});
+gsap.from('.hero-metrics .metric',{opacity:0,y:12,duration:.5,stagger:.1,delay:.6});
+
+// Reveal on scroll
+document.querySelectorAll('.reveal').forEach(el=>{
+ScrollTrigger.create({trigger:el,start:'top 88%',onEnter:()=>el.classList.add('active')});
+});
+
+// Nav smooth scroll
+document.querySelectorAll('.nav-links a').forEach(a=>{
+a.addEventListener('click',e=>{e.preventDefault();
+document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})});
+});
 </script>
 </body>
 </html>
