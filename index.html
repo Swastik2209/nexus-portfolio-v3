@@ -76,8 +76,8 @@ section h2 span{color:#9ca3af}
 section .sub{font-size:1.1rem;color:#c8c8c8;max-width:550px;line-height:1.8;margin-bottom:56px}
 
 /* About */
-.about-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:80px;align-items:start}
-.about-visual{position:relative}
+.about-grid{display:grid;grid-template-columns:0.7fr 1.3fr;gap:64px;align-items:start}
+.about-visual{position:relative;margin-left:auto;max-width:380px}
 .about-img{width:100%;aspect-ratio:3/4;border-radius:16px;overflow:hidden;position:relative}
 .about-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);transition:filter .5s}
 .about-img:hover img{filter:grayscale(0%)}
@@ -234,11 +234,9 @@ I build systems<br>
 <div class="about-floating"><div class="num">9.0</div><div class="txt">CGPA — APU</div></div>
 </div>
 <div class="about-text reveal">
-<p><strong>Physics taught me to see patterns.</strong> At Azim Premji University, I study B.Sc. Physics while building AI systems on the side. Not because I have to — because I can't stop. Equations describe nature. Code describes systems. Markets describe behavior. I study all three.</p>
-<p>Most days begin in a lab coat — calibrating a force sensor, timing a pendulum, plotting gaussmeter readings. Most nights end in front of a terminal — pricing an option, training a model, deploying a service. The two worlds don't feel separate. They feel like the same question asked twice: <em>what is the underlying structure?</em></p>
-<p>My work spans <strong>Black-Scholes derivatives pricing</strong>, autonomous AI pipelines, and climate economics research with Prof. KC Adaina. I build FastAPI backends, train ML models, and ship payment-integrated platforms. I read papers on turbulence, write code at 2am, and argue with my models until they admit when they're wrong.</p>
-<p>I grew up in a small town where nobody knew what a quant was. I taught myself derivatives pricing off lecture notes from MIT OpenCourseWare. I built my first lead-generation system in college, my first options pricer on a long train ride, my first autonomous pipeline between lectures. None of it was planned. All of it compounded.</p>
-<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products. The goal isn't just revenue. It's proving that a physics student from a town most people have never heard of can build something that an investor in Bangalore, a researcher in Zurich, and a quant in New York all take seriously. <strong>That matters more to me than the revenue line.</strong></p>
+<p><strong>Physics taught me to see patterns.</strong> At Azim Premji University, I study B.Sc. Physics while building AI systems on the side. Not because I have to — because I can't stop.</p>
+<p>My work spans <strong>Black-Scholes derivatives pricing</strong>, autonomous AI pipelines, and climate economics research with Prof. KC Adaina. I build FastAPI backends, train ML models, and ship payment-integrated platforms.</p>
+<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products. The goal isn't just revenue. It's proving that a physics student can build something that matters.</p>
 <div class="about-tags">
 <span>B.Sc. Physics</span>
 <span>Azim Premji University</span>
@@ -370,12 +368,12 @@ I build systems<br>
 <div class="lab-item reveal"><div class="lab-icon">03</div><h4>Climate Economics</h4><p>Himalayan glacial retreat modeling — correlating temperature anomalies with regional GDP.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">04</div><h4>Force Analysis</h4><p>Electromagnetic force measurement using gaussmeter data and uncertainty propagation.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">05</div><h4>Portfolio Optimizer</h4><p>Mean-variance optimization with Sharpe ratio maximization on Indian equity data.</p></div>
-<div class="lab-item reveal"><div class="lab-icon">06</div><h4>AI Pipeline</h4><p>Multi-model consensus system using Ollama, Hermes, and Lord AI for autonomous decisions.</p><canvas id="ai-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
+<div class="lab-item reveal" style="grid-column:span 2"><div class="lab-icon">06</div><h4>AI Pipeline</h4><p>Multi-model consensus system using Ollama, Hermes, and Lord AI for autonomous decisions.</p><canvas id="ai-canvas" style="width:100%;height:200px;margin-top:12px"></canvas></div>
 </div>
 <div class="lab-grid" style="margin-top:2px">
-<div class="lab-item reveal"><div class="lab-icon">07</div><h4>Wave Interference</h4><p>Superposition of two oscillators — adjust frequency and phase to watch beats emerge.</p><canvas id="wave-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
-<div class="lab-item reveal"><div class="lab-icon">08</div><h4>Lorenz Attractor</h4><p>The strange attractor that broke classical determinism — sensitive dependence on initial conditions.</p><canvas id="lorenz-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
-<div class="lab-item reveal"><div class="lab-icon">09</div><h4>Random Walk</h4><p>Brownian motion as the bridge between physics and financial markets. Monte Carlo sampling.</p><canvas id="walk-canvas" style="width:100%;height:140px;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">07</div><h4>Wave Interference</h4><p>Superposition of two oscillators — adjust frequency and phase to watch beats emerge.</p><canvas id="wave-canvas" style="width:100%;height:160px;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">08</div><h4>Lorenz Attractor</h4><p>The strange attractor that broke classical determinism — sensitive dependence on initial conditions.</p><canvas id="lorenz-canvas" style="width:100%;height:160px;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">09</div><h4>Brownian Motion</h4><p>Random walk — the bridge between physics and financial markets. Monte Carlo sampling of stochastic paths.</p><canvas id="walk-canvas" style="width:100%;height:160px;margin-top:12px"></canvas></div>
 </div>
 </div>
 </div>
@@ -697,18 +695,20 @@ resize();
 window.addEventListener('resize',resize);
 
 const g=9.81;
-let a1=Math.PI/0.7,a2=Math.PI/0.5;
+let a1=Math.PI*0.7,a2=Math.PI*0.5;
 let v1=0,v2=0;
-const m1=10,m2=10,l1=80,l2=80;
+const m1=10,m2=10,l1=0.4*Math.min(window.innerWidth,2000),l2=l1;
 const trail=[];
-const maxTrail=200;
+const maxTrail=400;
+let dragging=false;
 
 canvas.addEventListener('mousemove',e=>{
 const rect=canvas.getBoundingClientRect();
-a1=(e.clientX-rect.left-W/2)*0.01;
-a2=(e.clientY-rect.top-H/2)*0.01;
-v1=0;v2=0;
+const x=(e.clientX-rect.left-rect.width/2);
+v1+=x*0.000005;
+v2+=x*0.000008;
 });
+canvas.addEventListener('mouseleave',()=>{});
 
 function step(){
 const d1=-g*(2*m1+m2)*Math.sin(a1)-m2*g*Math.sin(a1-2*a2);
@@ -717,24 +717,22 @@ const den1=l1*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
 const den2=l2*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
 const a1acc=d1/den1;
 const a2acc=d2/den2;
-
-v1+=a1acc*0.016;
-v2+=a2acc*0.016;
-v1*=0.999;
-v2*=0.999;
-a1+=v1*0.016;
-a2+=v2*0.016;
+v1+=a1acc*0.5;
+v2+=a2acc*0.5;
+v1*=0.9995;
+v2*=0.9995;
+a1+=v1;
+a2+=v2;
 }
 
 function draw(){
-ctx.clearRect(0,0,W,H);
-const ox=W/2,oy=H/3;
+ctx.fillStyle='rgba(5,5,8,0.12)';ctx.fillRect(0,0,W,H);
+const ox=W/2,oy=H*0.25;
 const x1=ox+l1*Math.sin(a1);
 const y1=oy+l1*Math.cos(a1);
 const x2=x1+l2*Math.sin(a2);
 const y2=y1+l2*Math.cos(a2);
 
-// Trail
 trail.push({x:x2,y:y2});
 if(trail.length>maxTrail)trail.shift();
 for(let i=1;i<trail.length;i++){
@@ -742,26 +740,26 @@ const alpha=i/trail.length;
 ctx.beginPath();
 ctx.moveTo(trail[i-1].x,trail[i-1].y);
 ctx.lineTo(trail[i].x,trail[i].y);
-ctx.strokeStyle=`rgba(99,102,241,${alpha*0.4})`;
-ctx.lineWidth=1;
+ctx.strokeStyle=`rgba(167,139,250,${alpha*0.6})`;
+ctx.lineWidth=1.2;
 ctx.stroke();
 }
 
-// Rods
-ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(x1,y1);ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;ctx.stroke();
-ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;ctx.stroke();
+ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(x1,y1);ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1.5;ctx.stroke();
+ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.stroke();
 
-// Pivot
-ctx.beginPath();ctx.arc(ox,oy,3,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,0.7)';ctx.fill();
+ctx.beginPath();ctx.arc(ox,oy,4,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.6)';ctx.fill();
 
-// Masses
-ctx.beginPath();ctx.arc(x1,y1,m1/3,0,Math.PI*2);ctx.fillStyle='rgba(129,140,248,0.8)';ctx.fill();
-ctx.beginPath();ctx.arc(x2,y2,m2/3,0,Math.PI*2);ctx.fillStyle='rgba(167,139,250,0.9)';ctx.fill();
+ctx.beginPath();ctx.arc(x1,y1,m1/2.5,0,Math.PI*2);ctx.fillStyle='rgba(99,102,241,0.9)';ctx.fill();
+ctx.beginPath();ctx.arc(x2,y2,m2/2.5,0,Math.PI*2);ctx.fillStyle='rgba(244,114,182,0.95)';ctx.fill();
 
-// Glow on tip
-const grd=ctx.createRadialGradient(x2,y2,0,x2,y2,20);
-grd.addColorStop(0,'rgba(99,102,241,0.3)');grd.addColorStop(1,'rgba(99,102,241,0)');
-ctx.fillStyle=grd;ctx.fillRect(x2-20,y2-20,40,40);
+const grd=ctx.createRadialGradient(x2,y2,0,x2,y2,30);
+grd.addColorStop(0,'rgba(244,114,182,0.35)');grd.addColorStop(1,'rgba(244,114,182,0)');
+ctx.fillStyle=grd;ctx.fillRect(x2-30,y2-30,60,60);
+
+ctx.font='11px JetBrains Mono, monospace';
+ctx.fillStyle='rgba(148,163,184,0.6)';
+ctx.fillText('θ₁='+a1.toFixed(2)+' θ₂='+a2.toFixed(2),10,18);
 
 step();
 requestAnimationFrame(draw);
@@ -928,25 +926,47 @@ requestAnimationFrame(draw);
 }draw();
 })();
 
-// ===================== RANDOM WALK / BROWNIAN MOTION =====================
+// ===================== BROWNIAN MOTION (Monte Carlo) =====================
 (function(){
 const canvas=document.getElementById('walk-canvas');
 if(!canvas)return;
 const ctx=canvas.getContext('2d');
 let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}resize();window.addEventListener('resize',resize);
-const walks=[];
-const colors=['rgba(99,102,241,0.7)','rgba(167,139,250,0.6)','rgba(56,189,248,0.5)','rgba(244,114,182,0.4)'];
-for(let i=0;i<4;i++)walks.push({path:[H/2],y:H/2,color:colors[i]});
+const steps=[];
+let x=0,y=0;
+const maxSteps=400;
 function draw(){
 ctx.fillStyle='rgba(5,5,8,0.06)';ctx.fillRect(0,0,W,H);
-walks.forEach(w=>{
-const step=(Math.random()-0.5)*4;
-w.y=Math.max(20,Math.min(H-20,w.y+step));
-w.path.push(w.y);if(w.path.length>W)w.path.shift();
+const sx=W*0.025,sy=H*0.05,ox=W*0.5,oy=H*0.5;
+const dx=(Math.random()-0.5)*2;
+const dy=(Math.random()-0.5)*2;
+x+=dx;y+=dy;if(steps.length>maxSteps)steps.shift();steps.push([x,y]);
+// Grid (faint)
+ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.5;
+for(let i=0;i<W;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke();}
+for(let i=0;i<H;i+=40){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke();}
+// axes
+ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,H);ctx.stroke();
+ctx.beginPath();ctx.moveTo(0,oy);ctx.lineTo(W,oy);ctx.stroke();
+// path
+const scale=Math.min(sx,sy)*1.2;
 ctx.beginPath();
-w.path.forEach((y,i)=>{if(i===0)ctx.moveTo(i,y);else ctx.lineTo(i,y);});
-ctx.strokeStyle=w.color;ctx.lineWidth=1;ctx.stroke();
+steps.forEach((p,i)=>{
+const px=ox+p[0]*scale,py=oy-p[1]*scale;
+if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
 });
+ctx.strokeStyle='rgba(244,114,182,0.7)';ctx.lineWidth=1.2;ctx.stroke();
+// glow on tip
+const last=steps[steps.length-1];
+const px=ox+last[0]*scale,py=oy-last[1]*scale;
+const grd=ctx.createRadialGradient(px,py,0,px,py,16);
+grd.addColorStop(0,'rgba(244,114,182,0.6)');grd.addColorStop(1,'rgba(244,114,182,0)');
+ctx.fillStyle=grd;ctx.fillRect(px-16,py-16,32,32);
+ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+// histogram line at bottom
+ctx.font='10px JetBrains Mono';ctx.fillStyle='rgba(148,163,184,0.5)';
+ctx.fillText('N('+steps.length+')',10,16);
 requestAnimationFrame(draw);
 }draw();
 })();
@@ -956,11 +976,11 @@ requestAnimationFrame(draw);
 gsap.registerPlugin(ScrollTrigger);
 
 // Hero entrance
-gsap.from('.hero-badge',{opacity:0,y:12,duration:.6,delay:.1});
-gsap.from('.hero h1',{opacity:0,y:30,duration:1,delay:.2,ease:'power3.out'});
-gsap.from('.hero-desc',{opacity:0,y:12,duration:.6,delay:.4});
-gsap.from('.hero-actions',{opacity:0,y:12,duration:.6,delay:.5});
-gsap.from('.hero-metrics .metric',{opacity:0,y:12,duration:.5,stagger:.1,delay:.6});
+gsap.from('.hero-badge',{opacity:0,y:12,duration:.35,delay:.05});
+gsap.from('.hero h1',{opacity:0,y:30,duration:.6,delay:.1,ease:'power3.out'});
+gsap.from('.hero-desc',{opacity:0,y:12,duration:.35,delay:.2});
+gsap.from('.hero-actions',{opacity:0,y:12,duration:.35,delay:.25});
+gsap.from('.hero-metrics .metric',{opacity:0,y:12,duration:.3,stagger:.05,delay:.3});
 
 // Text reveal
 document.querySelectorAll('.text-reveal').forEach(el=>{
@@ -969,7 +989,7 @@ ScrollTrigger.create({trigger:el,start:'top 85%',onEnter:()=>el.classList.add('a
 
 // Reveal on scroll
 document.querySelectorAll('.reveal').forEach((el,i)=>{
-gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.7,delay:i%3*0.1,
+gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.4,delay:0,
 scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none none'}});
 });
 
