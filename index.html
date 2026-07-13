@@ -598,11 +598,15 @@ requestAnimationFrame(render);
 addEventListener('resize',()=>{});
 })();
 
+// ===================== INIT ON DOM READY =====================
+document.addEventListener('DOMContentLoaded',()=>{
+try{
 // ===================== THREE.JS FLOATING GEOMETRY (Lazy-loaded after hero) =====================
 let threeInitialized=false;
 function initThree(){
 if(threeInitialized)return;
 threeInitialized=true;
+try{
 const s=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,1000);
 const r=new THREE.WebGLRenderer({alpha:true,antialias:true});
@@ -1320,6 +1324,8 @@ navigator.serviceWorker.register('/sw.js').catch(()=>{});
 
 // ===================== ANALYTICS (Privacy-friendly) =====================
 // Plausible/Umami would go here if configured
+});
+});
 </script>
 </body>
 </html>
