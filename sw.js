@@ -1,5 +1,5 @@
 // Service Worker for PROJECT OMEGA Portfolio
-const CACHE_NAME = 'omega-portfolio-v10';
+const CACHE_NAME = 'omega-portfolio-v11';
 const ASSETS = [
 '/',
 '/index.html',
@@ -12,6 +12,7 @@ const ASSETS = [
 '/images/force-experiment.jpeg',
 '/images/gaussmeter.jpeg',
 '/images/variable-analysis.png',
+'/images/freecad-tensigrity.png',
 ];
 
 self.addEventListener('install',e=>{
