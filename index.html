@@ -75,7 +75,7 @@ body{background:#050508;color:#f5f5f5;font-family:'Space Grotesk',sans-serif;ove
 /* Section wrapper */
 section{position:relative;z-index:1;padding:140px 48px}
 .section-inner{max-width:1200px;margin:0 auto}
-section h2{font-size:clamp(2.2rem,4.rem,4.5vw,3.5rem);font-weight:700;letter-spacing:-0.02em;color:#fafafa;margin-bottom:20px}
+section h2{font-size:clamp(2rem,4vw,3.5rem);font-weight:700;letter-spacing:-0.02em;color:#fafafa;margin-bottom:20px}
 section h2 span{color:#9ca3af}
 section .sub{font-size:1.1rem;color:#c8c8c8;max-width:550px;line-height:1.8;margin-bottom:56px}
 
@@ -168,27 +168,70 @@ canvas{border-radius:10px;background:#08080e;border:1px solid rgba(99,102,241,0.
 /* Footer */
 .footer{position:relative;z-index:1;padding:36px 48px;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;font-size:0.7rem;color:#6b7280}
 
+/* Mobile nav toggle */
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;z-index:101}
+.nav-toggle span{width:24px;height:2px;background:#fafafa;border-radius:2px;transition:all .3s}
+
 /* Scroll reveals */
 .reveal{opacity:0;transform:translateY(28px)}
 .reveal.active{opacity:1;transform:none;transition:all .7s cubic-bezier(.4,0,.2,1)}
 
+/* Touch-friendly canvas */
+canvas{touch-action:none}
+
 @media(max-width:900px){
-.nav{padding:16px 24px}.nav-links{gap:20px}
-section{padding:90px 24px}
-.about-grid,.work-item,.work-item:nth-child(even),.contact-grid,.products-grid{grid-template-columns:1fr}
+.nav{padding:16px 24px}
+.nav-toggle{display:flex}
+.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,8,0.98);backdrop-filter:blur(24px);flex-direction:column;align-items:center;justify-content:center;gap:32px;z-index:100}
+.nav-links.open{display:flex}
+.nav-links a{font-size:1.1rem;letter-spacing:0.15em}
+section{padding:80px 24px}
+.about-grid,.work-item,.work-item:nth-child(even),.contact-grid{grid-template-columns:1fr}
 .work-item:nth-child(even) .work-visual{order:0}
+.work-item{gap:32px;padding:48px 0}
 .lab-grid{grid-template-columns:1fr 1fr}
+.lab-grid [style*="span 2"]{grid-column:span 2 !important}
 .products-grid{grid-template-columns:1fr 1fr}
-.hero{padding:0 24px}
-.hero h1{font-size:clamp(2.2rem,9vw,4rem)}
+.hero{padding:0 24px;min-height:90vh}
+.hero h1{font-size:clamp(2.2rem,8vw,4rem)}
+.hero-desc{font-size:1.05rem}
+.hero-metrics{gap:32px;margin-top:50px}
+.metric .val{font-size:1.8rem}
 .about-text{padding:28px}
+.about-text p{font-size:0.95rem}
+.about-grid{gap:40px}
+.cs-meta{flex-wrap:wrap;gap:16px}
+.contact-cta{padding:32px}
 .cursor{display:none}body{cursor:auto}
+.footer{padding:24px;flex-direction:column;gap:8px;text-align:center}
+.writing-item{flex-direction:column;align-items:flex-start;gap:8px}
 }
 @media(max-width:600px){
+section{padding:60px 16px}
 .lab-grid{grid-template-columns:1fr}
+.lab-grid [style*="span 2"]{grid-column:span 1 !important}
 .products-grid{grid-template-columns:1fr}
-.hero-metrics{flex-direction:column;gap:24px}
-.lab-item:first-child{grid-column:span 1}
+.hero-metrics{flex-direction:column;gap:20px;align-items:flex-start}
+.hero h1{font-size:clamp(1.8rem,10vw,3rem)}
+.hero-desc{font-size:0.95rem}
+.hero-actions{flex-direction:column;align-items:flex-start}
+.btn-primary,.btn-ghost{width:100%;justify-content:center}
+.about-img{max-width:280px;margin:0 auto}
+.about-floating{top:-12px;right:-8px;padding:12px 16px}
+.about-floating .num{font-size:1.4rem}
+.about-text{padding:20px}
+.about-tags{gap:6px}
+.about-tags span{padding:5px 10px;font-size:0.65rem}
+.work-text h3{font-size:1.3rem}
+.cs-meta-item{font-size:0.75rem}
+.product-card{padding:24px}
+.contact-cta{padding:24px}
+.contact-links a{font-size:0.85rem;padding:14px 0}
+.nav-logo{font-size:0.85rem}
+.lab-item{padding:20px}
+.lab-item h4{font-size:0.85rem}
+.lab-item p{font-size:0.78rem}
+canvas{height:160px !important}
 }
 </style>
 </head>
@@ -200,13 +243,14 @@ section{padding:90px 24px}
 
 <nav class="nav">
 <div class="nav-logo">S M</div>
+<div class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')"><span></span><span></span><span></span></div>
 <div class="nav-links">
-<a href="#about">About</a>
-<a href="#work">Work</a>
-<a href="#lab">Lab</a>
-<a href="#products">Products</a>
-<a href="#writing">Writing</a>
-<a href="#contact">Contact</a>
+<a href="#about" onclick="document.querySelector('.nav-links').classList.remove('open')">About</a>
+<a href="#work" onclick="document.querySelector('.nav-links').classList.remove('open')">Work</a>
+<a href="#lab" onclick="document.querySelector('.nav-links').classList.remove('open')">Lab</a>
+<a href="#products" onclick="document.querySelector('.nav-links').classList.remove('open')">Products</a>
+<a href="#writing" onclick="document.querySelector('.nav-links').classList.remove('open')">Writing</a>
+<a href="#contact" onclick="document.querySelector('.nav-links').classList.remove('open')">Contact</a>
 </div>
 </nav>
 
