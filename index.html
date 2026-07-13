@@ -4,153 +4,144 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Swastik Mishra</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#faf8f5;--ink:#1a1a1a;--ink2:#555;--ink3:#999;--accent:#2563eb;--gold:#b45309;--border:rgba(0,0,0,0.08)}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;overflow-x:hidden}
-::selection{background:var(--accent);color:#fff}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+body{background:#f5f2ed;color:#1a1a1a;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+::selection{background:#1a1a1a;color:#f5f2ed}
 
 /* Custom cursor */
-.cursor{position:fixed;width:20px;height:20px;border:1.5px solid var(--ink);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s,background .3s}
-.cursor.active{width:60px;height:60px;background:rgba(37,99,235,0.05);border-color:var(--accent)}
+.c{position:fixed;width:16px;height:16px;border:1px solid #1a1a1a;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .4s cubic-bezier(.4,0,.2,1),height .4s,border-color .3s}
+.c.big{width:48px;height:48px;border-color:#2563eb}
 
 /* Grain */
-.grain{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E")}
+.g{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E")}
 
-/* Layout */
-.page{max-width:1400px;margin:0 auto;padding:0 80px}
-.section{padding:120px 0}
+/* Header */
+.h{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(245,242,237,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.06)}
+.h-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:500}
+.h nav{display:flex;gap:28px}
+.h nav a{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:#999;text-decoration:none;transition:color .2s;font-weight:500}
+.h nav a:hover{color:#1a1a1a}
 
-/* Header - Minimal */
-.hdr{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 80px;height:60px;display:flex;justify-content:space-between;align-items:center;background:rgba(250,248,245,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.hdr-name{font-family:'Instrument Serif',serif;font-size:1.3rem;font-weight:400}
-.hdr nav{display:flex;gap:32px}
-.hdr nav a{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .2s;font-family:'Outfit',sans-serif;font-weight:500}
-.hdr nav a:hover{color:var(--ink)}
+/* Sections - Full page editorial */
+.sec{min-height:100vh;display:flex;align-items:center;position:relative;padding:0 60px}
+.sec-dark{background:#1a1a1a;color:#f5f2ed}
 
-/* Hero - Split screen with photo */
-.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;position:relative}
-.hero-left{padding:120px 80px 80px;display:flex;flex-direction:column;justify-content:center}
+/* Hero - Full bleed with photo */
+.hero{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;position:relative;overflow:hidden}
+.hero-left{padding:120px 60px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
 .hero-right{position:relative;overflow:hidden}
 .hero-right img{width:100%;height:100%;object-fit:cover}
-.hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(180,83,9,0.08))}
-.hero-eyebrow{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:20px;font-weight:500}
-.hero h1{font-family:'Instrument Serif',serif;font-size:clamp(3rem,6vw,5.5rem);font-weight:400;line-height:1;letter-spacing:-.02em;margin-bottom:20px}
-.hero h1 em{font-style:italic;color:var(--accent)}
-.hero-sub{font-size:1.05rem;color:var(--ink2);line-height:1.8;max-width:500px;margin-bottom:32px}
-.hero-cta{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--ink);color:var(--bg);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .3s;letter-spacing:.02em}
-.hero-cta:hover{background:var(--accent);transform:translateY(-2px)}
-.hero-stats{display:flex;gap:40px;margin-top:40px;padding-top:24px;border-top:1px solid var(--border)}
-.hero-stats .num{font-family:'Instrument Serif',serif;font-size:2rem;font-weight:400}
-.hero-stats .lbl{font-size:.7rem;color:var(--ink3);margin-top:2px;letter-spacing:.05em}
+.hero-right::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.4))}
+.hero-tag{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#999;margin-bottom:20px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3.5rem,7vw,6rem);font-weight:400;line-height:1;letter-spacing:-.03em;margin-bottom:20px}
+.hero h1 em{font-style:italic;color:#2563eb}
+.hero-sub{font-size:1.05rem;color:#666;line-height:1.8;max-width:480px;margin-bottom:32px}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:#1a1a1a;color:#f5f2ed;text-decoration:none;font-size:.85rem;font-weight:500;transition:all .3s;letter-spacing:.02em}
+.hero-btn:hover{background:#2563eb;transform:translateY(-2px)}
+.hero-stats{display:flex;gap:40px;margin-top:40px;padding-top:24px;border-top:1px solid rgba(0,0,0,0.08)}
+.hero-stats .n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400}
+.hero-stats .l{font-size:.7rem;color:#999;margin-top:2px;letter-spacing:.05em}
 
-/* Photo overlay text */
-.photo-text{position:absolute;bottom:40px;left:40px;z-index:2}
-.photo-text h2{font-family:'Instrument Serif',serif;font-size:2rem;font-weight:400;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,0.3)}
-.photo-text p{color:rgba(255,255,255,0.7);font-size:.85rem;margin-top:4px}
-
-/* About - Editorial style */
-.about{background:var(--ink);color:var(--bg);padding:120px 0}
-.about .page{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
-.about-tag{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:500}
-.about h2{font-family:'Instrument Serif',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;line-height:1.1;margin-bottom:24px}
-.about p{color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:16px;font-size:1rem}
-.about strong{color:#fff;font-weight:500}
-.achievement{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);padding:20px;margin-bottom:12px}
-.achievement h4{font-size:.9rem;font-weight:600;color:#fff;margin-bottom:4px}
-.achievement p{font-size:.85rem;color:rgba(255,255,255,0.5);line-height:1.6}
+/* About - Dark editorial */
+.about{padding:120px 0;position:relative}
+.about .inner{max-width:1200px;margin:0 auto;padding:0 60px;display:grid;grid-template-columns:1fr 1fr;gap:80px}
+.about-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:#b45309;margin-bottom:16px;font-weight:500}
+.about h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;line-height:1.1;margin-bottom:24px}
+.about p{color:#666;line-height:1.8;margin-bottom:16px;font-size:1rem}
+.about strong{color:#1a1a1a;font-weight:600}
+.ach{background:rgba(0,0,0,0.02);border:1px solid rgba(0,0,0,0.06);padding:20px;margin-bottom:12px}
+.ach h4{font-size:.9rem;font-weight:600;margin-bottom:4px}
+.ach p{font-size:.85rem;color:#666;line-height:1.6}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.tag{padding:5px 12px;border:1px solid rgba(255,255,255,0.15);font-size:.7rem;color:rgba(255,255,255,0.5);letter-spacing:.05em;font-weight:500}
+.tag{padding:5px 12px;border:1px solid rgba(0,0,0,0.1);font-size:.7rem;color:#666;letter-spacing:.05em;font-weight:500}
 
-/* Work - Horizontal cards */
+/* Work - Full width editorial */
 .work{padding:120px 0}
-.work h2{font-family:'Instrument Serif',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
-.work-card{display:grid;grid-template-columns:1fr 1.3fr;gap:48px;padding:48px 0;border-bottom:1px solid var(--border);align-items:center}
-.work-card:nth-child(even){direction:rtl}.work-card:nth-child(even)>*{direction:ltr}
-.work-vis{height:320px;border-radius:12px;overflow:hidden;position:relative;transition:transform .5s cubic-bezier(.4,0,.2,1)}
-.work-vis:hover{transform:scale(1.01)}
-.work-vis img{width:100%;height:100%;object-fit:cover}
-.work-info .year{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;font-weight:500}
-.work-info h3{font-family:'Instrument Serif',serif;font-size:1.6rem;font-weight:400;margin-bottom:8px}
-.work-info p{color:var(--ink2);font-size:.9rem;line-height:1.7;max-width:400px;margin-bottom:16px}
-.work-info a{font-size:.85rem;color:var(--ink);text-decoration:none;font-weight:500;transition:color .2s}
-.work-info a:hover{color:var(--accent)}
+.work .inner{max-width:1200px;margin:0 auto;padding:0 60px}
+.work h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
+.wcard{display:grid;grid-template-columns:1fr 1.2fr;gap:48px;padding:48px 0;border-bottom:1px solid rgba(0,0,0,0.06);align-items:center}
+.wcard:nth-child(even){direction:rtl}.wcard:nth-child(even)>*{direction:ltr}
+.wvis{height:320px;border-radius:8px;overflow:hidden;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.wvis:hover{transform:scale(1.01)}
+.winfo .yr{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#999;margin-bottom:8px}
+.winfo h3{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:8px}
+.winfo p{color:#666;font-size:.9rem;line-height:1.7;max-width:400px;margin-bottom:16px}
+.winfo a{font-size:.85rem;color:#1a1a1a;text-decoration:none;font-weight:500;transition:color .2s}
+.winfo a:hover{color:#2563eb}
 
-/* Skills - Minimal */
-.skills{padding:120px 0;background:var(--ink);color:var(--bg)}
-.skills h2{font-family:'Instrument Serif',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
-.skills-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06)}
-.skill{padding:28px;background:var(--ink);transition:background .3s}
-.skill:hover{background:rgba(255,255,255,0.03)}
-.skill h4{font-size:.9rem;font-weight:600;color:#fff;margin-bottom:4px}
-.skill .lv{font-size:.7rem;color:rgba(255,255,255,0.4);letter-spacing:.05em}
+/* Skills - Dark */
+.skills{padding:120px 0;background:#1a1a1a;color:#f5f2ed}
+.skills .inner{max-width:1200px;margin:0 auto;padding:0 60px}
+.skills h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,0.06)}
+.sitem{padding:28px;background:#1a1a1a;transition:background .3s}
+.sitem:hover{background:rgba(255,255,255,0.03)}
+.sitem h4{font-size:.9rem;font-weight:600;color:#fff;margin-bottom:4px}
+.sitem .lv{font-size:.65rem;color:rgba(255,255,255,0.4);letter-spacing:.05em}
 
 /* Experience */
 .exp{padding:120px 0}
-.exp h2{font-family:'Instrument Serif',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
-.exp-item{display:grid;grid-template-columns:120px 1fr;gap:32px;padding:24px 0;border-bottom:1px solid var(--border)}
-.exp-item:last-child{border-bottom:none}
-.exp-date{font-size:.75rem;color:var(--ink3);padding-top:2px;letter-spacing:.05em}
-.exp-item h4{font-size:1rem;font-weight:600;margin-bottom:4px}
-.exp-item p{color:var(--ink2);font-size:.9rem;line-height:1.7}
+.exp .inner{max-width:1200px;margin:0 auto;padding:0 60px}
+.exp h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
+.eitem{display:grid;grid-template-columns:120px 1fr;gap:32px;padding:24px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+.eitem:last-child{border-bottom:none}
+.edate{font-family:'DM Mono',monospace;font-size:.7rem;color:#999;padding-top:2px;letter-spacing:.05em}
+.eitem h4{font-size:1rem;font-weight:600;margin-bottom:4px}
+.eitem p{color:#666;font-size:.9rem;line-height:1.7}
 
-/* Contact */
-.contact{padding:120px 0;background:var(--ink);color:var(--bg)}
-.contact h2{font-family:'Instrument Serif',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
-.contact-links{display:flex;flex-direction:column;max-width:500px}
-.contact-link{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:var(--bg);transition:all .3s;font-size:.9rem;font-weight:500}
-.contact-link:hover{padding-left:12px;color:var(--accent)}
-.contact-link .arrow{color:rgba(255,255,255,0.3);transition:transform .3s}
-.contact-link:hover .arrow{transform:translateX(6px)}
+/* Contact - Dark */
+.contact{padding:120px 0;background:#1a1a1a;color:#f5f2ed}
+.contact .inner{max-width:1200px;margin:0 auto;padding:0 60px}
+.contact h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:48px}
+.clinks{display:flex;flex-direction:column;max-width:500px}
+.clink{padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:#f5f2ed;transition:all .3s;font-size:.9rem;font-weight:500}
+.clink:hover{padding-left:12px;color:#2563eb}
+.clink .arr{color:rgba(255,255,255,0.3);transition:transform .3s}
+.clink:hover .arr{transform:translateX(6px)}
 
 /* Footer */
-.ftr{padding:32px 80px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.75rem;color:var(--ink3)}
+.f{padding:32px 60px;border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-between;font-size:.72rem;color:#999}
 
 /* Reveal */
 .rv{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.4,0,.2,1)}.rv.on{opacity:1;transform:none}
 
-@media(max-width:768px){.page{padding:0 20px}.hero{grid-template-columns:1fr}.hero-left{padding:80px 20px 40px}.hero-right{height:50vh}.work-card{grid-template-columns:1fr;gap:24px}.work-card:nth-child(even){direction:ltr}.skills-grid{grid-template-columns:1fr 1fr}.exp-item{grid-template-columns:1fr;gap:8px}.hdr{padding:0 20px}.hdr nav{gap:16px}.section{padding:80px 0}.ftr{padding:24px 20px}.cursor{display:none}body{cursor:auto}}
+@media(max-width:768px){.sec{padding:0 20px}.hero{grid-template-columns:1fr}.hero-left{padding:80px 20px 40px}.hero-right{height:50vh}.about .inner,.work .inner,.skills .inner,.exp .inner,.contact .inner{padding:0 20px}.wcard{grid-template-columns:1fr;gap:24px}.wcard:nth-child(even){direction:ltr}.sgrid{grid-template-columns:1fr 1fr}.eitem{grid-template-columns:1fr;gap:8px}.h{padding:16px 20px}.h nav{gap:16px}.sec{padding:80px 0}.f{padding:24px 20px}.c{display:none}body{cursor:auto}}
 </style>
 </head>
 <body>
-<div class="cursor" id="cur"></div>
-<div class="grain"></div>
+<div class="c" id="cur"></div>
+<div class="g"></div>
 
-<header class="hdr">
-<div class="hdr-name">Swastik Mishra</div>
+<header class="h">
+<div class="h-name">Swastik Mishra</div>
 <nav><a href="#about">About</a><a href="#work">Work</a><a href="#skills">Skills</a><a href="#exp">Experience</a><a href="#contact">Contact</a></nav>
 </header>
 
-<!-- HERO — Split screen with photo -->
-<section class="hero">
+<section class="sec hero">
 <div class="hero-left">
-<div class="hero-eyebrow">Systems Architect · AI · Quantitative Finance</div>
+<div class="hero-tag">Systems Architect · AI · Quantitative Finance</div>
 <h1>Building<br>systems that<br><em>think.</em></h1>
 <p class="hero-sub">Physics honours student at Azim Premji University (9.0 CGPA). Building AI automation pipelines, FastAPI backends, and quantitative finance systems. Running NEXUS AI — autonomous business targeting $1M ARR.</p>
-<a href="#work" class="hero-cta">View Selected Work →</a>
+<a href="#work" class="hero-btn">View Selected Work →</a>
 <div class="hero-stats">
-<div><div class="num">9.0</div><div class="lbl">CGPA</div></div>
-<div><div class="num">5+</div><div class="lbl">Systems Built</div></div>
-<div><div class="num">$1M</div><div class="lbl">Revenue Target</div></div>
+<div><div class="n">9.0</div><div class="l">CGPA</div></div>
+<div><div class="n">5+</div><div class="l">Systems Built</div></div>
+<div><div class="n">$1M</div><div class="l">Revenue Target</div></div>
 </div>
 </div>
-<div class="hero-right">
-<img src="photo.jpg" alt="Swastik Mishra">
-<div class="photo-text"><h2>Swastik Mishra</h2><p>Systems Architect & AI Builder</p></div>
-</div>
+<div class="hero-right"><img src="photo.jpg" alt="Swastik Mishra"></div>
 </section>
 
-<!-- ABOUT -->
-<section class="about" id="about">
-<div class="page">
+<section class="sec about" id="about">
+<div class="inner">
 <div>
 <div class="about-tag">About</div>
 <h2>Physics meets AI meets business</h2>
 <p>Physics honours student maintaining a <strong>9.0 CGPA</strong> at Azim Premji University, combining rigorous quantitative training with hands-on software engineering.</p>
 <p>I build AI automation pipelines, FastAPI backends, and payment-integrated web platforms for international clients. My work spans from <strong>Black-Scholes derivatives pricing</strong> to building self-running AI business empires.</p>
-<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products targeting $1M ARR. The system runs 24/7, generating revenue through automated lead generation, AI content creation, and enterprise solutions.</p>
+<p>Currently building <strong>NEXUS AI</strong> — an autonomous AI company with 12+ SaaS products targeting $1M ARR.</p>
 <div class="tags">
 <span class="tag">B.Sc. Physics — 9.0 CGPA</span>
 <span class="tag">Azim Premji University</span>
@@ -160,126 +151,110 @@ body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;overf
 </div>
 </div>
 <div>
-<div class="achievement"><h4>NEXUS AI — $1M ARR Target</h4><p>12+ SaaS products, autonomous revenue generation, enterprise solutions for US/EU clients.</p></div>
-<div class="achievement"><h4>Research with Prof. KC Adaina</h4><p>Environmental economics collaboration at Azim Premji University.</p></div>
-<div class="achievement"><h4>Climate Economics Paper</h4><p>Himalayan glacial retreat study — combining physics with economics.</p></div>
-<div class="achievement"><h4>LaTeX/TikZ Documentation</h4><p>PHY-203 wave optics, Fourier optics, polarization documentation.</p></div>
-<div class="achievement"><h4>Quantitative Finance</h4><p>Black-Scholes pricing, GARCH volatility modelling, portfolio optimization.</p></div>
+<div class="ach"><h4>NEXUS AI — $1M ARR Target</h4><p>12+ SaaS products, autonomous revenue generation, enterprise solutions.</p></div>
+<div class="ach"><h4>Research with Prof. KC Adaina</h4><p>Environmental economics collaboration at Azim Premji University.</p></div>
+<div class="ach"><h4>Climate Economics Paper</h4><p>Himalayan glacial retreat study — combining physics with economics.</p></div>
+<div class="ach"><h4>LaTeX/TikZ Documentation</h4><p>PHY-203 wave optics, Fourier optics, polarization documentation.</p></div>
+<div class="ach"><h4>Quantitative Finance</h4><p>Black-Scholes pricing, GARCH volatility modelling, portfolio optimization.</p></div>
 </div>
 </div>
 </section>
 
-<!-- WORK -->
-<section class="work page" id="work">
+<section class="sec work" id="work">
+<div class="inner">
 <div class="about-tag">Selected Work</div>
 <h2>Things I've built</h2>
 
-<div class="work-card rv">
-<div class="work-vis" style="background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">$499/mo</div><div style="font-size:.7rem;color:#888">Revenue</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">12</div><div style="font-size:.7rem;color:#888">Clients</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">1,247</div><div style="font-size:.7rem;color:#888">Leads</div></div></div></div></div>
-<div class="work-info"><div class="year">2025 — Present · AI · SaaS</div><h3>NEXUS AI</h3><p>Autonomous AI business empire with 12+ SaaS products. Automated lead generation, AI content creation, enterprise solutions.</p><a href="https://github.com/Swastik2209">Source →</a> &nbsp; <a href="https://nexus-image-gen-two.vercel.app">Live →</a></div>
+<div class="wcard rv">
+<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center">
+<div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">$499/mo</div><div style="font-size:.65rem;color:#888">Revenue</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">12</div><div style="font-size:.65rem;color:#888">Clients</div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;text-align:center;color:#fff"><div style="font-size:1.5rem;font-weight:700;color:#818cf8">1,247</div><div style="font-size:.65rem;color:#888">Leads</div></div></div></div></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>NEXUS AI</h3><p>Autonomous AI business with 12+ SaaS products. Automated lead generation, AI content creation.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="work-card rv">
-<div class="work-vis" style="background:linear-gradient(135deg,#064e3b,#065f46);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">SOURCES</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>CoinGecko ✓</div><div>FDA Data ✓</div><div>FRED API ✓</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">STATUS</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>Uptime <span style="color:#22c55e">99.9%</span></div><div>Requests <span style="color:#22c55e">12.4K</span></div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">STACK</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>Ollama</div><div>FastAPI</div><div>Python</div></div></div></div></div></div>
-<div class="work-info"><div class="year">2025 — Present · FastAPI · Ollama</div><h3>MiMo / Hermes</h3><p>Ollama-based system with scrapers for CoinGecko, FDA, and FRED data. Scheduled agents, FastAPI endpoints.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<div class="wcard rv">
+<div class="wvis" style="background:linear-gradient(135deg,#064e3b,#065f46);display:flex;align-items:center;justify-content:center">
+<div style="padding:24px;width:100%"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">SOURCES</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>CoinGecko ✓</div><div>FDA Data ✓</div><div>FRED API ✓</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">STATUS</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>Uptime 99.9%</div><div>Requests 12.4K</div></div></div><div style="background:rgba(0,0,0,0.3);padding:16px;border-radius:8px;color:#fff"><div style="font-size:.6rem;color:#888">STACK</div><div style="font-size:.8rem;line-height:1.8;color:#ccc"><div>Ollama</div><div>FastAPI</div><div>Python</div></div></div></div></div></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>MiMo / Hermes</h3><p>Ollama-based system with scrapers for CoinGecko, FDA, and FRED data. FastAPI endpoints.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="work-card rv">
-<div class="work-vis" style="background:linear-gradient(135deg,#1e1b4b,#581c87);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%"><div style="background:rgba(0,0,0,0.4);border-radius:8px;padding:16px;font-family:'Outfit',monospace;font-size:.7rem;color:#22c55e;line-height:1.8"><div style="color:#888">def black_scholes(S, K, T, r, sigma):</div><div>&nbsp;&nbsp;d1 = (log(S/K) + (r + σ²/2)*T) / (σ * sqrt(T))</div><div>&nbsp;&nbsp;d2 = d1 - σ * sqrt(T)</div><div style="margin-top:8px">&nbsp;&nbsp;return S*N(d1) - K*e^(-rT)*N(d2)</div><div style="margin-top:12px;color:#888"># Portfolio optimization</div><div>&nbsp;&nbsp;weights = optimize(portfolio)</div><div style="margin-top:6px;color:#555">>>> backtest(SPY, period="5Y")</div><div style="color:#22c55e">Sharpe: 1.42 | CAGR: 18.7%</div></div></div></div>
-<div class="work-info"><div class="year">2025 — Present · Python · Quant</div><h3>Quantitative Finance Toolkit</h3><p>Brownian motion simulator, NIFTY drawdown analysis, and portfolio-optimization models. Black-Scholes pricing.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<div class="wcard rv">
+<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#581c87);display:flex;align-items:center;justify-content:center">
+<div style="padding:24px;width:100%"><div style="background:rgba(0,0,0,0.4);border-radius:8px;padding:16px;font-family:'DM Mono',monospace;font-size:.68rem;color:#22c55e;line-height:1.8"><div style="color:#888">def black_scholes(S, K, T, r, sigma):</div><div>&nbsp;&nbsp;d1 = (log(S/K) + (r + σ²/2)*T) / (σ * sqrt(T))</div><div>&nbsp;&nbsp;d2 = d1 - σ * sqrt(T)</div><div style="margin-top:6px">&nbsp;&nbsp;return S*N(d1) - K*e^(-rT)*N(d2)</div><div style="margin-top:10px;color:#888"># Portfolio optimization</div><div>&nbsp;&nbsp;sharpe = returns / volatility</div><div style="color:#22c55e">Sharpe: 1.42 | CAGR: 18.7%</div></div></div></div></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>Quantitative Finance Toolkit</h3><p>Brownian motion simulator, NIFTY drawdown analysis, portfolio-optimization models.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="work-card rv">
-<div class="work-vis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center">
-<div style="padding:24px;width:100%;display:flex;flex-direction:column"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><span style="font-size:.8rem;font-weight:600;color:#fff">India GDP vs Inflation</span><span style="font-size:.65rem;color:#888">INTERACTIVE</span></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:.65rem;color:#888;width:36px">2024</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:72%;height:100%;background:var(--accent);border-radius:4px"></div></div><span style="font-size:.7rem;font-weight:600;width:36px;text-align:right">7.2%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:.65rem;color:#888;width:36px">2023</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:78%;height:100%;background:var(--accent);border-radius:4px"></div></div><span style="font-size:.7rem;font-weight:600;width:36px;text-align:right">7.8%</span></div><div style="display:flex;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)"><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">$3.7T</div><div style="font-size:.55rem;color:#888">GDP</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">5th</div><div style="font-size:.55rem;color:#888">Rank</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">1.4B</div><div style="font-size:.55rem;color:#888">People</div></div></div></div></div></div>
-<div class="work-info"><div class="year">2025 — Present · Data Viz · Economics</div><h3>IndiaEcon Intelligence</h3><p>Scroll-driven interactive economics platform translating macroeconomic data into visual exploration.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<div class="wcard rv">
+<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center">
+<div style="padding:24px;width:100%;display:flex;flex-direction:column"><div style="display:flex;justify-content:space-between;margin-bottom:16px"><span style="font-size:.8rem;font-weight:600;color:#fff">India GDP vs Inflation</span><span style="font-size:.65rem;color:#888">INTERACTIVE</span></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:.65rem;color:#888;width:36px">2024</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:72%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:.7rem;font-weight:600;width:36px;text-align:right">7.2%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:.65rem;color:#888;width:36px">2023</span><div style="flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden"><div style="width:78%;height:100%;background:#818cf8;border-radius:4px"></div></div><span style="font-size:.7rem;font-weight:600;width:36px;text-align:right">7.8%</span></div><div style="display:flex;justify-content:space-between;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)"><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">$3.7T</div><div style="font-size:.55rem;color:#888">GDP</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">5th</div><div style="font-size:.55rem;color:#888">Rank</div></div><div style="text-align:center"><div style="font-size:1.1rem;font-weight:700;color:#fff">1.4B</div><div style="font-size:.55rem;color:#888">People</div></div></div></div></div></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>IndiaEcon Intelligence</h3><p>Interactive economics platform translating macroeconomic data into visual exploration.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 
-<div class="work-card rv" style="border-bottom:none">
-<div class="work-vis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center">
+<div class="wcard rv" style="border-bottom:none">
+<div class="wvis" style="background:linear-gradient(135deg,#1e1b4b,#1e3a5f);display:flex;align-items:center;justify-content:center">
 <div style="padding:24px;width:100%;display:flex;flex-direction:column;justify-content:space-between;height:100%"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:.8rem;font-weight:600;color:#fff">Palo Alto Central Dental</span><span style="font-size:.65rem;color:#22c55e">PRODUCTION</span></div><div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:20px;color:#fff"><div style="font-size:.6rem;color:#888">NEXT APPOINTMENT</div><div style="font-size:1rem;font-weight:600;margin:8px 0">Dr. Smith — Cleaning</div><div style="display:flex;gap:12px;font-size:.7rem;color:#888;margin-bottom:16px"><span>Jul 15</span><span>10:30 AM</span><span>Room 4</span></div><div style="display:flex;gap:8px"><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">$12.4K</div><div style="font-size:.55rem;color:#888">Revenue</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">342</div><div style="font-size:.55rem;color:#888">Patients</div></div><div style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;text-align:center"><div style="font-size:1rem;font-weight:700;color:#22c55e">98%</div><div style="font-size:.55rem;color:#888">Satisfaction</div></div></div></div></div></div>
-<div class="work-info"><div class="year">2025 — Present · Web Dev · Payments</div><h3>Client Demo — Palo Alto Central Dental</h3><p>Live production demo site for booking flows and payment integration.</p><a href="https://github.com/Swastik2209">Source →</a></div>
+<div class="winfo"><div class="yr">2025 — Present</div><h3>Client Demo — Palo Alto Central Dental</h3><p>Live production demo site for booking flows and payment integration.</p><a href="https://github.com/Swastik2209">Source →</a></div>
 </div>
 </div>
 </section>
 
-<!-- SKILLS -->
-<section class="skills" id="skills">
-<div class="page">
-<div class="about-tag" style="color:var(--accent)">Technical Arsenal</div>
+<section class="sec skills" id="skills">
+<div class="inner">
+<div class="about-tag" style="color:#2563eb">Technical Arsenal</div>
 <h2>Tools & technologies</h2>
-<div class="skills-grid">
-<div class="skill"><h4>Python</h4><div class="lv">Expert</div></div>
-<div class="skill"><h4>FastAPI</h4><div class="lv">Expert</div></div>
-<div class="skill"><h4>AI / ML Pipelines</h4><div class="lv">Advanced</div></div>
-<div class="skill"><h4>Quantitative Finance</h4><div class="lv">Advanced</div></div>
-<div class="skill"><h4>LaTeX / TikZ</h4><div class="lv">Expert</div></div>
-<div class="skill"><h4>JavaScript</h4><div class="lv">Proficient</div></div>
-<div class="skill"><h4>Razorpay / Stripe</h4><div class="lv">Advanced</div></div>
-<div class="skill"><h4>Data Visualization</h4><div class="lv">Advanced</div></div>
+<div class="sgrid">
+<div class="sitem"><h4>Python</h4><div class="lv">Expert</div></div>
+<div class="sitem"><h4>FastAPI</h4><div class="lv">Expert</div></div>
+<div class="sitem"><h4>AI / ML Pipelines</h4><div class="lv">Advanced</div></div>
+<div class="sitem"><h4>Quantitative Finance</h4><div class="lv">Advanced</div></div>
+<div class="sitem"><h4>LaTeX / TikZ</h4><div class="lv">Expert</div></div>
+<div class="sitem"><h4>JavaScript</h4><div class="lv">Proficient</div></div>
+<div class="sitem"><h4>Razorpay / Stripe</h4><div class="lv">Advanced</div></div>
+<div class="sitem"><h4>Data Visualization</h4><div class="lv">Advanced</div></div>
 </div>
 </div>
 </section>
 
-<!-- EXPERIENCE -->
-<section class="exp page" id="exp">
+<section class="sec exp" id="exp">
+<div class="inner">
 <div class="about-tag">Experience</div>
 <h2>Where I've been</h2>
-<div class="exp-item rv"><div class="exp-date">2025 — Present</div><div><h4>Founder, NEXUS AI</h4><p>Autonomous AI business with 12+ SaaS products. Full-stack development, AI pipelines, payment systems.</p></div></div>
-<div class="exp-item rv"><div class="exp-date">2025 — Present</div><div><h4>AI Systems Builder</h4><p>AI automation pipelines, FastAPI backends, payment-integrated platforms for international clients.</p></div></div>
-<div class="exp-item rv"><div class="exp-date">2025 — Present</div><div><h4>Quantitative Finance Researcher</h4><p>Self-directed depth in derivatives pricing, volatility modelling, and portfolio optimization.</p></div></div>
-<div class="exp-item rv"><div class="exp-date">2024 — Present</div><div><h4>B.Sc. Physics, Azim Premji University</h4><p>9.0 CGPA. Research with Prof. KC Adaina. Climate economics paper on Himalayan glacial retreat.</p></div></div>
+<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Founder, NEXUS AI</h4><p>Autonomous AI business with 12+ SaaS products. Full-stack development, AI pipelines.</p></div></div>
+<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>AI Systems Builder</h4><p>AI automation pipelines, FastAPI backends, payment-integrated platforms.</p></div></div>
+<div class="eitem rv"><div class="edate">2025 — Present</div><div><h4>Quantitative Finance Researcher</h4><p>Derivatives pricing, volatility modelling, portfolio optimization.</p></div></div>
+<div class="eitem rv"><div class="edate">2024 — Present</div><div><h4>B.Sc. Physics, Azim Premji University</h4><p>9.0 CGPA. Research with Prof. KC Adaina. Climate economics paper.</p></div></div>
+</div>
 </section>
 
-<!-- CONTACT -->
-<section class="contact" id="contact">
-<div class="page">
-<div class="about-tag" style="color:var(--accent)">Contact</div>
+<section class="sec contact" id="contact">
+<div class="inner">
+<div class="about-tag" style="color:#2563eb">Contact</div>
 <h2>Let's work together</h2>
-<div class="contact-links">
-<a href="mailto:swastikmishra3558@gmail.com" class="contact-link"><span>Email</span><span class="arrow">→</span></a>
-<a href="https://github.com/Swastik2209" class="contact-link"><span>GitHub</span><span class="arrow">→</span></a>
-<a href="https://t.me/AutoMarketing2209Bot" class="contact-link"><span>Telegram</span><span class="arrow">→</span></a>
-<a href="https://nexus-image-gen-two.vercel.app" class="contact-link"><span>NEXUS AI Products</span><span class="arrow">→</span></a>
+<div class="clinks">
+<a href="mailto:swastikmishra3558@gmail.com" class="clink"><span>Email</span><span class="arr">→</span></a>
+<a href="https://github.com/Swastik2209" class="clink"><span>GitHub</span><span class="arr">→</span></a>
+<a href="https://t.me/AutoMarketing2209Bot" class="clink"><span>Telegram</span><span class="arr">→</span></a>
+<a href="https://nexus-image-gen-two.vercel.app" class="clink"><span>NEXUS AI Products</span><span class="arr">→</span></a>
 </div>
 </div>
 </section>
 
-<footer class="ftr">
+<footer class="f">
 <span>Swastik Mishra — AI Systems · Quantitative Finance · Physics</span>
 <span>© 2026</span>
 </footer>
 
 <script>
-// Cursor
 const c=document.getElementById('cur');let mx=0,my=0,cx=0,cy=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-!function anim(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;c.style.left=cx+'px';c.style.top=cy+'px';requestAnimationFrame(anim)}();
-document.querySelectorAll('a,.work-vis,.skill').forEach(el=>{
-  el.addEventListener('mouseenter',()=>c.classList.add('active'));
-  el.addEventListener('mouseleave',()=>c.classList.remove('active'))
-});
+!function a(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;c.style.left=cx+'px';c.style.top=cy+'px';requestAnimationFrame(a)}();
+document.querySelectorAll('a,.wvis,.sitem').forEach(el=>{el.addEventListener('mouseenter',()=>c.classList.add('big'));el.addEventListener('mouseleave',()=>c.classList.remove('big'))});
 
-// GSAP
 const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
-document.head.appendChild(s);
-const st=document.createElement('script');st.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
+document.head.appendChild(s);const st=document.createElement('script');st.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
 document.head.appendChild(st);
-st.onload=()=>{
-  gsap.registerPlugin(ScrollTrigger);
-  document.querySelectorAll('.rv').forEach(el=>{gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.7,scrollTrigger:{trigger:el,start:'top 85%'}})});
-  gsap.fromTo('.hero h1',{opacity:0,y:20},{opacity:1,y:0,duration:1,delay:.2});
-  gsap.fromTo('.hero-sub',{opacity:0,y:15},{opacity:1,y:0,duration:.8,delay:.4});
-  gsap.fromTo('.hero-cta',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.6});
-  gsap.fromTo('.hero-stats',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.8});
-  gsap.fromTo('.hero-right img',{opacity:0,scale:1.1},{opacity:1,scale:1,duration:1.2,delay:.3});
-};
+st.onload=()=>{gsap.registerPlugin(ScrollTrigger);document.querySelectorAll('.rv').forEach(el=>{gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.7,scrollTrigger:{trigger:el,start:'top 85%'}})});gsap.fromTo('.hero h1',{opacity:0,y:20},{opacity:1,y:0,duration:1,delay:.2});gsap.fromTo('.hero-sub',{opacity:0,y:15},{opacity:1,y:0,duration:.8,delay:.4});gsap.fromTo('.hero-btn',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.6});gsap.fromTo('.hero-stats',{opacity:0,y:10},{opacity:1,y:0,duration:.6,delay:.8});gsap.fromTo('.hero-right img',{opacity:0,scale:1.1},{opacity:1,scale:0.95},duration:1.2,delay:.3)};
 
-// Smooth scroll
-document.querySelectorAll('.hdr nav a').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})})});
+document.querySelectorAll('.h nav a').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})})});
 </script>
 </body>
 </html>
