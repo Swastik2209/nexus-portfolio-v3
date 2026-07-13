@@ -396,8 +396,9 @@ I build systems<br>
 <div class="lab-item reveal"><div class="lab-icon">03</div><h4>Climate Economics</h4><p>Himalayan glacial retreat modeling — correlating temperature anomalies with regional GDP.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">04</div><h4>Force Analysis</h4><p>Electromagnetic force measurement using gaussmeter data and uncertainty propagation.</p></div>
 <div class="lab-item reveal"><div class="lab-icon">05</div><h4>Portfolio Optimizer</h4><p>Mean-variance optimization with Sharpe ratio maximization on Indian equity data.</p></div>
-<div class="lab-item reveal" style="grid-column:span 2"><div class="lab-icon">06</div><h4>3D Mechanical Design</h4><p>Tensigrity structures and mechanical assemblies modeled in FreeCAD 1.1.1 — part design, sketch constraints, parametric modeling for 3D printing.</p>
-<img src="images/freecad-tensigrity.png" alt="FreeCAD Tensigrity Structure" style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin-top:12px;border:1px solid rgba(255,255,255,0.04)"></div>
+<div class="lab-item reveal" style="grid-column:span 2"><div class="lab-icon">06</div><h4>Wave Interference</h4><p>Superposition of two oscillators — drag to adjust frequency and phase, watch constructive and destructive interference form.</p><canvas id="wave-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">07</div><h4>Lorenz Attractor</h4><p>The strange attractor that broke determinism — sensitive dependence on initial conditions. Watch the butterfly form.</p><canvas id="lorenz-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">08</div><h4>Brownian Motion</h4><p>Geometric Brownian Motion — the stochastic process behind every asset price in financial markets.</p><canvas id="walk-canvas" style="width:100%;height:200px;cursor:crosshair;margin-top:12px"></canvas></div>
 </div>
 </div>
 </section>
@@ -840,6 +841,194 @@ ctx.font='11px JetBrains Mono, monospace';
 ctx.fillStyle='rgba(148,163,184,0.7)';
 ctx.fillText('Volatility: '+(vol*100).toFixed(0)+'%',8,18);
 ctx.fillText('Move mouse to change',8,H-10);
+
+requestAnimationFrame(draw);
+}
+draw();
+})();
+
+// ===================== INTERACTIVE WAVE INTERFERENCE =====================
+(function(){
+const canvas=document.getElementById('wave-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+resize();window.addEventListener('resize',resize);
+
+let k1=0.04,k2=0.06,phi=0;
+canvas.addEventListener('mousemove',e=>{
+const rect=canvas.getBoundingClientRect();
+const mx=(e.clientX-rect.left)/rect.width;
+const my=(e.clientY-rect.top)/rect.height;
+k1=0.02+mx*0.06;k2=0.02+my*0.06;phi=mx*Math.PI*4;
+});
+
+function draw(){
+ctx.clearRect(0,0,W,H);
+const t=Date.now()*0.003;
+const pad=10;const amp=H*0.22;
+
+// Wave A (indigo)
+ctx.beginPath();
+for(let x=pad;x<W-pad;x++){
+const y=H/2-Math.sin(x*k1-t)*amp;
+if(x===pad)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+ctx.strokeStyle='rgba(99,102,241,0.7)';ctx.lineWidth=1.5;ctx.stroke();
+
+// Wave B (pink)
+ctx.beginPath();
+for(let x=pad;x<W-pad;x++){
+const y=H/2-Math.sin(x*k2-t*1.3+phi)*amp*0.8;
+if(x===pad)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+ctx.strokeStyle='rgba(244,114,182,0.7)';ctx.lineWidth=1.5;ctx.stroke();
+
+// Sum (purple, bold)
+ctx.beginPath();
+for(let x=pad;x<W-pad;x++){
+const yA=Math.sin(x*k1-t)*amp;
+const yB=Math.sin(x*k2-t*1.3+phi)*amp*0.8;
+const y=H/2-(yA+yB);
+if(x===pad)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+ctx.strokeStyle='rgba(167,139,250,0.95)';ctx.lineWidth=2;ctx.stroke();
+
+// Labels
+ctx.font='10px JetBrains Mono, monospace';
+ctx.fillStyle='rgba(99,102,241,0.9)';ctx.fillText('k\u2081='+k1.toFixed(3),pad,16);
+ctx.fillStyle='rgba(244,114,182,0.9)';ctx.fillText('k\u2082='+k2.toFixed(3),pad+80,16);
+ctx.fillStyle='rgba(167,139,250,0.9)';ctx.fillText('\u03c6='+phi.toFixed(1),pad+160,16);
+ctx.fillStyle='rgba(148,163,184,0.5)';ctx.fillText('drag to change k, \u03c6',pad,H-8);
+
+requestAnimationFrame(draw);
+}
+draw();
+})();
+
+// ===================== INTERACTIVE LORENZ ATTRACTOR =====================
+(function(){
+const canvas=document.getElementById('lorenz-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+resize();window.addEventListener('resize',resize);
+
+let x0=0.1,y0=0,z0=0;
+const s=10,r=28,b=8/3,dt=0.005;
+const path=[];const maxN=600;
+
+function draw(){
+// Step 3 times per frame for speed
+for(let i=0;i<3;i++){
+const dx=s*(y0-x0)*dt;
+const dy=x0*(r-z0)-y0;
+const dz=x0*y0-b*z0;
+x0+=dx;y0+=dy*dt;z0+=dz*dt;
+path.push([x0,y0]);
+if(path.length>maxN)path.shift();
+}
+
+ctx.fillStyle='rgba(10,10,14,0.15)';ctx.fillRect(0,0,W,H);
+
+const ox=W*0.08,oy=H*0.92;
+const sx=W*0.042,sy=H*0.06;
+
+// Grid
+ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+for(let i=1;i<5;i++){const px=ox+sx*i*5;ctx.beginPath();ctx.moveTo(px,oy-sy*50);ctx.lineTo(px,oy);ctx.stroke();}
+for(let i=1;i<6;i++){const py=oy-sy*i*10;ctx.beginPath();ctx.moveTo(ox,py);ctx.lineTo(ox+sx*30,py);ctx.stroke();}
+
+// Axes
+ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,oy-sy*50);ctx.stroke();
+ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+sx*30,oy);ctx.stroke();
+
+// Trail with fading alpha
+const colors=['rgba(99,102,241,','rgba(167,139,250,','rgba(244,114,182,'];
+for(let layer=0;layer<3;layer++){
+for(let i=1+layer;i<path.length;i+=3){
+const lx=ox+path[i][0]*sx,ly=oy-path[i][1]*sy;
+const lx2=ox+path[i-1][0]*sx,ly2=oy-path[i-1][1]*sy;
+const a=(i/path.length)*0.5;
+ctx.strokeStyle=colors[layer]+a.toFixed(3)+')';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(lx2,ly2);ctx.stroke();
+}
+}
+
+// Current point glow
+const cx=ox+x0*sx,cy=oy-y0*sy;
+const grd=ctx.createRadialGradient(cx,cy,0,cx,cy,14);
+grd.addColorStop(0,'rgba(244,114,182,0.5)');grd.addColorStop(1,'rgba(244,114,182,0)');
+ctx.fillStyle=grd;ctx.fillRect(cx-14,cy-14,28,28);
+ctx.beginPath();ctx.arc(cx,cy,2.5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+
+ctx.font='10px JetBrains Mono, monospace';ctx.fillStyle='rgba(148,163,184,0.6)';
+ctx.fillText('\u03c3=10  \u03c1=28  \u03b2=8/3',8,16);
+
+requestAnimationFrame(draw);
+}
+draw();
+})();
+
+// ===================== INTERACTIVE BROWNIAN MOTION =====================
+(function(){
+const canvas=document.getElementById('walk-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+resize();window.addEventListener('resize',resize);
+
+const path=[];const maxN=500;
+
+function draw(){
+ctx.fillStyle='rgba(10,10,14,0.18)';ctx.fillRect(0,0,W,H);
+
+// GBM step
+const dt=0.05,mu=0.08,sigma=0.4;
+const last=path.length?path[path.length-1]:Math.log(100);
+const Z=Math.sqrt(dt)*((Math.random()+Math.random()+Math.random()+Math.random()+Math.random()+Math.random()-3)/Math.sqrt(1.5));
+const next=last+(mu-0.5*sigma*sigma)*dt+sigma*Z;
+path.push(next);
+if(path.length>maxN)path.shift();
+
+const pad=14,plotW=W-pad*2,plotH=H-pad*2-14;
+const minY=Math.min(...path),maxY=Math.max(...path);
+const range=(maxY-minY)||1;
+
+// Grid
+ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
+for(let i=1;i<6;i++){const y=pad+plotH*i/6;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(pad+plotW,y);ctx.stroke();}
+for(let i=1;i<8;i++){const x=pad+plotW*i/8;ctx.beginPath();ctx.moveTo(x,pad);ctx.lineTo(x,pad+plotH);ctx.stroke();}
+
+// Axes
+ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,pad+plotH);ctx.lineTo(pad+plotW,pad+plotH);ctx.stroke();
+
+// Path
+ctx.beginPath();
+path.forEach((v,i)=>{
+const x=pad+plotW*i/(maxN-1);
+const y=pad+plotH/2-(v-((maxY+minY)/2))*plotH/range;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+});
+ctx.strokeStyle='rgba(244,114,182,0.9)';ctx.lineWidth=1.5;ctx.stroke();
+
+// Fill under
+ctx.lineTo(pad+plotW,pad+plotH);ctx.lineTo(pad,pad+plotH);ctx.closePath();
+ctx.fillStyle='rgba(244,114,182,0.06)';ctx.fill();
+
+// Tip glow
+const lastI=path.length-1;
+const tipX=pad+plotW*lastI/(maxN-1);
+const tipY=pad+plotH/2-(path[lastI]-((maxY+minY)/2))*plotH/range;
+const grd=ctx.createRadialGradient(tipX,tipY,0,tipX,tipY,16);
+grd.addColorStop(0,'rgba(244,114,182,0.5)');grd.addColorStop(1,'rgba(244,114,182,0)');
+ctx.fillStyle=grd;ctx.fillRect(tipX-16,tipY-16,32,32);
+ctx.beginPath();ctx.arc(tipX,tipY,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+
+ctx.font='10px JetBrains Mono, monospace';ctx.fillStyle='rgba(148,163,184,0.6)';
+ctx.fillText('ln(S) GBM  \u03bc='+mu+'  \u03c3='+sigma,10,16);
 
 requestAnimationFrame(draw);
 }
