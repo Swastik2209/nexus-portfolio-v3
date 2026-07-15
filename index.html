@@ -1024,7 +1024,7 @@ v2+=(k1[3]+2*k2[3]+2*k3[3]+k4[3])*dt/6;
 function draw(){
 for(let i=0;i<4;i++)step();
 ctx.clearRect(0,0,W,H);
-const ox=W/2,oy=H*0.22;
+const ox=W/2,oy=H*0.38;
 const x1=ox+l1*Math.sin(a1),y1=oy+l1*Math.cos(a1);
 const x2=x1+l2*Math.sin(a2),y2=y1+l2*Math.cos(a2);
 
@@ -1067,9 +1067,9 @@ const totalE=KE+PE;
 energyHistory.push({ke:KE,pe:PE,total:totalE});
 if(energyHistory.length>maxEnergy)energyHistory.shift();
 
-const eW=140,eH=50,eX=W-eW-16,eY=H-eH-16;
-ctx.fillStyle='rgba(6,6,12,0.7)';ctx.fillRect(eX-4,eY-4,eW+8,eH+8);
-ctx.strokeStyle='rgba(99,102,241,0.15)';ctx.strokeRect(eX-4,eY-4,eW+8,eH+8);
+const eW=180,eH=70,eX=W-eW-20,eY=H-eH-20;
+ctx.fillStyle='rgba(6,6,12,0.75)';ctx.fillRect(eX-8,eY-20,eW+16,eH+28);
+ctx.strokeStyle='rgba(99,102,241,0.15)';ctx.strokeRect(eX-8,eY-20,eW+16,eH+28);
 
 const maxE=Math.max(...energyHistory.map(e=>e.total),1);
 // KE fill
@@ -1095,10 +1095,10 @@ ctx.fillStyle='rgba(52,211,153,0.1)';ctx.fill();
 ctx.strokeStyle='rgba(52,211,153,0.5)';ctx.lineWidth=1;ctx.stroke();
 
 // Energy labels
-ctx.font='8px JetBrains Mono, monospace';
+ctx.font='9px JetBrains Mono, monospace';
 ctx.fillStyle='rgba(99,102,241,0.7)';ctx.fillText('KE',eX,eY-6);
-ctx.fillStyle='rgba(52,211,153,0.6)';ctx.fillText('PE',eX+20,eY-6);
-ctx.fillStyle='rgba(255,255,255,0.3)';ctx.fillText('E='+totalE.toFixed(1),eX+eW-40,eY-6);
+ctx.fillStyle='rgba(52,211,153,0.6)';ctx.fillText('PE',eX+24,eY-6);
+ctx.fillStyle='rgba(255,255,255,0.3)';ctx.fillText('E='+totalE.toFixed(1),eX+eW-50,eY-6);
 
 requestAnimationFrame(draw);
 }
