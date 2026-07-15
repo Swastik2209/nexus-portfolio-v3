@@ -23,13 +23,15 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}html{scroll-behavior:auto}}
-body{background:#050508;color:#f5f5f5;font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none}
+body{background:#050508;color:#f5f5f5;font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none !important}
+a,button,.lab-item,.product-card,.writing-item,.writing-filter,.nav-links a,.back-to-top,.section-dot{cursor:none !important}
 ::selection{background:#6366f1;color:#fff}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#050508}::-webkit-scrollbar-thumb{background:#27272a;border-radius:3px}
 
-.cursor{position:fixed;width:20px;height:20px;border:1.5px solid rgba(129,140,248,0.6);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .4s,height .4s,border-color .4s,background .4s;background:rgba(99,102,241,0.08)}
-.cursor.hover{width:40px;height:40px;border-color:rgba(165,180,252,0.8);background:rgba(99,102,241,0.15)}
-.cursor.hover{width:48px;height:48px;border-color:#a5b4fc;background:rgba(99,102,241,0.25)}
+.cursor{position:fixed;width:18px;height:18px;border:1.5px solid rgba(129,140,248,0.7);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .3s cubic-bezier(.4,0,.2,1),height .3s cubic-bezier(.4,0,.2,1),border-color .3s,background .3s,opacity .3s;background:rgba(99,102,241,0.06);mix-blend-mode:screen}
+.cursor.hover{width:42px;height:42px;border-color:rgba(165,180,252,0.9);background:rgba(99,102,241,0.12)}
+.cursor-dot{position:fixed;width:4px;height:4px;background:#818cf8;border-radius:50%;pointer-events:none;z-index:10001;transform:translate(-50%,-50%)}
+.cursor-ripple{position:fixed;border:1.5px solid rgba(129,140,248,0.5);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%) scale(1);opacity:0}
 
 .progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#6366f1,#8b5cf6);z-index:99;transform-origin:left;transform:scaleX(0);will-change:transform}
 
@@ -354,6 +356,23 @@ canvas{height:150px !important;width:100% !important}
 /* Section reveal */
 .section-inner>*{opacity:1;transform:none}
 
+/* Heading reveal */
+section h2{position:relative;overflow:hidden}
+section h2 span{display:inline-block;transition:color .3s}
+
+/* Lab 3D tilt */
+.lab-item{transform-style:preserve-3d;transition:transform .4s cubic-bezier(.4,0,.2,1),box-shadow .4s}
+.lab-item:hover{box-shadow:0 8px 32px rgba(99,102,241,0.08)}
+.lab-item canvas{transition:transform .3s;transform:translateZ(0)}
+.lab-item:hover canvas{transform:scale(1.01) translateZ(10px)}
+
+/* Smooth link transitions */
+.work-text .link,.product-link{transition:all .3s cubic-bezier(.4,0,.2,1)}
+
+/* Badge pulse */
+.hero-badge{animation:badgePulse 3s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,0)}50%{box-shadow:0 0 0 6px rgba(99,102,241,0.1)}}
+
 /* Lab 3D tilt */
 .lab-item{transform-style:preserve-3d;transition:transform .4s cubic-bezier(.4,0,.2,1),box-shadow .4s}
 .lab-item:hover{box-shadow:0 8px 32px rgba(99,102,241,0.08)}
@@ -373,6 +392,7 @@ canvas{height:150px !important;width:100% !important}
 </div>
 
 <div class="cursor" id="cur"></div>
+<div class="cursor-dot" id="curDot"></div>
 <div class="cursor-glow" id="cursorGlow"></div>
 <div class="progress-bar" id="progress"></div>
 <canvas id="three-bg"></canvas>
@@ -1804,14 +1824,29 @@ onUpdate:self=>{document.getElementById('progress').style.transform=`scaleX(${se
 // ===================== CURSOR =====================
 (function(){
 const cur=document.getElementById('cur');
-if(!cur)return;
+const dot=document.getElementById('curDot');
+if(!cur||!dot)return;
 let cx=0,cy=0,tx=0,ty=0;
-document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
-document.querySelectorAll('a,button,.lab-item,.product-card,.writing-item').forEach(el=>{
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;dot.style.left=tx+'px';dot.style.top=ty+'px'});
+document.addEventListener('mouseleave',()=>{cur.style.opacity='0';dot.style.opacity='0'});
+document.addEventListener('mouseenter',()=>{cur.style.opacity='1';dot.style.opacity='1'});
+document.querySelectorAll('a,button,.lab-item,.product-card,.writing-item,.writing-filter,.nav-links a,.back-to-top,.section-dot').forEach(el=>{
 el.addEventListener('mouseenter',()=>cur.classList.add('hover'));
 el.addEventListener('mouseleave',()=>cur.classList.remove('hover'));
 });
-(function uc(){cx+=(tx-cx)*0.12;cy+=(ty-cy)*0.12;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(uc)})();
+document.addEventListener('click',e=>{
+const ripple=document.createElement('div');
+ripple.className='cursor-ripple';
+ripple.style.left=e.clientX+'px';ripple.style.top=e.clientY+'px';
+ripple.style.width='10px';ripple.style.height='10px';
+document.body.appendChild(ripple);
+ripple.animate([
+{transform:'translate(-50%,-50%) scale(1)',opacity:0.6},
+{transform:'translate(-50%,-50%) scale(6)',opacity:0}
+],{duration:500,easing:'cubic-bezier(.4,0,.2,1)'});
+setTimeout(()=>ripple.remove(),500);
+});
+(function uc(){cx+=(tx-cx)*0.25;cy+=(ty-cy)*0.25;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(uc)})();
 })();
 
 // ===================== INTERACTIVE LAB ITEMS =====================
