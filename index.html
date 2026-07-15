@@ -275,6 +275,46 @@ canvas{height:150px !important;width:100% !important}
 @keyframes scanDown{0%{top:-2px;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
 @keyframes particleFloat{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:0.8;transform:scale(1)}100%{opacity:0;transform:translateY(-200px) scale(0)}}
 
+/* Text scramble effect */
+.scramble-text{display:inline-block}
+
+/* Animated gradient border on product cards */
+.product-card{position:relative;overflow:visible}
+.product-card::after{content:'';position:absolute;inset:-1px;border-radius:15px;background:conic-gradient(from var(--angle,0deg),transparent 40%,rgba(99,102,241,0.4) 50%,transparent 60%);z-index:-1;opacity:0;transition:opacity .4s}
+.product-card:hover::after{opacity:1;animation:rotateBorder 3s linear infinite}
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes rotateBorder{to{--angle:360deg}}
+
+/* Cursor glow trail */
+.cursor-glow{position:fixed;width:200px;height:200px;border-radius:50%;pointer-events:none;z-index:1;opacity:0.12;filter:blur(40px);transition:opacity .3s}
+
+/* Section progress dots */
+.section-dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:12px}
+.section-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:all .3s;position:relative}
+.section-dot:hover{background:rgba(99,102,241,0.3);transform:scale(1.3)}
+.section-dot.active{background:#6366f1;border-color:#818cf8;transform:scale(1.4);box-shadow:0 0 10px rgba(99,102,241,0.4)}
+.section-dot .dot-label{position:absolute;right:16px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:0.65rem;font-family:'JetBrains Mono',monospace;color:#9ca3af;opacity:0;transition:opacity .2s;pointer-events:none}
+.section-dot:hover .dot-label{opacity:1}
+
+/* Glassmorphism nav */
+.nav{background:rgba(5,5,8,0.6) !important;backdrop-filter:blur(32px) saturate(1.4) !important;border-bottom:1px solid rgba(255,255,255,0.04) !important}
+
+/* Animated underline on links */
+.work-text .link,.product-link{position:relative}
+.work-text .link::after,.product-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:linear-gradient(90deg,#818cf8,#a78bfa);transition:width .3s}
+.work-text .link:hover::after,.product-link:hover::after{width:100%}
+
+/* Floating orb in hero */
+.hero-orb{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.08) 0%,transparent 70%);pointer-events:none;animation:orbFloat 8s ease-in-out infinite}
+@keyframes orbFloat{0%,100%{transform:translate(0,0)}25%{transform:translate(30px,-20px)}50%{transform:translate(-20px,30px)}75%{transform:translate(20px,20px)}}
+
+/* Hero stats glow */
+.metric{position:relative}
+.metric::after{content:'';position:absolute;inset:-8px;border-radius:12px;background:radial-gradient(circle,rgba(99,102,241,0.06) 0%,transparent 70%);opacity:0;transition:opacity .3s}
+.metric:hover::after{opacity:1}
+
+@media(max-width:900px){.section-dots{display:none}.cursor-glow{display:none}}
+
 /* Typing effect */
 .hero-typing{display:inline;min-width:180px}
 .typing-cursor{display:inline-block;width:2px;height:1.1em;background:#818cf8;margin-left:2px;animation:blink .8s step-end infinite;vertical-align:text-bottom}
@@ -327,9 +367,18 @@ canvas{height:150px !important;width:100% !important}
 </div>
 
 <div class="cursor" id="cur"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
 <div class="progress-bar" id="progress"></div>
 <canvas id="three-bg"></canvas>
 <div class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg></div>
+<div class="section-dots" id="sectionDots">
+<div class="section-dot" data-section="about"><span class="dot-label">About</span></div>
+<div class="section-dot" data-section="work"><span class="dot-label">Work</span></div>
+<div class="section-dot" data-section="lab"><span class="dot-label">Lab</span></div>
+<div class="section-dot" data-section="products"><span class="dot-label">Products</span></div>
+<div class="section-dot" data-section="writing"><span class="dot-label">Writing</span></div>
+<div class="section-dot" data-section="contact"><span class="dot-label">Contact</span></div>
+</div>
 
 <nav class="nav">
 <div class="nav-logo">S M</div>
@@ -345,6 +394,8 @@ canvas{height:150px !important;width:100% !important}
 </nav>
 
 <section class="hero">
+<div class="hero-orb" style="top:10%;right:15%"></div>
+<div class="hero-orb" style="bottom:20%;left:10%;animation-delay:-3s;width:200px;height:200px"></div>
 <div class="hero-content">
 <div class="hero-badge"><span class="dot"></span>Open to opportunities</div>
 <h1 class="text-reveal">
@@ -2039,6 +2090,81 @@ btn.addEventListener('mouseleave',()=>{
 btn.style.transform='';
 });
 });
+})();
+
+// ===================== TEXT SCRAMBLE EFFECT =====================
+(function(){
+const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+function scramble(el){
+const original=el.textContent;
+let iterations=0;
+const maxIterations=original.length*2;
+const interval=setInterval(()=>{
+el.textContent=original.split('').map((ch,i)=>{
+if(i<iterations/2)return ch;
+return chars[Math.floor(Math.random()*chars.length)];
+}).join('');
+iterations++;
+if(iterations>maxIterations){
+clearInterval(interval);
+el.textContent=original;
+}
+},30);
+}
+
+const observer=new IntersectionObserver(entries=>{
+entries.forEach(e=>{
+if(e.isIntersecting&&!e.target.dataset.scrambled){
+e.target.dataset.scrambled='1';
+scramble(e.target);
+}
+});
+},{threshold:0.5});
+
+document.querySelectorAll('section h2').forEach(h=>observer.observe(h));
+})();
+
+// ===================== CURSOR GLOW =====================
+(function(){
+const glow=document.getElementById('cursorGlow');
+if(!glow)return;
+let gx=0,gy=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY;});
+(function update(){
+gx+=(tx-gx)*0.08;gy+=(ty-gy)*0.08;
+glow.style.left=(gx-100)+'px';
+glow.style.top=(gy-100)+'px';
+glow.style.background='radial-gradient(circle,rgba(99,102,241,0.15) 0%,rgba(139,92,246,0.05) 40%,transparent 70%)';
+glow.style.opacity='1';
+requestAnimationFrame(update);
+})();
+})();
+
+// ===================== SECTION DOTS =====================
+(function(){
+const dots=document.querySelectorAll('.section-dot');
+const sections=['about','work','lab','products','writing','contact'];
+
+dots.forEach(dot=>{
+dot.addEventListener('click',()=>{
+const id=dot.dataset.section;
+const el=document.getElementById(id);
+if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+});
+});
+
+function updateDots(){
+const scrollY=window.scrollY+window.innerHeight/3;
+sections.forEach((id,i)=>{
+const el=document.getElementById(id);
+if(!el)return;
+const top=el.offsetTop;
+const bottom=top+el.offsetHeight;
+dots[i].classList.toggle('active',scrollY>=top&&scrollY<bottom);
+});
+}
+window.addEventListener('scroll',updateDots);
+updateDots();
 })();
 
 // ===================== ANALYTICS (Privacy-friendly) =====================
