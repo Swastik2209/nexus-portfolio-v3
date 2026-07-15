@@ -942,8 +942,8 @@ let pendMode=0;
 function pendReset(){
 const presets=[
 {a1:Math.PI*0.3,a2:Math.PI*0.25,v1:0,v2:0,label:'Oscillation',desc:'Periodic motion'},
-{a1:Math.PI*0.8,a2:Math.PI*0.2,v1:0.8,v2:0.5,label:'Chaos',desc:'Sensitive dependence'},
-{a1:Math.PI,a2:Math.PI,v1:9.0,v2:7.0,label:'Full Rotation',desc:'Both arms rotating'},
+{a1:Math.PI*0.9,a2:Math.PI*0.3,v1:0.5,v2:0.3,label:'Chaos',desc:'Sensitive dependence'},
+{a1:Math.PI,a2:Math.PI,v1:8.0,v2:6.0,label:'Full Rotation',desc:'Both arms rotating'},
 ];
 const p=presets[pendMode];
 if(window._pend){
@@ -959,6 +959,7 @@ let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canv
 resize();window.addEventListener('resize',resize);
 
 const g=9.81,m1=1,m2=1,l1=80,l2=80;
+const damp=0.05; // air resistance + pivot friction
 let a1=Math.PI*0.3,a2=Math.PI*0.25,v1=0,v2=0;
 const trail=[];const maxTrail=500;
 const modeColors=[['rgba(99,102,241,','rgba(129,140,248,'],['rgba(244,114,182,','rgba(232,121,249,'],['rgba(52,211,153,','rgba(110,231,183,']];
@@ -969,8 +970,8 @@ window._pend={get a1(){return a1},set a1(v){a1=v},get a2(){return a2},set a2(v){
 canvas.addEventListener('mousemove',e=>{
 const rect=canvas.getBoundingClientRect();
 const dx=(e.clientX-rect.left-W/2);
-v1+=dx*0.001;
-v2+=dx*0.0008;
+v1+=dx*0.0002;
+v2+=dx*0.00015;
 });
 
 // 4th-order Runge-Kutta for accuracy
@@ -978,8 +979,8 @@ function step(){
 const dt=0.01;
 function deriv(a1,a2,v1,v2){
 const denom=l1*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
-const d1=-g*(2*m1+m2)*Math.sin(a1)-m2*g*Math.sin(a1-2*a2)-2*Math.sin(a1-a2)*m2*(v2*v2*l2+v1*v1*l1*Math.cos(a1-a2));
-const d2=2*Math.sin(a1-a2)*(v1*v1*l1*(m1+m2)+g*(m1+m2)*Math.cos(a1)+m2*v2*v2*l2*Math.cos(a1-a2));
+const d1=-g*(2*m1+m2)*Math.sin(a1)-m2*g*Math.sin(a1-2*a2)-2*Math.sin(a1-a2)*m2*(v2*v2*l2+v1*v1*l1*Math.cos(a1-a2))-damp*v1*denom;
+const d2=2*Math.sin(a1-a2)*(v1*v1*l1*(m1+m2)+g*(m1+m2)*Math.cos(a1)+m2*v2*v2*l2*Math.cos(a1-a2))-damp*v2*l2*(2*m1+m2-m2*Math.cos(2*a1-2*a2));
 return[v1,v2,d1/denom,d2/(l2*(2*m1+m2-m2*Math.cos(2*a1-2*a2)))];
 }
 const k1=deriv(a1,a2,v1,v2);
