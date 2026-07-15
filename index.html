@@ -311,18 +311,8 @@ canvas{height:150px !important;width:100% !important}
 /* Magnetic button feel */
 .btn-primary,.btn-ghost{transition:all .3s cubic-bezier(.4,0,.2,1)}
 
-/* Section stagger reveal */
-.section-inner>*{opacity:0;transform:translateY(20px);transition:all .6s cubic-bezier(.4,0,.2,1)}
-.section-inner.visible>*{opacity:1;transform:none}
-.section-inner.visible>*:nth-child(1){transition-delay:0s}
-.section-inner.visible>*:nth-child(2){transition-delay:.08s}
-.section-inner.visible>*:nth-child(3){transition-delay:.16s}
-.section-inner.visible>*:nth-child(4){transition-delay:.24s}
-.section-inner.visible>*:nth-child(5){transition-delay:.32s}
-
-/* Work item stagger */
-.work-item{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.4,0,.2,1)}
-.work-item.visible{opacity:1;transform:none}
+/* Section reveal */
+.section-inner>*{opacity:1;transform:none}
 </style>
 </head>
 <body>
@@ -674,6 +664,17 @@ I build systems<br>
 </footer>
 
 <script>
+// ===================== INTRO DISMISS (runs first) =====================
+(function(){
+var intro=document.getElementById('intro');
+if(!intro)return;
+function dismiss(){if(intro&&!intro.classList.contains('done')){intro.classList.add('done');setTimeout(function(){if(intro.parentNode)intro.remove();},900);}}
+setTimeout(dismiss,2200);
+setTimeout(dismiss,4000);
+document.addEventListener('click',dismiss,{once:true});
+window.addEventListener('load',dismiss);
+})();
+
 // ===================== WEBGL SHADER BACKGROUND =====================
 (function(){
 const c=document.getElementById('three-bg');
@@ -1745,10 +1746,10 @@ onUpdate:self=>{document.getElementById('progress').style.transform=`scaleX(${se
 // ===================== CURSOR =====================
 (function(){
 const cur=document.getElementById('cur');
+if(!cur)return;
 let cx=0,cy=0,tx=0,ty=0;
 document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
 (function uc(){cx+=(tx-cx)*0.1;cy+=(ty-cy)*0.1;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(uc)})();
-// REMOVED: hover class that expanded cursor and hid text
 })();
 
 // ===================== INTERACTIVE LAB ITEMS =====================
@@ -1870,15 +1871,12 @@ if('serviceWorker' in navigator){
 navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
 
-// ===================== INTRO ANIMATION =====================
+// ===================== INTRO ANIMATION (particles) =====================
 (function(){
-const intro=document.getElementById('intro');
-if(!intro)return;
-
-// Spawn floating particles
-const pContainer=document.getElementById('intro-particles');
-for(let i=0;i<20;i++){
-const p=document.createElement('div');
+var pContainer=document.getElementById('intro-particles');
+if(!pContainer)return;
+for(var i=0;i<15;i++){
+var p=document.createElement('div');
 p.className='intro-particle';
 p.style.left=Math.random()*100+'%';
 p.style.top=(60+Math.random()*40)+'%';
@@ -1886,11 +1884,6 @@ p.style.animationDelay=(0.3+Math.random()*1.5)+'s';
 p.style.animationDuration=(1.5+Math.random()*1.5)+'s';
 pContainer.appendChild(p);
 }
-
-// Dismiss intro after animation
-setTimeout(()=>{intro.classList.add('done');},2800);
-// Remove from DOM after transition
-setTimeout(()=>{intro.remove();},3600);
 })();
 
 // ===================== HERO TYPING EFFECT =====================
@@ -2031,14 +2024,7 @@ card.style.transform='perspective(800px) rotateX(0) rotateY(0) translateY(0)';
 })();
 
 // ===================== SECTION STAGGER REVEAL =====================
-(function(){
-if(typeof IntersectionObserver==='undefined')return;
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
-},{threshold:0.1});
-document.querySelectorAll('.section-inner').forEach(s=>observer.observe(s));
-document.querySelectorAll('.work-item').forEach(w=>observer.observe(w));
-})();
+// Removed — was hiding content
 
 // ===================== MAGNETIC BUTTONS =====================
 (function(){
