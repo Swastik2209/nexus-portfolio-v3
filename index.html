@@ -901,56 +901,179 @@ requestAnimationFrame(draw);
 draw();
 })();
 
-// ===================== INTERACTIVE BLACK-SCHOLES =====================
+// ===================== INTERACTIVE BLACK-SCHOLES ENGINE =====================
 (function(){
 const canvas=document.getElementById('bs-canvas');
 if(!canvas)return;
 const ctx=canvas.getContext('2d');
 let W,H;
 function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
-resize();
-window.addEventListener('resize',resize);
+resize();window.addEventListener('resize',resize);
 
-let mouseX=0;
+let mouseX=0.5,mouseY=0.5;
 canvas.addEventListener('mousemove',e=>{
 const rect=canvas.getBoundingClientRect();
 mouseX=(e.clientX-rect.left)/rect.width;
+mouseY=(e.clientY-rect.top)/rect.height;
 });
+
+// Standard normal CDF (Abramowitz & Stegun approximation)
+function normCDF(x){
+const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+const sign=x<0?-1:1;
+x=Math.abs(x)/Math.SQRT2;
+const t=1/(1+p*x);
+const y=1-((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+return 0.5*(1+sign*y);
+}
+
+// Black-Scholes call price
+function bsCall(S,K,r,sigma,T){
+if(T<=0)return Math.max(S-K,0);
+const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T));
+const d2=d1-sigma*Math.sqrt(T);
+return S*normCDF(d1)-K*Math.exp(-r*T)*normCDF(d2);
+}
+
+// Greeks
+function bsDelta(S,K,r,sigma,T){
+if(T<=0)return S>K?1:0;
+const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T));
+return normCDF(d1);
+}
+function bsGamma(S,K,r,sigma,T){
+if(T<=0)return 0;
+const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T));
+return Math.exp(-d1*d1/2)/(S*sigma*Math.sqrt(2*Math.PI*T));
+}
+function bsVega(S,K,r,sigma,T){
+if(T<=0)return 0;
+const d1=(Math.log(S/K)+(r+sigma*sigma/2)*T)/(sigma*Math.sqrt(T));
+return S*Math.exp(-d1*d1/2)*Math.sqrt(T)/100;
+}
+
+// Generate real GBM path
+function genGBM(S0,sigma,r,steps,dt){
+const path=[S0];
+let S=S0;
+for(let i=0;i<steps;i++){
+const z=Math.sqrt(-2*Math.log(Math.random()))*Math.cos(2*Math.PI*Math.random());
+S*=Math.exp((r-sigma*sigma/2)*dt+sigma*Math.sqrt(dt)*z);
+path.push(S);
+}
+return path;
+}
+
+const K=100,r=0.05,T=1;
+let gbmPath=genGBM(100,0.2,r,200,T/200);
+let gbmTime=0;
 
 function draw(){
 ctx.clearRect(0,0,W,H);
 const t=Date.now()*0.001;
-const strike=W*0.5;
-const vol=mouseX*0.8+0.1;
+const sigma=0.1+mouseX*0.7;
+const spot=60+mouseY*120;
 
-// Draw option payoff
-ctx.beginPath();
-ctx.moveTo(0,H*0.4);
-for(let x=0;x<W;x++){
-const payoff=Math.max(0,x-strike)*vol;
-ctx.lineTo(x,H*0.4-payoff*0.3);
+// Regenerate GBM occasionally
+gbmTime+=0.016;
+if(gbmTime>4){gbmPath=genGBM(spot,sigma,r,200,T/200);gbmTime=0;}
+
+const padL=50,padR=16,padT=30,padB=40;
+const gW=W-padL-padR,gH=H-padT-padB;
+
+// Grid
+ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.5;
+for(let i=0;i<=5;i++){
+const y=padT+gH*i/5;
+ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(W-padR,y);ctx.stroke();
 }
-ctx.strokeStyle='rgba(99,102,241,0.7)';ctx.lineWidth=1.5;ctx.stroke();
-
-// Fill under curve
-ctx.lineTo(W,H*0.4);ctx.lineTo(0,H*0.4);ctx.closePath();
-ctx.fillStyle='rgba(99,102,241,0.06)';ctx.fill();
-
-// Brownian motion
-ctx.beginPath();
-ctx.moveTo(0,H*0.7);
-let y=H*0.7;
-for(let x=0;x<W;x++){
-y+=Math.sin(x*0.02+t+mouseX*5)*0.8+Math.cos(x*0.013+t*0.7)*0.5;
-ctx.lineTo(x,y);
+for(let i=0;i<=8;i++){
+const x=padL+gW*i/8;
+ctx.beginPath();ctx.moveTo(x,padT);ctx.lineTo(x,padT+gH);ctx.stroke();
 }
-ctx.strokeStyle='rgba(167,139,250,0.35)';ctx.lineWidth=1;ctx.stroke();
 
-// Labels
-ctx.font='11px JetBrains Mono, monospace';
+// --- Left: Option Price Curve (Call value vs Spot) ---
+const maxSpot=200;
+ctx.beginPath();
+for(let s=10;s<=maxSpot;s+=2){
+const price=bsCall(s,K,r,sigma,T);
+const x=padL+((s-10)/(maxSpot-10))*gW*0.55;
+const y=padT+gH*(1-Math.min(price/(maxSpot*0.5),1));
+if(s===10)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+ctx.strokeStyle='rgba(99,102,241,0.9)';ctx.lineWidth=2;ctx.stroke();
+
+// Fill under call curve
+ctx.lineTo(padL+gW*0.55,padT+gH);ctx.lineTo(padL,padT+gH);ctx.closePath();
+const callGrad=ctx.createLinearGradient(0,padT,0,padT+gH);
+callGrad.addColorStop(0,'rgba(99,102,241,0.15)');callGrad.addColorStop(1,'rgba(99,102,241,0.01)');
+ctx.fillStyle=callGrad;ctx.fill();
+
+// Intrinsic value (payoff) line
+ctx.beginPath();
+for(let s=10;s<=maxSpot;s+=2){
+const payoff=Math.max(s-K,0);
+const x=padL+((s-10)/(maxSpot-10))*gW*0.55;
+const y=padT+gH*(1-Math.min(payoff/(maxSpot*0.5),1));
+if(s===10)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);
+
+// Spot price indicator
+const spotX=padL+((spot-10)/(maxSpot-10))*gW*0.55;
+const spotPrice=bsCall(spot,K,r,sigma,T);
+const spotY=padT+gH*(1-Math.min(spotPrice/(maxSpot*0.5),1));
+ctx.beginPath();ctx.arc(spotX,spotY,5,0,Math.PI*2);ctx.fillStyle='#818cf8';ctx.fill();
+ctx.beginPath();ctx.arc(spotX,spotY,8,0,Math.PI*2);ctx.strokeStyle='rgba(129,140,248,0.4)';ctx.lineWidth=1.5;ctx.stroke();
+
+// Vertical line at strike
+const strikeX=padL+((K-10)/(maxSpot-10))*gW*0.55;
+ctx.beginPath();ctx.moveTo(strikeX,padT);ctx.lineTo(strikeX,padT+gH);
+ctx.strokeStyle='rgba(255,255,255,0.1)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);
+
+// --- Right: GBM price path ---
+const rLeft=padL+gW*0.6,rW=gW*0.38;
+const pathMax=Math.max(...gbmPath)*1.1;
+const pathMin=Math.min(...gbmPath)*0.9;
+ctx.beginPath();
+for(let i=0;i<gbmPath.length;i++){
+const x=rLeft+(i/(gbmPath.length-1))*rW;
+const y=padT+gH*(1-(gbmPath[i]-pathMin)/(pathMax-pathMin));
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+}
+const pathGrad=ctx.createLinearGradient(rLeft,0,rLeft+rW,0);
+pathGrad.addColorStop(0,'rgba(139,92,246,0.8)');pathGrad.addColorStop(1,'rgba(167,139,250,0.4)');
+ctx.strokeStyle=pathGrad;ctx.lineWidth=1.5;ctx.stroke();
+
+// Fill under path
+ctx.lineTo(rLeft+rW,padT+gH);ctx.lineTo(rLeft,padT+gH);ctx.closePath();
+const pathFill=ctx.createLinearGradient(0,padT,0,padT+gH);
+pathFill.addColorStop(0,'rgba(139,92,246,0.1)');pathFill.addColorStop(1,'rgba(139,92,246,0.01)');
+ctx.fillStyle=pathFill;ctx.fill();
+
+// --- Labels ---
+ctx.font='10px JetBrains Mono, monospace';
+ctx.fillStyle='rgba(99,102,241,0.9)';ctx.fillText('CALL VALUE',padL+4,padT-10);
+ctx.fillStyle='rgba(139,92,246,0.7)';ctx.fillText('GBM PATH',rLeft+4,padT-10);
+
+ctx.fillStyle='rgba(255,255,255,0.3)';
+ctx.fillText('K='+K.toFixed(0),strikeX-12,padT+gH+14);
+ctx.fillStyle='rgba(129,140,248,0.8)';
+ctx.fillText('S='+spot.toFixed(0),spotX-12,padT+gH+26);
+
+// Info box
+const delta=bsDelta(spot,K,r,sigma,T);
+const gamma=bsGamma(spot,K,r,sigma,T);
+const vega=bsVega(spot,K,r,sigma,T);
+ctx.fillStyle='rgba(10,10,14,0.7)';ctx.fillRect(padL,padT+gH-56,160,52);
+ctx.strokeStyle='rgba(99,102,241,0.2)';ctx.strokeRect(padL,padT+gH-56,160,52);
+ctx.font='9px JetBrains Mono, monospace';
 ctx.fillStyle='rgba(148,163,184,0.7)';
-ctx.fillText('Volatility: '+(vol*100).toFixed(0)+'%',8,18);
-ctx.fillText('Move mouse to change',8,H-10);
+ctx.fillText('\u03c3='+(sigma*100).toFixed(0)+'%  C='+bsCall(spot,K,r,sigma,T).toFixed(2),padL+8,padT+gH-40);
+ctx.fillText('\u0394='+delta.toFixed(3)+'  \u0393='+gamma.toFixed(4),padL+8,padT+gH-28);
+ctx.fillText('Vega='+vega.toFixed(4)+'  T='+T.toFixed(1)+'y',padL+8,padT+gH-16);
+
+ctx.fillStyle='rgba(148,163,184,0.4)';ctx.fillText('Move mouse: x\u2192spot  y\u2192\u03c3',padL,padT+gH+14);
 
 requestAnimationFrame(draw);
 }
@@ -1288,7 +1411,7 @@ requestAnimationFrame(draw);
 draw();
 })();
 
-// ===================== ORBITAL MECHANICS — KEPLERIAN ELLIPSES =====================
+// ===================== ORBITAL MECHANICS — N-BODY KEPLERIAN =====================
 (function(){
 const canvas=document.getElementById('orbital-canvas');
 if(!canvas)return;
@@ -1296,93 +1419,152 @@ const ctx=canvas.getContext('2d');
 let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
 resize();window.addEventListener('resize',resize);
 
-const GM=1e4;
-const star={x:0,y:0,mass:1};
+const GM=5000;
+let centerX,centerY;
 
-function makePlanet(a,e,color,radius){
-const periR=a*(1-e),apoR=a*(1+e);
+// Gravitational field visualization
+function drawGravField(cx,cy){
+const imgData=ctx.createImageData(W,H);
+const d=imgData.data;
+for(let py=0;py<H;py+=4){
+for(let px=0;px<W;px+=4){
+const dx=px-cx,dy=py-cy;
+const r2=dx*dx+dy*dy;
+const r=Math.sqrt(r2);
+if(r<8)continue;
+const fieldStrength=GM/(r2+200);
+const brightness=Math.min(fieldStrength*80,25);
+const hue=0.62+fieldStrength*0.02;
+for(let iy=0;iy<4&&py+iy<H;iy++){
+for(let ix=0;ix<4&&px+ix<W;ix++){
+const idx=((py+iy)*W+(px+ix))*4;
+d[idx]=brightness*99/255;d[idx+1]=brightness*102/241;d[idx+2]=brightness*241/255;d[idx+3]=brightness*0.15;
+}
+}
+}
+}
+ctx.putImageData(imgData,0,0);
+}
+
+// Planet factory with proper Keplerian initial conditions
+function makePlanet(a,e,color,radius,phase){
+const periR=a*(1-e);
 const periV=Math.sqrt(GM*(1+e)/(a*(1-e)));
-return{x:periR,y:0,vx:0,vy:periV,radius,color,trail:[],maxTrail:250};
+return{
+x:periR*Math.cos(phase||0),y:periR*Math.sin(phase||0),
+vx:-periV*Math.sin(phase||0),vy:periV*Math.cos(phase||0),
+radius,color,trail:[],maxTrail:600,
+smA:a,ecc:e
+};
 }
 
 const planets=[
-makePlanet(90,0.3,'rgba(99,102,241,0.9)',3),
-makePlanet(60,0.55,'rgba(244,114,182,0.9)',2.5),
-makePlanet(140,0.15,'rgba(52,211,153,0.85)',3.5),
+makePlanet(110,0.25,'rgba(99,102,241,0.9)',3.5,0),
+makePlanet(70,0.5,'rgba(244,114,182,0.9)',2.8,Math.PI*0.7),
+makePlanet(160,0.12,'rgba(52,211,153,0.85)',4,Math.PI*1.3),
 ];
 
+// Velocity Verlet integration (symplectic — energy-conserving)
+const dt=0.02;
+const stepsPerFrame=4;
+
+function gravAccel(x,y){
+const r2=x*x+y*y;
+const r=Math.sqrt(r2);
+const softR=r+2;
+return{x:-GM*x/(softR*softR*r),y:-GM*y/(softR*softR*r)};
+}
+
+function verletStep(p){
+const a0=gravAccel(p.x,p.y);
+// Half-step velocity
+p.vx+=a0.x*dt*0.5;
+p.vy+=a0.y*dt*0.5;
+// Full-step position
+p.x+=p.vx*dt;
+p.y+=p.vy*dt;
+// New acceleration
+const a1=gravAccel(p.x,p.y);
+// Complete velocity step
+p.vx+=a1.x*dt*0.5;
+p.vy+=a1.y*dt*0.5;
+}
+
 function draw(){
-const cx=W/2,cy=H/2;
-ctx.fillStyle='rgba(10,10,14,0.3)';ctx.fillRect(0,0,W,H);
+centerX=W/2;centerY=H/2;
 
-// Draw orbit prediction (ellipse) for each planet
+// Dark trail fade
+ctx.fillStyle='rgba(8,8,14,0.12)';
+ctx.fillRect(0,0,W,H);
+
+// Gravitational field (subtle)
+drawGravField(centerX,centerY);
+
+// Integrate
+for(let s=0;s<stepsPerFrame;s++){
+planets.forEach(verletStep);
+}
+
+// Draw predicted orbits
 planets.forEach(p=>{
-const a=(p.maxTrail+Math.sqrt(p.x*p.x+p.y*p.y))/2;
-const energy=0.5*(p.vx*p.vx+p.vy*p.vy)-GM/Math.sqrt(p.x*p.x+p.y*p.y);
-const sma=-GM/(2*energy);
-if(sma>0){
 const r=Math.sqrt(p.x*p.x+p.y*p.y);
-const vx2=p.vx*p.vx+p.vy*p.vy;
-const ex=(vx2/GM-1/r)*p.x-(p.x*p.vx+p.y*p.vy)/GM*p.vx;
-const ey=(vx2/GM-1/r)*p.y-(p.x*p.vx+p.y*p.vy)/GM*p.vy;
-const ecc=Math.sqrt(ex*ex+ey*ey);
-if(ecc<1){
+const v2=p.vx*p.vx+p.vy*p.vy;
+const energy=0.5*v2-GM/r;
+const sma=-GM/(2*energy);
+if(sma<=0||energy>=0)return;
+const hx=p.x*p.vy-p.y*p.vx;
+const h2=hx*hx;
+const eccSq=1+h2*energy/(GM*GM);
+const ecc=Math.sqrt(Math.max(0,eccSq));
+if(ecc>=1)return;
 const b=sma*Math.sqrt(1-ecc*ecc);
-const ang=Math.atan2(ey,ex);
-ctx.save();ctx.translate(cx,cy);ctx.rotate(ang);
-ctx.beginPath();ctx.ellipse(ex*cx/ecc||0,0,sma,b,0,0,Math.PI*2);
+const omega=Math.atan2(-(p.y/GM-(hx*p.x)/(GM*GM)*(-energy/GM)),(p.x/GM+(hx*p.y)/(GM*GM)*(-energy/GM)));
+ctx.save();ctx.translate(centerX,centerY);ctx.rotate(omega);
+ctx.beginPath();ctx.ellipse(sma*ecc,0,sma,b,0,0,Math.PI*2);
 ctx.restore();
-ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=0.8;ctx.stroke();
-}
-}
+ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=0.7;ctx.stroke();
 });
 
-// Gravitational integration (leapfrog)
-planets.forEach(p=>{
-const dx=p.x,dy=p.y;
-const r2=dx*dx+dy*dy;
-const r=Math.sqrt(r2)+3;
-const ax=-GM*dx/(r2*r);
-const ay=-GM*dy/(r2*r);
-p.vx+=ax*0.016;p.vy+=ay*0.016;
-p.x+=p.vx*0.016;p.y+=p.vy*0.016;
-});
-
-// Central star glow
-const sg=ctx.createRadialGradient(cx,cy,0,cx,cy,28);
-sg.addColorStop(0,'rgba(255,255,255,0.85)');
-sg.addColorStop(0.3,'rgba(99,102,241,0.25)');
-sg.addColorStop(1,'rgba(99,102,241,0)');
-ctx.fillStyle=sg;ctx.fillRect(cx-28,cy-28,56,56);
-ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+// Central star
+const starGlow=ctx.createRadialGradient(centerX,centerY,0,centerX,centerY,35);
+starGlow.addColorStop(0,'rgba(255,255,255,0.95)');
+starGlow.addColorStop(0.15,'rgba(255,230,180,0.4)');
+starGlow.addColorStop(0.4,'rgba(99,102,241,0.15)');
+starGlow.addColorStop(1,'rgba(99,102,241,0)');
+ctx.fillStyle=starGlow;ctx.beginPath();ctx.arc(centerX,centerY,35,0,Math.PI*2);ctx.fill();
+ctx.beginPath();ctx.arc(centerX,centerY,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
 
 // Planets + trails
 planets.forEach(p=>{
 p.trail.push({x:p.x,y:p.y});
 if(p.trail.length>p.maxTrail)p.trail.shift();
 
-// Trail
+// Draw trail with fading gradient
 for(let i=1;i<p.trail.length;i++){
-const t=i/p.trail.length;
+const alpha=i/p.trail.length;
 ctx.beginPath();
-ctx.moveTo(cx+p.trail[i-1].x,cy+p.trail[i-1].y);
-ctx.lineTo(cx+p.trail[i].x,cy+p.trail[i].y);
-ctx.strokeStyle=p.color.replace(/[\d.]+\)$/,t*0.6+')');
-ctx.lineWidth=1.2;ctx.stroke();
+ctx.moveTo(centerX+p.trail[i-1].x,centerY+p.trail[i-1].y);
+ctx.lineTo(centerX+p.trail[i].x,centerY+p.trail[i].y);
+ctx.strokeStyle=p.color.replace(/[\d.]+\)$/,(alpha*0.7).toFixed(2)+')');
+ctx.lineWidth=1+alpha*0.8;
+ctx.stroke();
 }
 
 // Planet body
-const px=cx+p.x,py=cy+p.y;
-ctx.beginPath();ctx.arc(px,py,p.radius,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();
+const px=centerX+p.x,py=centerY+p.y;
+const bodyGrad=ctx.createRadialGradient(px,py,0,px,py,p.radius);
+bodyGrad.addColorStop(0,'rgba(255,255,255,0.9)');bodyGrad.addColorStop(1,p.color);
+ctx.beginPath();ctx.arc(px,py,p.radius,0,Math.PI*2);ctx.fillStyle=bodyGrad;ctx.fill();
 
-// Planet glow
-const pg=ctx.createRadialGradient(px,py,0,px,py,p.radius*4);
-pg.addColorStop(0,p.color.replace(/[\d.]+\)$/,'0.3)'));pg.addColorStop(1,'rgba(0,0,0,0)');
-ctx.fillStyle=pg;ctx.beginPath();ctx.arc(px,py,p.radius*4,0,Math.PI*2);ctx.fill();
+// Glow
+const glow=ctx.createRadialGradient(px,py,0,px,py,p.radius*5);
+glow.addColorStop(0,p.color.replace(/[\d.]+\)$/,'0.25)'));glow.addColorStop(1,'rgba(0,0,0,0)');
+ctx.fillStyle=glow;ctx.beginPath();ctx.arc(px,py,p.radius*5,0,Math.PI*2);ctx.fill();
 });
 
-ctx.font='10px JetBrains Mono, monospace';ctx.fillStyle='rgba(148,163,184,0.6)';
-ctx.fillText('Keplerian orbital dynamics  e\u2081=0.3  e\u2082=0.55  e\u2083=0.15',8,16);
+// Labels
+ctx.font='9px JetBrains Mono, monospace';ctx.fillStyle='rgba(148,163,184,0.5)';
+ctx.fillText('Velocity Verlet integration  \u03b5\u2081=0.25  \u03b5\u2082=0.50  \u03b5\u2083=0.12',8,16);
 
 requestAnimationFrame(draw);
 }
