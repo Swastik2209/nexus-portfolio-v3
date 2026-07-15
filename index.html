@@ -279,9 +279,10 @@ canvas{height:150px !important;width:100% !important}
 .scramble-text{display:inline-block}
 
 /* Animated gradient border on product cards */
-.product-card::after{content:'';position:absolute;inset:-1px;border-radius:15px;background:linear-gradient(60deg,transparent 30%,rgba(99,102,241,0.5) 50%,transparent 70%);z-index:-1;opacity:0;transition:opacity .4s;animation:shimmerBorder 2s linear infinite}
+.product-card{overflow:visible !important}
+.product-card::after{content:'';position:absolute;inset:-2px;border-radius:16px;background:linear-gradient(60deg,transparent 20%,rgba(99,102,241,0.5) 50%,transparent 80%);background-size:200% 100%;z-index:-1;opacity:0;transition:opacity .4s;animation:shimmerBorder 2s linear infinite}
 .product-card:hover::after{opacity:1}
-@keyframes shimmerBorder{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes shimmerBorder{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 /* Cursor glow trail */
 .cursor-glow{position:fixed;width:250px;height:250px;border-radius:50%;pointer-events:none;z-index:2;opacity:0;filter:blur(50px);background:radial-gradient(circle,rgba(99,102,241,0.2) 0%,rgba(139,92,246,0.08) 40%,transparent 70%)}
@@ -719,9 +720,8 @@ var intro=document.getElementById('intro');
 if(!intro)return;
 function dismiss(){if(intro&&!intro.classList.contains('done')){intro.classList.add('done');setTimeout(function(){if(intro.parentNode)intro.remove();},900);}}
 setTimeout(dismiss,3500);
-setTimeout(dismiss,5000);
+setTimeout(dismiss,6000);
 document.addEventListener('click',dismiss,{once:true});
-window.addEventListener('load',dismiss);
 })();
 
 // ===================== WEBGL SHADER BACKGROUND =====================
