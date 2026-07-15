@@ -603,7 +603,7 @@ I build systems<br>
 <p class="sub">Where curiosity meets computation. Physics simulations, AI experiments, financial models.</p>
 <div class="lab-grid">
 
-<div class="lab-item reveal"><div class="lab-icon">01 — Dynamics</div><h4>Pendulum Dynamics</h4><p>Three regimes of double pendulum motion — oscillation, chaos, and full rotation. Click a mode to reset. Move mouse to nudge.</p><div id="pend-modes" style="display:flex;gap:8px;margin-top:12px"><button onclick="pendMode=0;pendReset()" style="padding:5px 14px;border:1px solid rgba(99,102,241,0.3);border-radius:6px;background:rgba(99,102,241,0.1);color:#a5b4fc;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">OSCILLATION</button><button onclick="pendMode=1;pendReset()" style="padding:5px 14px;border:1px solid rgba(244,114,182,0.3);border-radius:6px;background:rgba(244,114,182,0.1);color:#f9a8d4;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">CHAOS</button><button onclick="pendMode=2;pendReset()" style="padding:5px 14px;border:1px solid rgba(52,211,153,0.3);border-radius:6px;background:rgba(52,211,153,0.1);color:#6ee7b7;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">FULL ROTATION</button></div><canvas id="pendulum-canvas" style="width:100%;height:400px;cursor:crosshair;margin-top:14px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">01 — Dynamics</div><h4>Pendulum Dynamics</h4><p>Three regimes of double pendulum motion — oscillation, chaos, and full rotation. Click a mode to reset. Move mouse to nudge.</p><div id="pend-modes" style="display:flex;gap:8px;margin-top:12px"><button onclick="pendMode=0;pendReset()" style="padding:5px 14px;border:1px solid rgba(99,102,241,0.3);border-radius:6px;background:rgba(99,102,241,0.1);color:#a5b4fc;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">OSCILLATION</button><button onclick="pendMode=1;pendReset()" style="padding:5px 14px;border:1px solid rgba(244,114,182,0.3);border-radius:6px;background:rgba(244,114,182,0.1);color:#f9a8d4;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">CHAOS</button><button onclick="pendMode=2;pendReset()" style="padding:5px 14px;border:1px solid rgba(52,211,153,0.3);border-radius:6px;background:rgba(52,211,153,0.1);color:#6ee7b7;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">FULL ROTATION</button></div><canvas id="pendulum-canvas" style="width:100%;height:480px;cursor:crosshair;margin-top:14px"></canvas></div>
 
 <div class="lab-divider thick"></div>
 
@@ -635,7 +635,7 @@ I build systems<br>
 
 <div class="lab-divider"></div>
 
-<div class="lab-item reveal"><div class="lab-icon">10 — Gravitational Physics</div><h4>Orbital Mechanics</h4><p>N-body gravitational simulation — click anywhere to launch a new planet. Watch Keplerian orbits, resonance patterns, and gravitational interactions unfold.</p><canvas id="orbital-canvas" style="width:100%;height:500px;cursor:crosshair;margin-top:14px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">10 — Gravitational Physics</div><h4>Orbital Mechanics</h4><p>N-body gravitational simulation — click anywhere to launch a new planet. Watch Keplerian orbits, resonance patterns, and gravitational interactions unfold.</p><canvas id="orbital-canvas" style="width:100%;height:580px;cursor:crosshair;margin-top:14px"></canvas></div>
 
 </div>
 </div>
@@ -989,6 +989,7 @@ const g=9.81,m1=1,m2=1,l1=80,l2=80;
 const damp=0.05; // air resistance + pivot friction
 let a1=Math.PI*0.3,a2=Math.PI*0.25,v1=0,v2=0;
 const trail=[];const maxTrail=500;
+const energyHistory=[];const maxEnergy=200;
 const modeColors=[['rgba(99,102,241,','rgba(129,140,248,'],['rgba(244,114,182,','rgba(232,121,249,'],['rgba(52,211,153,','rgba(110,231,183,']];
 const modeLabels=['Oscillation','Chaos','Full Rotation'];
 
@@ -1058,6 +1059,46 @@ ctx.fillStyle=glow;ctx.fillRect(x2-18,y2-18,36,36);
 // Mode label
 ctx.font='10px JetBrains Mono, monospace';
 ctx.fillStyle=mc[0]+'0.8)';ctx.fillText(modeLabels[pendMode],8,16);
+
+// Energy graph (bottom-right)
+const KE=0.5*m1*(l1*v1)**2+0.5*m2*((l1*v1)**2+(l2*v2)**2+2*l1*l2*v1*v2*Math.cos(a1-a2));
+const PE=m1*g*l1*(1-Math.cos(a1))+m2*g*(l1*(1-Math.cos(a1))+l2*(1-Math.cos(a2)));
+const totalE=KE+PE;
+energyHistory.push({ke:KE,pe:PE,total:totalE});
+if(energyHistory.length>maxEnergy)energyHistory.shift();
+
+const eW=140,eH=50,eX=W-eW-16,eY=H-eH-16;
+ctx.fillStyle='rgba(6,6,12,0.7)';ctx.fillRect(eX-4,eY-4,eW+8,eH+8);
+ctx.strokeStyle='rgba(99,102,241,0.15)';ctx.strokeRect(eX-4,eY-4,eW+8,eH+8);
+
+const maxE=Math.max(...energyHistory.map(e=>e.total),1);
+// KE fill
+ctx.beginPath();
+energyHistory.forEach((e,i)=>{
+const x=eX+(i/maxEnergy)*eW;
+const y=eY+eH-(e.ke/maxE)*eH;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+});
+ctx.lineTo(eX+eW,eY+eH);ctx.lineTo(eX,eY+eH);ctx.closePath();
+ctx.fillStyle='rgba(99,102,241,0.15)';ctx.fill();
+ctx.strokeStyle='rgba(99,102,241,0.6)';ctx.lineWidth=1;ctx.stroke();
+
+// PE fill
+ctx.beginPath();
+energyHistory.forEach((e,i)=>{
+const x=eX+(i/maxEnergy)*eW;
+const y=eY+eH-(e.pe/maxE)*eH;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+});
+ctx.lineTo(eX+eW,eY+eH);ctx.lineTo(eX,eY+eH);ctx.closePath();
+ctx.fillStyle='rgba(52,211,153,0.1)';ctx.fill();
+ctx.strokeStyle='rgba(52,211,153,0.5)';ctx.lineWidth=1;ctx.stroke();
+
+// Energy labels
+ctx.font='8px JetBrains Mono, monospace';
+ctx.fillStyle='rgba(99,102,241,0.7)';ctx.fillText('KE',eX,eY-6);
+ctx.fillStyle='rgba(52,211,153,0.6)';ctx.fillText('PE',eX+20,eY-6);
+ctx.fillStyle='rgba(255,255,255,0.3)';ctx.fillText('E='+totalE.toFixed(1),eX+eW-40,eY-6);
 
 requestAnimationFrame(draw);
 }
@@ -1672,6 +1713,10 @@ sg.addColorStop(1,'rgba(99,102,241,0)');
 ctx.fillStyle=sg;ctx.beginPath();ctx.arc(centerX,centerY,cr,0,Math.PI*2);ctx.fill();
 ctx.beginPath();ctx.arc(centerX,centerY,4.5,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
 
+// Gravitational field rings
+ctx.strokeStyle='rgba(99,102,241,0.04)';ctx.lineWidth=0.5;
+[80,140,200,280].forEach(r=>{ctx.beginPath();ctx.arc(centerX,centerY,r,0,Math.PI*2);ctx.stroke();});
+
 // Planets + trails
 planets.forEach(p=>{
 p.trail.push({x:p.x,y:p.y});
@@ -1691,17 +1736,27 @@ const bodyGrad=ctx.createRadialGradient(px,py,0,px,py,p.radius);
 bodyGrad.addColorStop(0,'rgba(255,255,255,0.9)');bodyGrad.addColorStop(1,p.color);
 ctx.beginPath();ctx.arc(px,py,p.radius,0,Math.PI*2);ctx.fillStyle=bodyGrad;ctx.fill();
 
+// Velocity vector
+const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+if(spd>0.1){
+const vLen=Math.min(spd*3,25);
+const vAng=Math.atan2(p.vy,p.vx);
+ctx.beginPath();ctx.moveTo(px,py);
+ctx.lineTo(px+Math.cos(vAng)*vLen,py+Math.sin(vAng)*vLen);
+ctx.strokeStyle=p.color.replace(/[\d.]+\)$/,'0.4)');ctx.lineWidth=1;ctx.stroke();
+}
+
 const glow=ctx.createRadialGradient(px,py,0,px,py,p.radius*5);
 glow.addColorStop(0,p.color.replace(/[\d.]+\)$/,'0.2)'));glow.addColorStop(1,'rgba(0,0,0,0)');
 ctx.fillStyle=glow;ctx.beginPath();ctx.arc(px,py,p.radius*5,0,Math.PI*2);ctx.fill();
 });
 
 // Info
-ctx.fillStyle='rgba(6,6,12,0.85)';ctx.fillRect(8,8,200,28);
-ctx.strokeStyle='rgba(99,102,241,0.2)';ctx.strokeRect(8,8,200,28);
+ctx.fillStyle='rgba(6,6,12,0.85)';ctx.fillRect(8,8,260,28);
+ctx.strokeStyle='rgba(99,102,241,0.2)';ctx.strokeRect(8,8,260,28);
 ctx.font='9px JetBrains Mono, monospace';ctx.textAlign='left';
 ctx.fillStyle='rgba(148,163,184,0.6)';
-ctx.fillText('Velocity Verlet  click to launch  \u03b5\u2081=0.22 \u03b5\u2082=0.45 \u03b5\u2083=0.10',14,26);
+ctx.fillText('Velocity Verlet  '+planets.length+' planets  click to launch  \u03b5\u2081=0.22 \u03b5\u2082=0.45 \u03b5\u2083=0.10',14,26);
 
 requestAnimationFrame(draw);
 }
