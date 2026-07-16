@@ -637,6 +637,10 @@ I build systems<br>
 
 <div class="lab-item reveal"><div class="lab-icon">10 — Gravitational Physics</div><h4>Orbital Mechanics</h4><p>N-body gravitational simulation — click anywhere to launch a new planet. Watch Keplerian orbits, resonance patterns, and gravitational interactions unfold.</p><canvas id="orbital-canvas" style="width:100%;height:580px;cursor:crosshair;margin-top:14px"></canvas></div>
 
+<div class="lab-divider thick"></div>
+
+<div class="lab-item reveal"><div class="lab-icon">11 — Physics Playground</div><h4>Gravity Sandbox</h4><p>Click to drop balls, drag to fling them. Watch real gravity, bouncing, and collisions. Switch modes for different physics.</p><div id="sandbox-modes" style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button onclick="sandboxMode='normal'" style="padding:5px 14px;border:1px solid rgba(99,102,241,0.3);border-radius:6px;background:rgba(99,102,241,0.1);color:#a5b4fc;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">NORMAL</button><button onclick="sandboxMode='fire'" style="padding:5px 14px;border:1px solid rgba(244,114,182,0.3);border-radius:6px;background:rgba(244,114,182,0.1);color:#f9a8d4;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">FIRE</button><button onclick="sandboxMode='electric'" style="padding:5px 14px;border:1px solid rgba(251,191,36,0.3);border-radius:6px;background:rgba(251,191,36,0.1);color:#fcd34d;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">ELECTRIC</button><button onclick="sandboxMode='antiGrav'" style="padding:5px 14px;border:1px solid rgba(52,211,153,0.3);border-radius:6px;background:rgba(52,211,153,0.1);color:#6ee7b7;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">ANTI-GRAVITY</button><button onclick="balls.length=0" style="padding:5px 14px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;background:rgba(255,255,255,0.05);color:#9ca3af;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">CLEAR</button></div><canvas id="sandbox-canvas" style="width:100%;height:400px;cursor:crosshair;margin-top:14px"></canvas></div>
+
 </div>
 </div>
 </section>
@@ -1757,6 +1761,116 @@ ctx.strokeStyle='rgba(99,102,241,0.2)';ctx.strokeRect(8,8,260,28);
 ctx.font='9px JetBrains Mono, monospace';ctx.textAlign='left';
 ctx.fillStyle='rgba(148,163,184,0.6)';
 ctx.fillText('Velocity Verlet  '+planets.length+' planets  click to launch  \u03b5\u2081=0.22 \u03b5\u2082=0.45 \u03b5\u2083=0.10',14,26);
+
+requestAnimationFrame(draw);
+}
+draw();
+})();
+
+// ===================== GRAVITY SANDBOX =====================
+let sandboxMode='normal';
+const balls=[];
+(function(){
+const canvas=document.getElementById('sandbox-canvas');
+if(!canvas)return;
+const ctx=canvas.getContext('2d');
+let W,H;function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+resize();window.addEventListener('resize',resize);
+
+let mouseDown=false,mouseX=0,mouseY=0,dragStartX=0,dragStartY=0;
+canvas.addEventListener('mousedown',e=>{mouseDown=true;const r=canvas.getBoundingClientRect();dragStartX=e.clientX-r.left;dragStartY=e.clientY-r.top;mouseX=dragStartX;mouseY=dragStartY;});
+canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mouseX=e.clientX-r.left;mouseY=e.clientY-r.top;});
+canvas.addEventListener('mouseup',e=>{
+if(!mouseDown)return;mouseDown=false;
+const r=canvas.getBoundingClientRect();
+const mx=e.clientX-r.left,my=e.clientY-r.top;
+const vx=(mx-dragStartX)*0.15;
+const vy=(my-dragStartY)*0.15;
+const colors={
+normal:['#818cf8','#a78bfa','#c4b5fd','#6366f1','#8b5cf6'],
+fire:['#ef4444','#f97316','#fbbf24','#dc2626','#fb923c'],
+electric:['#fbbf24','#f59e0b','#eab308','#fcd34d','#fde68a'],
+antiGrav:['#34d399','#6ee7b7','#a7f3d0','#10b981','#059669']
+};
+const modeColors=colors[sandboxMode]||colors.normal;
+const count=sandboxMode==='fire'?3:1;
+for(let i=0;i<count;i++){
+balls.push({
+x:dragStartX+(Math.random()-0.5)*10,
+y:dragStartY+(Math.random()-0.5)*10,
+vx:vx+(Math.random()-0.5)*2,
+vy:vy+(Math.random()-0.5)*2,
+r:sandboxMode==='fire'?3+Math.random()*4:4+Math.random()*6,
+color:modeColors[Math.floor(Math.random()*modeColors.length)],
+life:sandboxMode==='fire'?60+Math.random()*40:Infinity,
+age:0,
+glow:sandboxMode==='electric'?15:8
+});
+}
+});
+
+function draw(){
+ctx.fillStyle='rgba(6,6,12,0.15)';ctx.fillRect(0,0,W,H);
+
+const gravity=sandboxMode==='antiGrav'?-0.15:sandboxMode==='fire'?-0.08:0.25;
+
+for(let i=balls.length-1;i>=0;i--){
+const b=balls[i];
+b.vy+=gravity;
+// Electric: particles attract nearby ones
+if(sandboxMode==='electric'){
+for(let j=0;j<balls.length;j++){
+if(i===j)continue;
+const dx=balls[j].x-b.x,dy=balls[j].y-b.y;
+const dist=Math.sqrt(dx*dx+dy*dy)+1;
+if(dist<80){
+const force=0.3/dist;
+b.vx+=dx*force*0.01;
+b.vy+=dy*force*0.01;
+}
+}
+}
+b.x+=b.vx;b.y+=b.vy;
+b.vx*=0.999;b.vy*=0.999;
+// Bounce
+if(b.x+b.r>W){b.x=W-b.r;b.vx*=-0.7;}
+if(b.x-b.r<0){b.x=b.r;b.vx*=-0.7;}
+if(b.y+b.r>H){b.y=H-b.r;b.vy*=-0.75;b.vx*=0.98;}
+if(b.y-b.r<0){b.y=b.r;b.vy*=-0.7;}
+// Life decay for fire
+if(b.life!==Infinity){b.age++;if(b.age>b.life){balls.splice(i,1);continue;}}
+}
+
+// Draw balls
+balls.forEach(b=>{
+const alpha=b.life===Infinity?1:Math.max(0,1-b.age/b.life);
+const glow=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r+b.glow);
+glow.addColorStop(0,b.color+Math.round(alpha*200).toString(16).padStart(2,'0'));
+glow.addColorStop(1,b.color+'00');
+ctx.fillStyle=glow;
+ctx.beginPath();ctx.arc(b.x,b.y,b.r+b.glow,0,Math.PI*2);ctx.fill();
+ctx.fillStyle=b.color;
+ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
+});
+
+// Drag preview
+if(mouseDown){
+ctx.beginPath();ctx.moveTo(dragStartX,dragStartY);ctx.lineTo(mouseX,mouseY);
+ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);
+const angle=Math.atan2(mouseY-dragStartY,mouseX-dragStartX);
+const len=Math.sqrt((mouseX-dragStartX)**2+(mouseY-dragStartY)**2);
+ctx.save();ctx.translate(dragStartX,dragStartY);ctx.rotate(angle);
+ctx.fillStyle='rgba(255,255,255,0.2)';
+ctx.beginPath();ctx.moveTo(Math.min(len,30),0);ctx.lineTo(Math.min(len,30)-6,-4);ctx.lineTo(Math.min(len,30)-6,4);ctx.closePath();ctx.fill();
+ctx.restore();
+}
+
+// Info
+ctx.fillStyle='rgba(6,6,12,0.8)';ctx.fillRect(8,8,220,28);
+ctx.strokeStyle='rgba(99,102,241,0.2)';ctx.strokeRect(8,8,220,28);
+ctx.font='9px JetBrains Mono, monospace';ctx.textAlign='left';
+ctx.fillStyle='rgba(148,163,184,0.6)';
+ctx.fillText(sandboxMode.toUpperCase()+' mode  balls: '+balls.length+'  click=drop  drag=fling',14,26);
 
 requestAnimationFrame(draw);
 }
