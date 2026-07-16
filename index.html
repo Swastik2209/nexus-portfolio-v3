@@ -28,7 +28,7 @@ body{background:#050508;color:#f5f5f5;font-family:'Space Grotesk',sans-serif;ove
 ::-webkit-scrollbar{width:0;height:0;display:none}
 html{scrollbar-width:none;-ms-overflow-style:none}
 
-.cursor{position:fixed;width:18px;height:18px;border:1.5px solid rgba(129,140,248,0.7);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .3s cubic-bezier(.4,0,.2,1),height .3s cubic-bezier(.4,0,.2,1),border-color .3s,background .3s,opacity .3s;background:rgba(99,102,241,0.06);mix-blend-mode:screen}
+.cursor{position:fixed;width:18px;height:18px;border:1.5px solid rgba(129,140,248,0.7);border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s,background .3s,opacity .3s;background:rgba(99,102,241,0.06)}
 .cursor.hover{width:42px;height:42px;border-color:rgba(165,180,252,0.9);background:rgba(99,102,241,0.12)}
 .cursor-dot{position:fixed;width:4px;height:4px;background:#818cf8;border-radius:50%;pointer-events:none;z-index:10001;transform:translate(-50%,-50%)}
 .cursor-ripple{position:fixed;border:1.5px solid rgba(129,140,248,0.5);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%) scale(1);opacity:0}
@@ -82,9 +82,6 @@ section h2{font-size:clamp(2rem,4vw,3.5rem);font-weight:700;letter-spacing:-0.03
 section h2 span{color:#9ca3af;font-weight:300}
 section .sub{font-size:1.1rem;color:#a8a8b0;max-width:550px;line-height:1.8;margin-bottom:56px}
 
-/* Subtle grain overlay */
-body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
-
 /* About */
 .about-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:80px;align-items:start}
 .about-visual{position:relative}
@@ -98,8 +95,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;o
 .about-floating{position:absolute;top:-20px;right:-20px;background:#111114;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 24px;z-index:2;backdrop-filter:blur(12px)}
 .about-floating .num{font-size:1.8rem;font-weight:700;color:#818cf8}
 .about-floating .txt{font-size:0.65rem;color:#9ca3af;margin-top:2px}
-.about-text{background:linear-gradient(135deg,rgba(12,12,18,0.95),rgba(8,8,12,0.98));border:1px solid rgba(255,255,255,0.04);border-radius:18px;padding:40px;backdrop-filter:blur(20px);transition:border-color .3s}
-.about-text:hover{border-color:rgba(99,102,241,0.1)}
+.about-text{background:rgba(10,10,14,0.95);border:1px solid rgba(255,255,255,0.04);border-radius:18px;padding:40px;backdrop-filter:blur(20px)}
 .about-text p{color:#c0c0c8;line-height:1.9;margin-bottom:18px;font-size:1.05rem}
 .about-text strong{color:#fafafa;font-weight:600}
 .about-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
@@ -111,8 +107,7 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;o
 .work-item:last-child{border-bottom:none}
 .work-item:nth-child(even){grid-template-columns:1fr 1.3fr}
 .work-item:nth-child(even) .work-visual{order:2}
-.work-visual{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:16/10;background:linear-gradient(135deg,#0f0f14,#0a0a10);border:1px solid rgba(255,255,255,0.04);transition:all .5s cubic-bezier(.4,0,.2,1)}
-.work-visual:hover{border-color:rgba(99,102,241,0.12);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+.work-visual{border-radius:16px;overflow:hidden;position:relative;aspect-ratio:16/10;background:#0f0f14;border:1px solid rgba(255,255,255,0.04)}
 .work-visual img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.4,0,.2,1)}
 .work-visual:hover img{transform:scale(1.03)}
 .work-visual .overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(5,5,8,0.7));pointer-events:none}
@@ -134,8 +129,8 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;o
 
 /* Products Section */
 .products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.product-card{background:linear-gradient(135deg,rgba(12,12,18,0.95),rgba(8,8,14,0.98));border:1px solid rgba(255,255,255,0.04);border-radius:16px;padding:32px;transition:all .4s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
-.product-card:hover{background:linear-gradient(135deg,rgba(15,15,25,0.98),rgba(10,10,18,1));border-color:rgba(99,102,241,0.15);transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,0,0,0.3),0 0 0 1px rgba(99,102,241,0.08)}
+.product-card{background:#0b0b0e;border:1px solid rgba(255,255,255,0.04);border-radius:16px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
+.product-card:hover{background:#0e0e14;border-color:rgba(99,102,241,0.12);transform:translateY(-6px);box-shadow:0 16px 32px rgba(0,0,0,0.25)}
 .product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
 .product-card:hover::before{opacity:1}
 .product-icon{font-size:1.8rem;margin-bottom:16px;opacity:0.9}
@@ -148,8 +143,8 @@ body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;o
 
 /* Lab / Experiments */
 .lab-grid{display:flex;flex-direction:column;gap:0}
-.lab-item{background:linear-gradient(135deg,rgba(10,10,14,0.98),rgba(6,6,10,1));padding:48px 40px;transition:all .4s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.03)}
-.lab-item:hover{background:linear-gradient(135deg,rgba(14,14,20,1),rgba(10,10,16,1));box-shadow:inset 0 1px 0 rgba(99,102,241,0.08)}
+.lab-item{background:#0a0a0d;padding:48px 40px;transition:all .3s;position:relative;overflow:hidden;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.03)}
+.lab-item:hover{background:#0e0e12}
 .lab-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#6366f1,transparent);opacity:0;transition:opacity .3s}
 .lab-item:hover::before{opacity:1}
 .lab-item .lab-icon{font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.15em;color:#6366f1;margin-bottom:12px;text-transform:uppercase}
@@ -178,8 +173,7 @@ canvas{border-radius:12px;background:#08080e;border:1px solid rgba(99,102,241,0.
 .contact-links a:hover{color:#fafafa;padding-left:10px}
 .contact-links a .arrow{color:#6b7280;transition:transform .3s}
 .contact-links a:hover .arrow{transform:translateX(6px)}
-.contact-cta{background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.05));border:1px solid rgba(99,102,241,0.15);border-radius:20px;padding:48px;transition:all .4s}
-.contact-cta:hover{border-color:rgba(99,102,241,0.25);box-shadow:0 8px 32px rgba(99,102,241,0.08)}
+.contact-cta{background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);border-radius:20px;padding:48px}
 .contact-cta h3{font-size:1.35rem;color:#fafafa;margin-bottom:12px}
 .contact-cta p{font-size:0.95rem;color:#c8c8c8;line-height:1.8;margin-bottom:24px}
 
@@ -646,7 +640,7 @@ I build systems<br>
 
 <div class="lab-divider thick"></div>
 
-<div class="lab-item reveal"><div class="lab-icon">11 — Physics Playground</div><h4>Falling Sand</h4><p>Draw different materials and watch them interact — sand falls, water flows, fire burns, plants grow. A cellular automata sandbox.</p><div id="sandbox-modes" style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap"><button onclick="sandMat='sand'" style="padding:5px 12px;border:1px solid rgba(217,160,102,0.4);border-radius:6px;background:rgba(217,160,102,0.1);color:#d9a066;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">SAND</button><button onclick="sandMat='water'" style="padding:5px 12px;border:1px solid rgba(59,130,246,0.4);border-radius:6px;background:rgba(59,130,246,0.1);color:#60a5fa;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">WATER</button><button onclick="sandMat='fire'" style="padding:5px 12px;border:1px solid rgba(239,68,68,0.4);border-radius:6px;background:rgba(239,68,68,0.1);color:#f87171;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">FIRE</button><button onclick="sandMat='plant'" style="padding:5px 12px;border:1px solid rgba(34,197,94,0.4);border-radius:6px;background:rgba(34,197,94,0.1);color:#4ade80;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">PLANT</button><button onclick="sandMat='acid'" style="padding:5px 12px;border:1px solid rgba(168,85,247,0.4);border-radius:6px;background:rgba(168,85,247,0.1);color:#c084fc;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">ACID</button><button onclick="sandMat='stone'" style="padding:5px 12px;border:1px solid rgba(156,163,175,0.4);border-radius:6px;background:rgba(156,163,175,0.1);color:#9ca3af;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">STONE</button><button onclick="grid.fill(0)" style="padding:5px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:6px;background:rgba(255,255,255,0.04);color:#6b7280;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:none;letter-spacing:0.5px">CLEAR</button></div><canvas id="sandbox-canvas" style="width:100%;height:420px;cursor:crosshair;margin-top:14px"></canvas></div>
+<div class="lab-item reveal"><div class="lab-icon">11 — Physics Playground</div><h4>Falling Sand</h4><p>Draw different materials and watch them interact — sand falls, water flows, fire burns, plants grow.</p><div id="sandbox-modes" style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap"><button onclick="sandMat='sand'" style="padding:5px 12px;border:1px solid rgba(217,160,102,0.4);border-radius:6px;background:rgba(217,160,102,0.1);color:#d9a066;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">SAND</button><button onclick="sandMat='water'" style="padding:5px 12px;border:1px solid rgba(59,130,246,0.4);border-radius:6px;background:rgba(59,130,246,0.1);color:#60a5fa;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">WATER</button><button onclick="sandMat='fire'" style="padding:5px 12px;border:1px solid rgba(239,68,68,0.4);border-radius:6px;background:rgba(239,68,68,0.1);color:#f87171;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">FIRE</button><button onclick="sandMat='plant'" style="padding:5px 12px;border:1px solid rgba(34,197,94,0.4);border-radius:6px;background:rgba(34,197,94,0.1);color:#4ade80;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">PLANT</button><button onclick="sandMat='acid'" style="padding:5px 12px;border:1px solid rgba(168,85,247,0.4);border-radius:6px;background:rgba(168,85,247,0.1);color:#c084fc;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">ACID</button><button onclick="sandMat='stone'" style="padding:5px 12px;border:1px solid rgba(156,163,175,0.4);border-radius:6px;background:rgba(156,163,175,0.1);color:#9ca3af;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">STONE</button><button id="sandClear" style="padding:5px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:6px;background:rgba(255,255,255,0.04);color:#6b7280;font-family:'JetBrains Mono',monospace;font-size:0.65rem;cursor:pointer;letter-spacing:0.5px">CLEAR</button></div><canvas id="sandbox-canvas" style="width:100%;height:420px;cursor:crosshair;margin-top:14px"></canvas></div>
 
 </div>
 </div>
@@ -1776,146 +1770,146 @@ draw();
 
 // ===================== FALLING SAND SIMULATOR =====================
 let sandMat='sand';
-const grid=[];
-let gW,gH,cellSize=6;
-let particleCount=0;
-const MAX_PARTICLES=8000;
+const sandGrid=[];
+let sW,sH,sCell=6;
+let sImgData;
 (function(){
 const canvas=document.getElementById('sandbox-canvas');
 if(!canvas)return;
 const ctx=canvas.getContext('2d');
-let W,H,imgData;
-function resize(){
+let W,H;
+
+function initGrid(){
 W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;
-gW=Math.floor(W/cellSize);gH=Math.floor(H/cellSize);
-for(let y=0;y<gH;y++){grid[y]=[];for(let x=0;x<gW;x++)grid[y][x]=0;}
-imgData=ctx.createImageData(W,H);
-particleCount=0;
+sW=Math.floor(W/sCell);sH=Math.floor(H/sCell);
+for(let y=0;y<sH;y++){sandGrid[y]=[];for(let x=0;x<sW;x++)sandGrid[y][x]=0;}
+sImgData=ctx.createImageData(W,H);
 }
-resize();window.addEventListener('resize',resize);
+initGrid();window.addEventListener('resize',initGrid);
 
-const colors={1:[217,160,102],2:[59,130,246],3:[239,68,68],4:[34,197,94],5:[168,85,247],6:[107,114,128]};
-const firePal=[[239,68,68],[249,115,22],[251,191,36],[220,38,38]];
+// Clear button
+document.getElementById('sandClear').addEventListener('click',function(){
+for(let y=0;y<sH;y++)for(let x=0;x<sW;x++)sandGrid[y][x]=0;
+});
 
-let mouseDown=false;
-canvas.addEventListener('mousedown',e=>{mouseDown=true;paint(e);});
-canvas.addEventListener('mousemove',e=>{if(mouseDown)paint(e);});
-canvas.addEventListener('mouseup',()=>{mouseDown=false;});
-canvas.addEventListener('mouseleave',()=>{mouseDown=false;});
+const COLS={1:[217,160,102],2:[59,130,246],3:[239,68,68],4:[34,197,94],5:[168,85,247],6:[107,114,128]};
+const FIRE=[[239,68,68],[249,115,22],[251,191,36],[220,38,38]];
+const MAT={sand:1,water:2,fire:3,plant:4,acid:5,stone:6};
 
-function paint(e){
-if(particleCount>=MAX_PARTICLES)return;
-const r=canvas.getBoundingClientRect();
-const mx=Math.floor((e.clientX-r.left)/cellSize);
-const my=Math.floor((e.clientY-r.top)/cellSize);
-const brush=sandMat==='sand'?1:sandMat==='water'?2:sandMat==='fire'?3:sandMat==='plant'?4:sandMat==='acid'?5:6;
-const radius=brush===3?1:2;
-for(let dy=-radius;dy<=radius;dy++){
-for(let dx=-radius;dx<=radius;dx++){
-if(particleCount>=MAX_PARTICLES)return;
-const nx=mx+dx,ny=my+dy;
-if(nx>=0&&nx<gW&&ny>=0&&ny<gH&&grid[ny][nx]===0){
-if(Math.random()<0.65){grid[ny][nx]=brush;particleCount++;}
+let painting=false;
+canvas.addEventListener('mousedown',function(e){painting=true;doPaint(e);});
+canvas.addEventListener('mousemove',function(e){if(painting)doPaint(e);});
+canvas.addEventListener('mouseup',function(){painting=false;});
+canvas.addEventListener('mouseleave',function(){painting=false;});
+
+function doPaint(e){
+var r=canvas.getBoundingClientRect();
+var mx=Math.floor((e.clientX-r.left)/sCell);
+var my=Math.floor((e.clientY-r.top)/sCell);
+var b=MAT[sandMat]||1;
+var rad=b===3?1:2;
+for(var dy=-rad;dy<=rad;dy++){
+for(var dx=-rad;dx<=rad;dx++){
+var nx=mx+dx,ny=my+dy;
+if(nx>=0&&nx<sW&&ny>=0&&ny<sH&&sandGrid[ny][nx]===0){
+if(Math.random()<0.6)sandGrid[ny][nx]=b;
 }
 }
 }
 }
 
 function step(){
-for(let y=gH-1;y>=0;y--){
-for(let x=0;x<gW;x++){
-const c=grid[y][x];
+for(var y=sH-1;y>=0;y--){
+for(var x=0;x<sW;x++){
+var c=sandGrid[y][x];
 if(c===0)continue;
 if(c===1){
-if(y+1<gH&&grid[y+1][x]===0){grid[y+1][x]=1;grid[y][x]=0;}
-else if(y+1<gH){
-const dir=Math.random()<0.5?1:-1;
-if(x+dir>=0&&x+dir<gW&&grid[y+1][x+dir]===0){grid[y+1][x+dir]=1;grid[y][x]=0;}
-else if(x-dir>=0&&x-dir<gW&&grid[y+1][x-dir]===0){grid[y+1][x-dir]=1;grid[y][x]=0;}
+if(y+1<sH&&sandGrid[y+1][x]===0){sandGrid[y+1][x]=1;sandGrid[y][x]=0;}
+else if(y+1<sH){
+var d=Math.random()<0.5?1:-1;
+if(x+d>=0&&x+d<sW&&sandGrid[y+1][x+d]===0){sandGrid[y+1][x+d]=1;sandGrid[y][x]=0;}
+else if(x-d>=0&&x-d<sW&&sandGrid[y+1][x-d]===0){sandGrid[y+1][x-d]=1;sandGrid[y][x]=0;}
 }
 }else if(c===2){
-if(y+1<gH&&grid[y+1][x]===0){grid[y+1][x]=2;grid[y][x]=0;}
-else if(y+1<gH){
-const dir=Math.random()<0.5?1:-1;
-if(x+dir>=0&&x+dir<gW&&grid[y+1][x+dir]===0){grid[y+1][x+dir]=2;grid[y][x]=0;}
-else if(x-dir>=0&&x-dir<gW&&grid[y+1][x-dir]===0){grid[y+1][x-dir]=2;grid[y][x]=0;}
+if(y+1<sH&&sandGrid[y+1][x]===0){sandGrid[y+1][x]=2;sandGrid[y][x]=0;}
+else if(y+1<sH){
+var d2=Math.random()<0.5?1:-1;
+if(x+d2>=0&&x+d2<sW&&sandGrid[y+1][x+d2]===0){sandGrid[y+1][x+d2]=2;sandGrid[y][x]=0;}
+else if(x-d2>=0&&x-d2<sW&&sandGrid[y+1][x-d2]===0){sandGrid[y+1][x-d2]=2;sandGrid[y][x]=0;}
 else{
-const sdir=Math.random()<0.5?1:-1;
-if(x+sdir>=0&&x+sdir<gW&&grid[y][x+sdir]===0){grid[y][x+sdir]=2;grid[y][x]=0;}
-else if(x-sdir>=0&&x-sdir<gW&&grid[y][x-sdir]===0){grid[y][x-sdir]=2;grid[y][x]=0;}
+var sd=Math.random()<0.5?1:-1;
+if(x+sd>=0&&x+sd<sW&&sandGrid[y][x+sd]===0){sandGrid[y][x+sd]=2;sandGrid[y][x]=0;}
+else if(x-sd>=0&&x-sd<sW&&sandGrid[y][x-sd]===0){sandGrid[y][x-sd]=2;sandGrid[y][x]=0;}
 }
 }
 }else if(c===3){
-grid[y][x]=0;particleCount--;
-if(Math.random()<0.3){
-const nx=x+Math.floor(Math.random()*3)-1;
-const ny=y-1;
-if(ny>=0&&nx>=0&&nx<gW){
-if(grid[ny][nx]===4)grid[ny][nx]=3;
-else if(grid[ny][nx]===0&&Math.random()<0.4)grid[ny][nx]=3;
+sandGrid[y][x]=0;
+if(Math.random()<0.25){
+var fx=x+Math.floor(Math.random()*3)-1;
+var fy=y-1;
+if(fy>=0&&fx>=0&&fx<sW){
+if(sandGrid[fy][fx]===4)sandGrid[fy][fx]=3;
+else if(sandGrid[fy][fx]===0&&Math.random()<0.3)sandGrid[fy][fx]=3;
 }
 }
 }else if(c===4){
-if(Math.random()<0.008){
-const dx=Math.floor(Math.random()*3)-1;
-const dy=Math.floor(Math.random()*3)-1;
-const nx=x+dx,ny=y+dy;
-if(nx>=0&&nx<gW&&ny>=0&&ny<gH&&grid[ny][nx]===0&&particleCount<MAX_PARTICLES){grid[ny][nx]=4;particleCount++;}
+if(Math.random()<0.006){
+var gx=x+Math.floor(Math.random()*3)-1;
+var gy=y+Math.floor(Math.random()*3)-1;
+if(gx>=0&&gx<sW&&gy>=0&&gy<sH&&sandGrid[gy][gx]===0)sandGrid[gy][gx]=4;
 }
-for(let dy2=-1;dy2<=1;dy2++){
-for(let dx2=-1;dx2<=1;dx2++){
-const nx=x+dx2,ny=y+dy2;
-if(nx>=0&&nx<gW&&ny>=0&&ny<gH&&grid[ny][nx]===3){grid[y][x]=3;break;}
+for(var ay=-1;ay<=1;ay++){
+for(var ax=-1;ax<=1;ax++){
+var nx2=x+ax,ny2=y+ay;
+if(nx2>=0&&nx2<sW&&ny2>=0&&ny2<sH&&sandGrid[ny2][nx2]===3){sandGrid[y][x]=3;break;}
 }
 }
 }else if(c===5){
-let dissolved=false;
-for(let dy2=-1;dy2<=1;dy2++){
-for(let dx2=-1;dx2<=1;dx2++){
-const nx=x+dx2,ny=y+dy2;
-if(nx>=0&&nx<gW&&ny>=0&&ny<gH&&grid[ny][nx]>0&&grid[ny][nx]!==5&&grid[ny][nx]!==6){
-if(Math.random()<0.12){grid[ny][nx]=0;particleCount--;dissolved=true;}
+for(var ay2=-1;ay2<=1;ay2++){
+for(var ax2=-1;ax2<=1;ax2++){
+var nx3=x+ax2,ny3=y+ay2;
+if(nx3>=0&&nx3<sW&&ny3>=0&&ny3<sH&&sandGrid[ny3][nx3]>0&&sandGrid[ny3][nx3]!==5&&sandGrid[ny3][nx3]!==6){
+if(Math.random()<0.1)sandGrid[ny3][nx3]=0;
 }
 }
 }
-if(Math.random()<0.015){grid[y][x]=0;particleCount--;}
-if(y+1<gH&&grid[y+1][x]===0){grid[y+1][x]=5;grid[y][x]=0;}
+if(Math.random()<0.01)sandGrid[y][x]=0;
+if(y+1<sH&&sandGrid[y+1][x]===0){sandGrid[y+1][x]=5;sandGrid[y][x]=0;}
 }
 }
 }
 }
 
-function draw(){
+function render(){
 step();
-const d=imgData.data;
-for(let i=0;i<d.length;i+=4){d[i]=6;d[i+1]=6;d[i+2]=12;d[i+3]=255;}
-for(let y=0;y<gH;y++){
-for(let x=0;x<gW;x++){
-const c=grid[y][x];
+var d=sImgData.data;
+for(var i=0;i<d.length;i+=4){d[i]=6;d[i+1]=6;d[i+2]=12;d[i+3]=255;}
+for(var y=0;y<sH;y++){
+for(var x=0;x<sW;x++){
+var c=sandGrid[y][x];
 if(c===0)continue;
-let col;
-if(c===3){col=firePal[Math.floor(Math.random()*4)];}
-else{col=colors[c];}
-const px=x*cellSize,py=y*cellSize;
-for(let dy=0;dy<cellSize&&py+dy<H;dy++){
-for(let dx=0;dx<cellSize&&px+dx<W;dx++){
-const idx=((py+dy)*W+(px+dx))*4;
+var col;
+if(c===3){col=FIRE[Math.floor(Math.random()*4)];}
+else{col=COLS[c];}
+var px=x*sCell,py=y*sCell;
+for(var dy=0;dy<sCell&&py+dy<H;dy++){
+for(var dx=0;dx<sCell&&px+dx<W;dx++){
+var idx=((py+dy)*W+(px+dx))*4;
 d[idx]=col[0];d[idx+1]=col[1];d[idx+2]=col[2];
 }
 }
 }
 }
-ctx.putImageData(imgData,0,0);
+ctx.putImageData(sImgData,0,0);
 
-ctx.fillStyle='rgba(6,6,12,0.8)';ctx.fillRect(8,8,300,28);
-ctx.strokeStyle='rgba(99,102,241,0.2)';ctx.strokeRect(8,8,300,28);
+ctx.fillStyle='rgba(6,6,12,0.8)';ctx.fillRect(8,8,240,24);
 ctx.font='9px JetBrains Mono, monospace';ctx.textAlign='left';
 ctx.fillStyle='rgba(148,163,184,0.6)';
-ctx.fillText(sandMat.toUpperCase()+'  '+particleCount+'/'+MAX_PARTICLES+' particles  click+drag to draw',14,26);
+ctx.fillText(sandMat.toUpperCase()+' — click+drag to draw',14,24);
 
-requestAnimationFrame(draw);
+requestAnimationFrame(render);
 }
-draw();
+render();
 })();
 
 // ===================== SCROLL-DRIVEN ANIMATIONS =====================
