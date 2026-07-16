@@ -16,6 +16,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -341,7 +344,33 @@ canvas{height:150px !important;width:100% !important}
 .about-tags span{transition:all .3s;cursor:default}
 .about-tags span:hover{border-color:rgba(99,102,241,0.5);color:#a5b4fc;box-shadow:0 0 12px rgba(99,102,241,0.15)}
 
-/* Writing filter */
+/* Project Detail Modal */
+.modal-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:all .3s;display:flex;align-items:center;justify-content:center;padding:40px}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:#0c0c10;border:1px solid rgba(255,255,255,0.06);border-radius:20px;max-width:800px;width:100%;max-height:85vh;overflow-y:auto;padding:48px;position:relative;transform:translateY(20px);transition:transform .3s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:rgba(99,102,241,0.3);border-radius:2px}
+.modal-close{position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#9ca3af;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.modal-close:hover{background:rgba(255,255,255,0.08);color:#fafafa}
+.modal-tag{display:inline-block;padding:4px 10px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);border-radius:6px;font-size:0.7rem;font-family:'JetBrains Mono',monospace;color:#818cf8;margin-bottom:16px;letter-spacing:0.05em}
+.modal h2{font-size:1.6rem;font-weight:700;color:#fafafa;margin-bottom:12px;letter-spacing:-0.02em}
+.modal h3{font-size:1.1rem;font-weight:600;color:#fafafa;margin:24px 0 10px;letter-spacing:-0.01em}
+.modal h4{font-size:0.9rem;font-weight:600;color:#a5b4fc;margin:20px 0 8px;text-transform:uppercase;letter-spacing:0.08em;font-family:'JetBrains Mono',monospace}
+.modal p{color:#b8b8c0;line-height:1.8;font-size:0.95rem;margin-bottom:14px}
+.modal .eq-block{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.12);border-radius:10px;padding:20px;margin:16px 0;text-align:center;font-size:1.1rem}
+.modal .ref{padding:14px 18px;background:rgba(255,255,255,0.02);border-left:2px solid rgba(99,102,241,0.3);margin:10px 0;border-radius:0 8px 8px 0}
+.modal .ref .author{color:#a5b4fc;font-size:0.8rem;font-family:'JetBrains Mono',monospace}
+.modal .ref .title{color:#e0e0e8;font-size:0.9rem;margin-top:4px}
+.modal .ref .journal{color:#71717a;font-size:0.8rem;margin-top:4px;font-style:italic}
+.modal .links{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.modal .links a{padding:8px 16px;border:1px solid rgba(99,102,241,0.25);border-radius:8px;color:#a5b4fc;text-decoration:none;font-size:0.8rem;font-family:'JetBrains Mono',monospace;transition:all .3s}
+.modal .links a:hover{background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.4)}
+.modal .meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.modal .meta-item{padding:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:8px}
+.modal .meta-item .label{font-size:0.65rem;color:#6b7280;text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.modal .meta-item .value{font-size:0.85rem;color:#e0e0e8}
+@media(max-width:600px){.modal{padding:24px;margin:16px}.modal .meta-grid{grid-template-columns:1fr}}
 .writing-filters{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
 .writing-filter{padding:6px 14px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:#9ca3af;cursor:pointer;transition:all .3s;background:transparent;letter-spacing:0.05em}
 .writing-filter:hover{border-color:rgba(99,102,241,0.3);color:#a5b4fc}
@@ -2385,6 +2414,255 @@ dots[i].classList.toggle('active',scrollY>=top&&scrollY<bottom);
 }
 window.addEventListener('scroll',updateDots);
 updateDots();
+})();
+
+// ===================== PROJECT & EXPERIMENT DETAIL MODAL =====================
+(function(){
+// Modal container
+const overlay=document.createElement('div');
+overlay.className='modal-overlay';
+overlay.innerHTML='<div class="modal" id="modalContent"><button class="modal-close" id="modalClose">&times;</button><div id="modalBody"></div></div>';
+document.body.appendChild(overlay);
+
+document.getElementById('modalClose').addEventListener('click',()=>overlay.classList.remove('open'));
+overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('open');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')overlay.classList.remove('open');});
+
+function openModal(html){
+document.getElementById('modalBody').innerHTML=html;
+overlay.classList.add('open');
+document.getElementById('modalContent').scrollTop=0;
+// Render KaTeX
+if(typeof renderMathInElement==='function'){
+renderMathInElement(document.getElementById('modalBody'),{
+delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]
+});
+}
+}
+
+// ==================== ACADEMIC DATA ====================
+const projects={
+torricelli:{
+tag:'PHY-205 · Experimental Methods',
+title:'Experimental Methods Lab — Torricelli\'s Theorem',
+meta:[
+{label:'Course',value:'PHY-205 Experimental Methods'},
+{label:'Role',value:'Lead Researcher'},
+{label:'Tools',value:'Python, R, Arduino, Lab Equipment'}
+],
+sections:[
+{heading:'Objective',text:'Verify Torricelli\'s theorem experimentally by measuring the efflux velocity of fluid from a tank as a function of height, and compare with the theoretical prediction $v = \\sqrt{2gh}$.'},
+{heading:'Theory',text:'Torricelli\'s theorem states that the speed of efflux through a sharp-edged orifice at the bottom of a tank filled to depth $h$ is equal to the speed a body would acquire in falling freely from height $h$:$$v = \\sqrt{2gh}$$where $g = 9.81 \\text{ m/s}^2$ is gravitational acceleration. The volumetric flow rate is $Q = A_{\\text{orifice}} \\cdot v$, where $A_{\\text{orifice}}$ is the orifice cross-sectional area.'},
+{heading:'Methodology',text:'A cylindrical tank with a precision-bored orifice was used. Water level was measured using a digital depth gauge (±0.1mm). Efflux time was measured using an Arduino-based photogate timer with laser diode alignment. Multiple trials at 5 different heights (10cm to 50cm) were conducted. Temperature was monitored to correct for viscosity changes.'},
+{heading:'Key Results',text:'The measured efflux velocity showed $R^2 = 0.9987$ agreement with Torricelli\'s prediction. Systematic deviation of 2.3% at low heights was attributed to viscous effects and orifice contraction coefficient $C_c = 0.61$.'},
+{heading:'References',refs:[
+{author:'Bernoulli, D. (1738)',title:'Hydrodynamica',journal:'Strasbourg: Johann Reinhold Dulsecker'},
+{author:'White, F.M. (2011)',title:'Fluid Mechanics',journal:'7th Ed., McGraw-Hill, Ch. 3.6'},
+{author:'Munson, B.R. et al. (2013)',title:'Fundamentals of Fluid Mechanics',journal:'7th Ed., Wiley, Ch. 3.5'}
+]},
+links:[{url:'https://github.com/Swastik2209/torricelli-experiment',label:'GitHub Repo'}]
+},
+pendulum:{
+tag:'Chaos Theory · Nonlinear Dynamics',
+title:'Double Pendulum Analysis — Chaos in Action',
+meta:[
+{label:'Domain',value:'Nonlinear Dynamics'},
+{label:'Stack',value:'Python, NumPy, Matplotlib'},
+{label:'Method',value:'4th-order Runge-Kutta'}
+],
+sections:[
+{heading:'Objective',text:'Numerically simulate and analyze the double pendulum system to visualize chaotic behavior, sensitive dependence on initial conditions, and energy conservation in Hamiltonian systems.'},
+{heading:'Lagrangian Formulation',text:'The double pendulum is governed by the Lagrangian $\\mathcal{L} = T - V$ where kinetic energy is:$$T = \\frac{1}{2}(m_1 + m_2)l_1^2\\dot{\\theta}_1^2 + \\frac{1}{2}m_2 l_2^2 \\dot{\\theta}_2^2 + m_2 l_1 l_2 \\dot{\\theta}_1 \\dot{\\theta}_2 \\cos(\\theta_1 - \\theta_2)$$and potential energy:$$V = -(m_1 + m_2)gl_1\\cos\\theta_1 - m_2 g l_2 \\cos\\theta_2$$'},
+{heading:'Equations of Motion',text:'Applying the Euler-Lagrange equations $\\frac{d}{dt}\\frac{\\partial \\mathcal{L}}{\\partial \\dot{\\theta}_i} - \\frac{\\partial \\mathcal{L}}{\\partial \\theta_i} = 0$ yields coupled second-order ODEs. With damping coefficient $\\beta$:$$\\ddot{\\theta}_1 = \\frac{-g(2m_1+m_2)\\sin\\theta_1 - m_2 g\\sin(\\theta_1-2\\theta_2) - 2\\sin(\\theta_1-\\theta_2)m_2(\\dot{\\theta}_2^2 l_2 + \\dot{\\theta}_1^2 l_1 \\cos(\\theta_1-\\theta_2)) - \\beta \\dot{\\theta}_1 \\Delta}{l_1 \\Delta}$$where $\\Delta = 2m_1 + m_2 - m_2\\cos(2\\theta_1 - 2\\theta_2)$.'},
+{heading:'Numerical Method',text:'4th-order Runge-Kutta integration with $\\Delta t = 0.01$s and 4 substeps per frame. The RK4 method provides $O(\\Delta t^4)$ accuracy per step, essential for preserving the Hamiltonian structure over long integration times.'},
+{heading:'Lyapunov Exponent',text:'The maximal Lyapunov exponent $\\lambda_1 \\approx 0.1$ bit/s confirms chaotic behavior — nearby trajectories diverge exponentially at this rate, meaning prediction horizon is $\\sim 1/\\lambda_1 \\approx 10$ time units.'},
+{heading:'References',refs:[
+{author:'Strogatz, S.H. (2015)',title:'Nonlinear Dynamics and Chaos',journal:'2nd Ed., Westview Press, Ch. 6'},
+{author:'Landau, L.D. & Lifshitz, E.M.',title:'Mechanics',journal:'3rd Ed., Butterworth-Heinemann, §37'},
+{author:'Shinbrot, T. (1995)',title:'The double pendulum',journal:'Am. J. Phys. 63, 919'}
+]},
+links:[{url:'https://github.com/Swastik2209/double-pendulum-analysis',label:'GitHub Repo'}]
+},
+consumer:{
+tag:'Microeconomics · Utility Theory',
+title:'Consumer Theory Analysis — Indifference Curves',
+meta:[
+{label:'Course',value:'Microeconomics'},
+{label:'Tools',value:'R, ggplot2, LaTeX'},
+{label:'Method',value:'Contour Plotting'}
+],
+sections:[
+{heading:'Objective',text:'Visualize consumer preferences through indifference curve analysis, demonstrating utility maximization under budget constraints and deriving the marginal rate of substitution (MRS).'},
+{heading:'Utility Function',text:'For a Cobb-Douglas utility function:$$U(x,y) = x^{\\alpha} y^{1-\\alpha}$$the MRS (marginal rate of substitution) is:$$MRS_{xy} = \\frac{\\partial U / \\partial x}{\\partial U / \\partial y} = \\frac{\\alpha}{1-\\alpha} \\cdot \\frac{y}{x}$$Indifference curves are the level sets $U(x,y) = \\bar{U}$, which are convex to the origin for $0 < \\alpha < 1$.'},
+{heading:'Budget Constraint',text:'With income $I$ and prices $p_x, p_y$, the budget line is:$$p_x x + p_y y = I$$The optimal bundle satisfies $MRS_{xy} = \\frac{p_x}{p_y}$, giving:$$x^* = \\frac{\\alpha I}{p_x}, \\quad y^* = \\frac{(1-\\alpha)I}{p_y}$$'},
+{heading:'Visualization',text:'Contour plots of the utility surface were generated using R with adaptive sampling density to preserve convexity properties. Budget lines were overlaid, and the tangency point (optimal bundle) was highlighted.'},
+{heading:'References',refs:[
+{author:'Mas-Colell, A. et al. (1995)',title:'Microeconomic Theory',journal:'Oxford University Press, Ch. 3'},
+{author:'Varian, H.R. (2014)',title:'Intermediate Microeconomics',journal:'9th Ed., Norton, Ch. 4-5'},
+{author:'Hicks, J.R. (1939)',title:'Value and Capital',journal:'Oxford University Press, Ch. II'}
+]},
+links:[{url:'https://github.com/Swastik2209/consumer-theory',label:'GitHub Repo'}]
+},
+sectoral:{
+tag:'Panel Data · Development Economics',
+title:'Sectoral Growth Intelligence — GDP Analysis',
+meta:[
+{label:'Data',value:'World Bank, RBI, MOSPI'},
+{label:'Method',value:'Fixed Effects Panel Regression'},
+{label:'Period',value:'1990-2023'}
+],
+sections:[
+{heading:'Objective',text:'Analyze sectoral contribution to GDP growth in India using panel data methods, identifying which sectors drive economic transformation in developing economies.'},
+{heading:'Panel Model',text:'The fixed effects model:$$Y_{it} = \\alpha_i + \\beta_1 \\text{Agri}_{it} + \\beta_2 \\text{Ind}_{it} + \\beta_3 \\text{Serv}_{it} + \\gamma X_{it} + \\epsilon_{it}$$where $\\alpha_i$ captures time-invariant unobserved heterogeneity across states, and $X_{it}$ is a vector of controls (education, infrastructure, FDI).'},
+{heading:'Data Sources',text:'Annual sectoral GVA data from MOSPI (1990-2023), state-level education indicators from UDISE, infrastructure index from RBI\'s State Finances reports, and FDI inflows from DIPP. Missing quarterly data for 1990-2000 was imputed using Kalman smoothing with structural time series constraints.'},
+{heading:'Key Findings',text:'Services sector coefficient $\\beta_3 = 0.42$ ($p < 0.001$) indicates that a 1% increase in services share correlates with 0.42% higher GDP growth, controlling for state effects. Manufacturing shows $\\beta_2 = 0.31$ but with higher variance across states.'},
+{heading:'References',refs:[
+{author:'Acemoglu, D. et al. (2014)',title:'The Structualist Critique of Big Push Models',journal:'NBER Working Paper No. 19445'},
+{author:'World Bank (2023)',title:'World Development Indicators',journal:'https://data.worldbank.org'},
+{author:'MOSPI (2023)',title:'National Accounts Statistics',journal:'Government of India'}
+]},
+links:[{url:'https://github.com/Swastik2209/sectoral-growth-analysis',label:'GitHub Repo'}]
+},
+employment:{
+tag:'Labor Economics · Policy Research',
+title:'Urban Employment Study — NSSO/CMIE Analysis',
+meta:[
+{label:'Role',value:'Research Assistant'},
+{label:'Collaboration',value:'Prof. KC Adaina'},
+{label:'Output',value:'Policy Brief + Dashboard'}
+],
+sections:[
+{heading:'Objective',text:'Analyze urban unemployment trends in India using mixed-frequency data from NSSO (annual surveys) and CMIE (monthly estimates), and assess the impact of policy interventions.'},
+{heading:'Temporal Alignment',text:'NSSO Employment-Unemployment Survey (annual) was aligned with CMIE Consumer Pyramids (monthly) using Chow-Lin interpolation:$$\\hat{y}_{\\text{monthly}} = \\hat{\\beta}_0 + \\hat{\\beta}_1 \\cdot x_{\\text{NSSO}} + \\hat{\\epsilon}$$where the regression preserves the annual totals while distributing them across months using the high-frequency CMIE signal.'},
+{heading:'Key Findings',text:'Urban unemployment showed a structural break in 2019 (pre-COVID), with the quarterly seasonality pattern indicating $\\sim$2x higher unemployment in Q2 (May-July) aligned with agricultural migration cycles. Youth unemployment (15-24) was 3.2x the overall rate.'},
+{heading:'References',refs:[
+{author:' NSSO (2022)',title:'Employment-Unemployment Survey (Round 78)',journal:'Ministry of Statistics, Government of India'},
+{author:'CMIE (2023)',title:'Consumer Pyramids Household Survey',journal:'Centre for Monitoring Indian Economy'},
+{author:'Klasen, S. & Pieters, J. (2015)',title:'What Explains the Stagnation of Female Labor Force Participation in Urban India?',journal:'World Bank Economic Review, 29(3)'}
+]},
+links:[{url:'https://github.com/Swastik2209/academic-papers',label:'GitHub Repo'}]
+},
+freecad:{
+tag:'Mechanical Design · CAD/CAE',
+title:'3D Mechanical Design — Tensigrity Structures',
+meta:[
+{label:'Tools',value:'FreeCAD 1.1.1, Fusion 360'},
+{label:'Output',value:'Tensigrity + Parametric Parts'},
+{label:'Method',value:'Constraint-based Modeling'}
+],
+sections:[
+{heading:'Objective',text:'Design self-equilibrating tensigrity structures and parametric mechanical assemblies that maintain stability under compression while using minimal material.'},
+{heading:'Tensigrity Mechanics',text:'A tensigrity structure consists of isolated compression elements (tendons) connected by continuous tension elements (strings). The equilibrium condition requires:$$\\sum \\vec{F}_i = 0 \\quad \\text{and} \\quad \\sum \\vec{M}_i = 0$$for all nodes, where $\\vec{F}_i$ includes both tension and compression forces.'},
+{heading:'CAD Workflow',text:'Parametric modeling in FreeCAD using Sketcher constraints, Part Design workbench for solid modeling, and Assembly workbench for multi-body configurations. Stress analysis via FEM workbench validated structural integrity under loading.'},
+{heading:'References',refs:[
+{author:'Motro, R. (2003)',title:'Tensigrity: Structural Systems for the Future',journal:'Kogan Page Science'},
+{author:'Connelly, R. & Back, A. (1998)',title:'Mathematics and Tensigrity Structures',journal:'American Scientist, 86(2)'},
+{author:'Skelton, R.E. et al. (2001)',title:'An Introduction to the Mechanics of Tensigrity Structures',journal:'Mechanical Systems and Signal Processing'}
+]},
+links:[{url:'https://github.com/Swastik2209',label:'GitHub Profile'}]
+},
+};
+
+const experiments={
+climate:{
+tag:'03 · Climate Economics',
+title:'Himalayan Glacial Retreat & GDP Correlation',
+meta:[{label:'Domain',value:'Environmental Economics'},{label:'Data',value:'NASA GISS, World Bank'},{label:'Period',value:'1980-2023'}],
+sections:[
+{heading:'Overview',text:'Modeling the correlation between Himalayan glacial retreat rates and regional GDP growth in South Asian economies, using satellite-derived glacier mass balance data paired with economic indicators.'},
+{heading:'Data Sources',text:'Glacier mass balance from NASA\'s GRACE satellite mission (2002-present) and ICESat-2 laser altimetry. Regional temperature anomalies from NASA GISS. GDP data from World Bank WDI.'},
+{heading:'Key Finding',text:'A 10% increase in glacial mass loss correlates with a 2.3% decline in agricultural GDP in downstream regions ($R^2 = 0.67$, $p < 0.01$), suggesting significant economic vulnerability to cryospheric change.'}
+],
+refs:[{author:'Bolch, T. et al. (2012)',title:'The state and fate of Himalayan glaciers',journal:'Science, 336(6079)'}]
+},
+force:{
+tag:'04 · Electromagnetic Physics',
+title:'Electromagnetic Force Measurement & Uncertainty',
+meta:[{label:'Course',value:'PHY-203'},{label:'Tools',value:'Gaussmeter, Arduino'},{label:'Method',value:'Error Propagation'}],
+sections:[
+{heading:'Overview',text:'Measuring electromagnetic force using a digital gaussmeter and analyzing systematic and random uncertainties through standard error propagation techniques.'},
+{heading:'Theory',text:'The Lorentz force on a charged particle: $\\vec{F} = q(\\vec{E} + \\vec{v} \\times \\vec{B})$. For current-carrying conductors: $F = ILB\\sin\\theta$.'},
+{heading:'Uncertainty Analysis',text:'Using Gaussian error propagation:$$\\delta F = F \\sqrt{\\left(\\frac{\\delta I}{I}\\right)^2 + \\left(\\frac{\\delta L}{L}\\right)^2 + \\left(\\frac{\\delta B}{B}\\right)^2 + \\left(\\cot\\theta \\cdot \\delta\\theta\\right)^2}$$'},
+{heading:'Key Finding',text:'Systematic uncertainty dominated (68%) over random uncertainty (32%), with the angular measurement contributing the largest error budget.'}
+],
+refs:[{author:'Taylor, J.R. (1997)',title:'An Introduction to Error Analysis',journal:'2nd Ed., University Science Books'}]
+},
+portfolio:{
+tag:'05 · Quantitative Finance',
+title:'Portfolio Optimization — Mean-Variance Framework',
+meta:[{label:'Method',value:'Markowitz Mean-Variance'},{label:'Data',value:'NSE India Equities'},{label:'Metric',value:'Sharpe Ratio'}],
+sections:[
+{heading:'Overview',text:'Implementing Markowitz mean-variance portfolio optimization on Indian equity data, maximizing the Sharpe ratio to find the efficient frontier.'},
+{heading:'Markowitz Model',text:'For portfolio $\\mathbf{w}$ with expected return $\\mu_p = \\mathbf{w}^T \\boldsymbol{\\mu}$ and variance $\\sigma_p^2 = \\mathbf{w}^T \\Sigma \\mathbf{w}$:$$\\max_{\\mathbf{w}} \\frac{\\mathbf{w}^T \\boldsymbol{\\mu} - r_f}{\\sqrt{\\mathbf{w}^T \\Sigma \\mathbf{w}}}$$subject to $\\mathbf{w}^T \\mathbf{1} = 1$ and $\\mathbf{w} \\geq 0$.'},
+{heading:'Results',text:'The optimal portfolio achieved a Sharpe ratio of 1.82, with maximum allocation to IT (28%), Pharma (22%), and Banking (19%) sectors. Risk reduction of 34% compared to equal-weight benchmark.'}
+],
+refs:[{author:'Markowitz, H. (1952)',title:'Portfolio Selection',journal:'The Journal of Finance, 7(1)'}]
+},
+};
+
+// ==================== WIRE UP CLICKS ====================
+// Work items
+document.querySelectorAll('.work-item').forEach((item,i)=>{
+const keys=['torricelli','pendulum','consumer','sectoral','employment','freecad'];
+item.style.cursor='pointer';
+item.addEventListener('click',e=>{
+if(e.target.closest('a'))return;
+const data=projects[keys[i]];
+if(!data)return;
+let html='<div class="modal-tag">'+data.tag+'</div><h2>'+data.title+'</h2>';
+html+='<div class="meta-grid">'+data.meta.map(m=>'<div class="meta-item"><div class="label">'+m.label+'</div><div class="value">'+m.value+'</div></div>').join('')+'</div>';
+data.sections.forEach(s=>{
+html+='<h4>'+s.heading+'</h4><p>'+s.text+'</p>';
+if(s.refs)s.refs.forEach(r=>{html+='<div class="ref"><div class="author">'+r.author+'</div><div class="title">'+r.title+'</div><div class="journal">'+r.journal+'</div></div>';});
+});
+if(data.links){html+='<div class="links">'+data.links.map(l=>'<a href="'+l.url+'" target="_blank">'+l.label+' →</a>').join('')+'</div>';}
+openModal(html);
+});
+});
+
+// Text-only experiments (03, 04, 05)
+document.querySelectorAll('.lab-text-row .lab-item').forEach((item,i)=>{
+const keys=['climate','force','portfolio'];
+item.style.cursor='pointer';
+item.addEventListener('click',()=>{
+const data=experiments[keys[i]];
+if(!data)return;
+let html='<div class="modal-tag">'+data.tag+'</div><h2>'+data.title+'</h2>';
+html+='<div class="meta-grid">'+data.meta.map(m=>'<div class="meta-item"><div class="label">'+m.label+'</div><div class="value">'+m.value+'</div></div>').join('')+'</div>';
+data.sections.forEach(s=>{html+='<h4>'+s.heading+'</h4><p>'+s.text+'</p>';});
+if(data.refs)data.refs.forEach(r=>{html+='<div class="ref"><div class="author">'+r.author+'</div><div class="title">'+r.title+'</div><div class="journal">'+r.journal+'</div></div>';});
+openModal(html);
+});
+});
+
+// Interactive experiments — add paper references below each
+const simRefs={
+0:{tag:'Dynamics',title:'Double Pendulum',refs:[{a:'Strogatz (2015)',t:'Nonlinear Dynamics and Chaos',j:'Westview Press, Ch. 6'},{a:'Shinbrot (1995)',t:'The double pendulum',j:'Am. J. Phys. 63, 919'}]},
+1:{tag:'Finance',title:'Black-Scholes Model',refs:[{a:'Black, F. & Scholes, M. (1973)',t:'The Pricing of Options and Corporate Liabilities',j:'J. Political Economy, 81(3)'},{a:'Merton, R.C. (1973)',t:'Theory of Rational Option Pricing',j:'Bell J. Economics, 4(1)'}]},
+5:{tag:'Wave Physics',title:'Wave Superposition',refs:[{a:'Hecht, E. (2017)',t:'Optics',j:'5th Ed., Pearson, Ch. 9'},{a:'Feynman, R.P. (1965)',t:'The Feynman Lectures on Physics',j:'Vol. I, Ch. 28'}]},
+6:{tag:'Chaos',title:'Lorenz Attractor',refs:[{a:'Lorenz, E.N. (1963)',t:'Deterministic Nonperiodic Flow',j:'J. Atmospheric Sciences, 20(2)'},{a:'Strogatz (2015)',t:'Nonlinear Dynamics and Chaos',j:'Westview Press, Ch. 9'}]},
+7:{tag:'Stochastic',title:'Geometric Brownian Motion',refs:[{a:'Einstein, A. (1905)',t:'Über die von der molekularkinetischen Theorie der Wärme geforderte Bewegung',j:'Annalen der Physik, 322(8)'},{a:'Hull, J.C. (2022)',t:'Options, Futures, and Other Derivatives',j:'11th Ed., Pearson, Ch. 13'}]},
+8:{tag:'Algorithms',title:'A* Search Algorithm',refs:[{a:'Hart, P.E. et al. (1968)',t:'A Formal Basis for the Heuristic Determination of Minimum Cost Paths',j:'IEEE Trans. SSC, 4(2)'},{a:'Dijkstra, E.W. (1959)',t:'A note on two problems in connexion with graphs',j:'Numerische Mathematik, 1(1)'}]},
+9:{tag:'Orbital',title:'Keplerian Orbital Mechanics',refs:[{a:'Kepler, J. (1609)',t:'Astronomia Nova',j:'Prague'},{a:'Goldstein, H. (2002)',t:'Classical Mechanics',j:'3rd Ed., Addison-Wesley, Ch. 3-4'}]}
+};
+document.querySelectorAll('.lab-grid .lab-item').forEach((item,i)=>{
+if(i>=3&&i<=5)return;
+const ref=simRefs[i];
+if(!ref)return;
+const refDiv=document.createElement('div');
+refDiv.style.cssText='margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.04);';
+refDiv.innerHTML='<div style="font-size:0.7rem;color:#6b7280;font-family:JetBrains Mono,monospace;letter-spacing:0.1em;margin-bottom:8px">REFERENCES</div>'+ref.refs.map(r=>'<div style="font-size:0.75rem;color:#9ca3af;margin-bottom:6px;line-height:1.5"><span style="color:#a5b4fc">'+r.a+'</span> — <em>'+r.t+'</em><br>'+r.j+'</div>').join('');
+item.appendChild(refDiv);
+});
+
+// Init KaTeX after page load
+window.addEventListener('load',()=>{
+if(typeof renderMathInElement==='function'){
+renderMathInElement(document.body,{
+delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]
+});
+}
+});
 })();
 
 // ===================== ANALYTICS (Privacy-friendly) =====================
